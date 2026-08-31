@@ -1,0 +1,20 @@
+:root {
+  --ks-page-bg: #FAF8F2;
+  --ks-surface: #FFFFFF;
+  --ks-surface-alt: #FAF8F5;
+  --ks-ink: #0F1923;
+  --ks-body: #2D3142;
+  --ks-secondary: #4F556B;
+  --ks-dim: #727270;
+  --ks-brand: #0059B8;
+  --ks-on-brand: #FFFFFF;
+  --ks-urgent: #B83B50;
+  --ks-warn: #906A2D;
+  --ks-ok: #4E7C59;
+  --ks-functional-border: #8B7355;
+  --ks-decorative-border: #E8E3DB;
+  --ks-border-subtle: #ECE6D7;
+  --ks-shadow-card: rgba(15, 25, 35, 0.06);
+  --ks-brand-wash: rgba(0, 89, 184, 0.08);
+  --ks-brand-border: rgba(0, 89, 184, 0.22);
+}

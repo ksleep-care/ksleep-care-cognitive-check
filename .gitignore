@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.vercel/
+coverage/
+output/
+.playwright-cli/
+.DS_Store
+*.log
+*.tsbuildinfo
+.vercel
+.env*
+docs/design/token-report.md
