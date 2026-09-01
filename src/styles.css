@@ -834,3 +834,37 @@ main { flex: 1; padding: 16px 0 24px; }
 .confirm-card p { margin-bottom: 14px; color: var(--g-body); font-size: 14px; line-height: 1.6; }
 .confirm-card .danger-button { margin-top: 0; }
 .confirm-card .quiet-button { width: 100%; margin-top: 8px; }
+
+/* ── 이야기 읽기 제한 시간 ─────────────────────────────── */
+.read-timer {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.read-timer .progress-track { flex: 1; margin-bottom: 0; }
+
+/* 남은 시간은 200ms마다 갱신되므로 폭 전환을 그 주기에 맞춘다. */
+.read-timer .progress-fill { transition: width 200ms linear; }
+.read-timer .progress-fill.is-hurrying { background: linear-gradient(90deg, var(--g-coral), #FFD35C); }
+
+.read-countdown {
+  min-width: 4ch;
+  margin: 0;
+  color: var(--g-cyan);
+  font-size: 16px;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* 색만으로 급함을 알리지 않는다. 숫자가 커지는 것으로도 알린다. */
+.read-countdown.is-hurrying { color: var(--g-coral); font-size: 19px; }
+
+.story-reading .story-copy { font-size: 18px; line-height: 1.85; }
+
+@media (prefers-reduced-motion: reduce) {
+  .read-timer .progress-fill { transition: none; }
+  .read-countdown.is-hurrying { font-size: 16px; text-decoration: underline; }
+}

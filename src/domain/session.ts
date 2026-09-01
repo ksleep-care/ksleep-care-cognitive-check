@@ -37,9 +37,9 @@ export const GAME_META: Record<
   story: {
     icon: '📖',
     title: '이야기 기억하기',
-    description: '짧은 이야기를 읽고 바로 질문에 답해요.',
+    description: '제한 시간 안에 짧은 이야기를 읽고 바로 질문에 답해요.',
     looksAt: '방금 들은 내용을 붙잡아 두는 힘을 쓰는 게임이에요.',
-    limit: '기억력 검사가 아니에요. 이야기 종류가 하나라 다음에도 같은 이야기가 나와요.',
+    limit: '기억력 검사가 아니에요. 이야기 종류가 하나라 다음에도 같은 이야기가 나와요. 읽기 시간은 레벨마다 달라서 레벨이 다르면 비교할 수 없어요.',
     scalesWithLevel: true,
   },
   reaction: {

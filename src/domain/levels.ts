@@ -3,6 +3,12 @@ import type { Level } from './types';
 /** 레벨이 바꾸는 것은 여기 있는 값뿐이다. 3분 PVT는 이 파일을 쓰지 않는다. */
 export interface LevelConfig {
   storyQuestions: number;
+  /**
+   * 이야기를 읽을 수 있는 최대 시간(ms).
+   * 읽은 시간이 사람마다 다르면 기억 점수를 자기 기록끼리도 비교할 수 없다.
+   * 레벨이 오를수록 질문은 늘고 시간은 줄어든다.
+   */
+  storyReadMs: number;
   digitSequences: string[];
   stroopTrials: number;
   patternTrials: number;
@@ -12,6 +18,7 @@ export interface LevelConfig {
 export const LEVEL_CONFIG: Record<Level, LevelConfig> = {
   1: {
     storyQuestions: 4,
+    storyReadMs: 25_000,
     digitSequences: ['927', '6481', '3057'],
     stroopTrials: 6,
     patternTrials: 6,
@@ -19,6 +26,7 @@ export const LEVEL_CONFIG: Record<Level, LevelConfig> = {
   },
   2: {
     storyQuestions: 5,
+    storyReadMs: 22_000,
     digitSequences: ['4172', '90563', '38215'],
     stroopTrials: 8,
     patternTrials: 6,
@@ -26,6 +34,7 @@ export const LEVEL_CONFIG: Record<Level, LevelConfig> = {
   },
   3: {
     storyQuestions: 6,
+    storyReadMs: 20_000,
     digitSequences: ['61840', '275093', '480716'],
     stroopTrials: 10,
     patternTrials: 8,
@@ -33,6 +42,7 @@ export const LEVEL_CONFIG: Record<Level, LevelConfig> = {
   },
   4: {
     storyQuestions: 7,
+    storyReadMs: 18_000,
     digitSequences: ['582074', '3197462', '6408351'],
     stroopTrials: 12,
     patternTrials: 8,

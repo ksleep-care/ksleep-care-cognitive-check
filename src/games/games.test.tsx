@@ -79,6 +79,78 @@ describe('이야기 기억하기', () => {
   });
 });
 
+describe('이야기 읽기 시간 제한', () => {
+  it('남은 시간을 초 단위로 보여주고 1초마다 줄어든다', async () => {
+    vi.useFakeTimers();
+    render(<StoryGame mode="immediate" level={1} onComplete={vi.fn()} />);
+
+    expect(screen.getByRole('timer')).toHaveTextContent('25초');
+    await act(() => vi.advanceTimersByTimeAsync(1000));
+    expect(screen.getByRole('timer')).toHaveTextContent('24초');
+  });
+
+  it('레벨이 오를수록 읽는 시간이 줄어든다', () => {
+    vi.useFakeTimers();
+    const { unmount } = render(<StoryGame mode="immediate" level={1} onComplete={vi.fn()} />);
+    expect(screen.getByRole('timer')).toHaveTextContent(`${LEVEL_CONFIG[1].storyReadMs / 1000}초`);
+    unmount();
+
+    render(<StoryGame mode="immediate" level={4} onComplete={vi.fn()} />);
+    expect(screen.getByRole('timer')).toHaveTextContent(`${LEVEL_CONFIG[4].storyReadMs / 1000}초`);
+    expect(LEVEL_CONFIG[4].storyReadMs).toBeLessThan(LEVEL_CONFIG[1].storyReadMs);
+  });
+
+  it('시간이 다 되면 이야기를 감추고 첫 질문으로 자동으로 넘어간다', async () => {
+    vi.useFakeTimers();
+    render(<StoryGame mode="immediate" level={1} onComplete={vi.fn()} />);
+
+    expect(screen.getByText(/토요일 오후 3시, 민지는/)).toBeInTheDocument();
+    await act(() => vi.advanceTimersByTimeAsync(LEVEL_CONFIG[1].storyReadMs));
+
+    expect(screen.queryByText(/토요일 오후 3시, 민지는/)).not.toBeInTheDocument();
+    expect(screen.getByText(/질문 1 \/ 4/)).toBeInTheDocument();
+  });
+
+  it('먼저 다 읽으면 남은 시간을 기다리지 않고 넘어간다', async () => {
+    const user = userEvent.setup();
+    render(<StoryGame mode="immediate" level={1} onComplete={vi.fn()} />);
+
+    await user.click(screen.getByRole('button', { name: '다 읽었어요' }));
+    expect(screen.getByText(/질문 1 \/ 4/)).toBeInTheDocument();
+  });
+
+  it('넘어간 뒤에는 타이머가 더 돌지 않는다', async () => {
+    vi.useFakeTimers();
+    render(<StoryGame mode="immediate" level={1} onComplete={vi.fn()} />);
+
+    await act(() => vi.advanceTimersByTimeAsync(LEVEL_CONFIG[1].storyReadMs));
+    expect(screen.queryByRole('timer')).not.toBeInTheDocument();
+
+    await act(() => vi.advanceTimersByTimeAsync(10_000));
+    expect(screen.getByText(/질문 1 \/ 4/)).toBeInTheDocument();
+  });
+
+  it('마지막 5초부터 색 말고 글자 크기로도 급한 걸 알린다', async () => {
+    vi.useFakeTimers();
+    render(<StoryGame mode="immediate" level={1} onComplete={vi.fn()} />);
+
+    // 25초 -> 6초 남음: 아직 평상 상태
+    await act(() => vi.advanceTimersByTimeAsync(19_000));
+    expect(screen.getByRole('timer')).toHaveTextContent('6초');
+    expect(screen.getByRole('timer').className).not.toContain('is-hurrying');
+
+    // 5초 남음: 급함 상태로 바뀐다
+    await act(() => vi.advanceTimersByTimeAsync(1_000));
+    expect(screen.getByRole('timer')).toHaveTextContent('5초');
+    expect(screen.getByRole('timer').className).toContain('is-hurrying');
+  });
+
+  it('다시 퀴즈에는 읽기 화면도 타이머도 없다', () => {
+    render(<StoryGame mode="delayed" level={1} onComplete={vi.fn()} />);
+    expect(screen.queryByRole('timer')).not.toBeInTheDocument();
+  });
+});
+
 describe('숫자 뒤집기', () => {
   it('Enter로 제출할 수 있고 모바일 숫자 키패드를 쓴다', async () => {
     vi.useFakeTimers();

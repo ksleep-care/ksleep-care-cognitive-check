@@ -38,7 +38,7 @@ export default function PlayTab({ level, onLevelChange, onStartSession, onStartP
           })}
         </div>
         <p className="section-note">
-          난이도는 기억·숫자·색깔·패턴 게임의 문제 수와 길이만 바꿔요.
+          난이도는 기억·숫자·색깔·패턴 게임의 문제 수와 길이, 이야기 읽는 시간만 바꿔요.
           아래 3분 집중 측정은 난이도와 무관하게 항상 똑같이 진행돼요.
         </p>
       </section>
