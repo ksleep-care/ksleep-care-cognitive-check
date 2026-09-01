@@ -1,0 +1,146 @@
+{
+  "_readme": [
+    "게임 표면 전용 팔레트다. 어두운 카드면 --g-surface 위 대비로 확정했다.",
+    "색상값은 참고용이며 검증기는 src/tokens.css에서 다시 읽는다.",
+    "방향과 근거는 DESIGN.md에 있다."
+  ],
+  "defaultBackdrop": "--g-surface",
+  "aliases": {
+    "surface-raised": "--g-surface",
+    "surface-sunken": "--g-bg",
+    "ink": "--g-ink",
+    "ink-muted": "--g-muted",
+    "border-decorative": "--g-border-dec",
+    "border-functional": "--g-border-fn",
+    "brand": "--g-brand",
+    "accent": "--g-violet",
+    "urgent": "--g-coral",
+    "urgent-bg": "--g-wash-coral",
+    "warning": "--g-cyan",
+    "warning-bg": "--g-wash-cyan",
+    "stable": "--g-lime",
+    "stable-bg": "--g-wash-lime"
+  },
+  "tokens": {
+    "--g-void": {
+      "role": "surface",
+      "on": null,
+      "value": "#070A16"
+    },
+    "--g-bg": {
+      "role": "surface",
+      "on": null,
+      "value": "#0C1122"
+    },
+    "--g-surface": {
+      "role": "surface",
+      "on": null,
+      "value": "#151C36"
+    },
+    "--g-surface-lift": {
+      "role": "surface",
+      "on": null,
+      "value": "#232C50"
+    },
+    "--g-ink": {
+      "role": "text",
+      "on": "--g-surface",
+      "value": "#F5F7FF"
+    },
+    "--g-body": {
+      "role": "text",
+      "on": "--g-surface",
+      "value": "#C9D2F0"
+    },
+    "--g-muted": {
+      "role": "text",
+      "on": "--g-surface",
+      "value": "#97A2C9"
+    },
+    "--g-violet": {
+      "role": "text",
+      "on": "--g-surface",
+      "value": "#B39CFF"
+    },
+    "--g-cyan": {
+      "role": "text",
+      "on": "--g-surface",
+      "value": "#5FE3EC"
+    },
+    "--g-coral": {
+      "role": "text",
+      "on": "--g-surface",
+      "value": "#FF93A6"
+    },
+    "--g-lime": {
+      "role": "text",
+      "on": "--g-surface",
+      "value": "#C6F26A"
+    },
+    "--g-brand": {
+      "role": "surface",
+      "on": null,
+      "value": "#0059B8"
+    },
+    "--g-brand-lit": {
+      "role": "text",
+      "on": "--g-surface",
+      "value": "#86C0FF"
+    },
+    "--g-on-brand": {
+      "role": "text",
+      "on": "--g-brand",
+      "value": "#FFFFFF"
+    },
+    "--g-on-accent": {
+      "role": "text",
+      "on": "--g-violet",
+      "value": "#0A0F1F"
+    },
+    "--g-border-fn": {
+      "role": "ui-boundary",
+      "on": "--g-surface",
+      "value": "#5A68A4"
+    },
+    "--g-border-dec": {
+      "role": "decorative",
+      "on": "--g-surface",
+      "value": "#232C4E"
+    },
+    "--g-shadow": {
+      "role": "decorative",
+      "on": "--g-surface",
+      "value": "rgba(3, 6, 18, 0.55)"
+    },
+    "--g-glow-violet": {
+      "role": "decorative",
+      "on": "--g-surface",
+      "value": "rgba(179, 156, 255, 0.34)"
+    },
+    "--g-glow-cyan": {
+      "role": "decorative",
+      "on": "--g-surface",
+      "value": "rgba(95, 227, 236, 0.28)"
+    },
+    "--g-wash-violet": {
+      "role": "surface",
+      "on": null,
+      "value": "rgba(179, 156, 255, 0.13)"
+    },
+    "--g-wash-lime": {
+      "role": "surface",
+      "on": null,
+      "value": "rgba(198, 242, 106, 0.14)"
+    },
+    "--g-wash-coral": {
+      "role": "surface",
+      "on": null,
+      "value": "rgba(255, 147, 166, 0.14)"
+    },
+    "--g-wash-cyan": {
+      "role": "surface",
+      "on": null,
+      "value": "rgba(95, 227, 236, 0.13)"
+    }
+  }
+}

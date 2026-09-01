@@ -1,0 +1,38 @@
+/* 인지 컨디션 체크 전용 게임 팔레트.
+   값의 원천은 이 파일 하나다. 대비 수치는 docs/design/token-report.md에만 존재한다.
+   방향과 근거: ../DESIGN.md */
+:root {
+  /* 면 */
+  --g-void: #070A16;
+  --g-bg: #0C1122;
+  --g-surface: #151C36;
+  --g-surface-lift: #232C50;
+
+  /* 글자 */
+  --g-ink: #F5F7FF;
+  --g-body: #C9D2F0;
+  --g-muted: #97A2C9;
+
+  /* 상태 · 강조 */
+  --g-violet: #B39CFF;
+  --g-cyan: #5FE3EC;
+  --g-coral: #FF93A6;
+  --g-lime: #C6F26A;
+  --g-brand: #0059B8;
+  --g-brand-lit: #86C0FF;
+  --g-on-brand: #FFFFFF;
+  --g-on-accent: #0A0F1F;
+
+  /* 경계 */
+  --g-border-fn: #5A68A4;
+  --g-border-dec: #232C4E;
+
+  /* 장식 */
+  --g-shadow: rgba(3, 6, 18, 0.55);
+  --g-glow-violet: rgba(179, 156, 255, 0.34);
+  --g-glow-cyan: rgba(95, 227, 236, 0.28);
+  --g-wash-violet: rgba(179, 156, 255, 0.13);
+  --g-wash-lime: rgba(198, 242, 106, 0.14);
+  --g-wash-coral: rgba(255, 147, 166, 0.14);
+  --g-wash-cyan: rgba(95, 227, 236, 0.13);
+}
