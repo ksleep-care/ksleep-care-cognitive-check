@@ -5,7 +5,7 @@ import type { SessionResults } from '../domain/types';
 
 const allMissed: SessionResults = {
   story: { correct: 4, total: 4 },
-  reaction: { averageMs: 320, hits: 6, total: 6 },
+  reaction: { averageMs: 320, hits: 6, total: 6, earlyPresses: 0 },
   digit: { maxSpan: 5, correct: 3, total: 3 },
   stroop: { averageMs: 600, correct: 6, total: 8 },
   storyDelayed: { correct: 3, total: 4 },
@@ -15,9 +15,9 @@ const allMissed: SessionResults = {
 
 describe('결과 표시', () => {
   it('주의력 반응을 모두 놓치면 평균을 0ms로 오해시키지 않는다', () => {
-    render(<Report results={allMissed} onRestart={vi.fn()} />);
+    render(<Report results={allMissed} level={1} onRestart={vi.fn()} onGoPvt={vi.fn()} onClose={vi.fn()} />);
 
-    expect(screen.getByText('측정 없음')).toBeInTheDocument();
-    expect(screen.queryByText('0ms')).not.toBeInTheDocument();
+    expect(screen.getByText(/측정 없음 · 놓침 6회/)).toBeInTheDocument();
+    expect(screen.queryByText(/평균 0ms/)).not.toBeInTheDocument();
   });
 });

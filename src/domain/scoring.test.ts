@@ -4,7 +4,7 @@ import type { SessionResults } from './types';
 
 const completeResults: SessionResults = {
   story: { correct: 4, total: 4 },
-  reaction: { averageMs: 320, hits: 6, total: 6 },
+  reaction: { averageMs: 320, hits: 6, total: 6, earlyPresses: 1 },
   digit: { maxSpan: 5, correct: 2, total: 3 },
   stroop: { averageMs: 640, correct: 7, total: 8 },
   storyDelayed: { correct: 3, total: 4 },
@@ -18,6 +18,7 @@ describe('결과 계산', () => {
       immediateMemoryPercent: 100,
       memoryRetentionPercent: 75,
       reactionAverageMs: 320,
+      reactionEarlyPresses: 1,
       workingMemorySpan: 5,
       stroopAccuracyPercent: 88,
       patternAccuracyPercent: 83,
