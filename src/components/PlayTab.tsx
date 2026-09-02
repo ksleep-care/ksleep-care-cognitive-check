@@ -38,6 +38,8 @@ export default function PlayTab({
 
   return (
     <div className="tab-panel play-panel">
+      <p className="app-name">인지 컨디션 체크</p>
+
       <p className="eyebrow">오늘 어느 정도로</p>
 
       <div className="level-rows" role="radiogroup" aria-label="난이도">
@@ -108,6 +110,10 @@ export default function PlayTab({
         <span className="pvt-row-note">내 기준선 만들기</span>
         <span className="pvt-row-arrow" aria-hidden="true">→</span>
       </button>
+
+      <p className="boundary-line">
+        의료 진단이 아니에요 · 로그인이 없고, 켜기 전까지 아무것도 저장하지 않아요
+      </p>
     </div>
   );
 }

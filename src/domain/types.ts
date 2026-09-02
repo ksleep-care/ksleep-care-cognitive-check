@@ -10,7 +10,7 @@ export type GameKey =
 /** 레벨은 기억·숫자·색깔·패턴 게임의 난이도만 바꾼다. 3분 PVT에는 영향을 주지 않는다. */
 export type Level = 1 | 2 | 3 | 4;
 
-export type TabKey = 'home' | 'play' | 'trend' | 'guide';
+export type TabKey = 'play' | 'trend' | 'guide';
 
 export type SessionStep =
   | { type: 'transition'; index: number }

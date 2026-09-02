@@ -13,24 +13,21 @@ function tab(name: RegExp) {
 }
 
 describe('첫 화면과 하단 탭', () => {
-  it('홈은 오늘의 주 행동 하나와 비진단·비저장 안내를 보여준다', async () => {
-    const user = userEvent.setup();
+  it('첫 화면에 앱 이름과 비진단·비저장 경계를 함께 적는다', () => {
     render(<App />);
-    await user.click(tab(/홈/));
 
-    expect(screen.getByRole('heading', { name: '인지 컨디션 체크' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: '3분 집중 측정' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: '3분 측정 시작' })).toBeInTheDocument();
+    expect(screen.getByText('인지 컨디션 체크')).toBeInTheDocument();
     expect(screen.getByText(/의료 진단이 아니에요/)).toBeInTheDocument();
     expect(screen.getByText(/켜기 전까지 아무것도 저장하지 않아요/)).toBeInTheDocument();
   });
 
-  it('하단 탭은 게임 전용 4개이고, 플레이가 첫 탭이자 기본 탭이다', () => {
+  it('홈 탭을 없애고 게임 전용 3개만 남긴다. 플레이가 첫 탭이자 기본 탭이다', () => {
     render(<App />);
     const nav = screen.getByRole('navigation', { name: '주요 화면' });
     const tabs = within(nav).getAllByRole('button');
 
-    expect(tabs.map((tab) => tab.textContent)).toEqual(['플레이', '홈', '나의 변화', '게임 안내']);
+    expect(tabs.map((tab) => tab.textContent)).toEqual(['플레이', '나의 변화', '게임 안내']);
+    expect(within(nav).queryByRole('button', { name: /^홈$/ })).not.toBeInTheDocument();
     expect(within(nav).getByRole('button', { name: /플레이/ })).toHaveAttribute('aria-current', 'page');
   });
 
@@ -39,7 +36,7 @@ describe('첫 화면과 하단 탭', () => {
     const nav = screen.getByRole('navigation', { name: '주요 화면' });
 
     expect(nav.textContent).not.toMatch(/\p{Extended_Pictographic}/u);
-    expect(nav.querySelectorAll('svg.tab-icon')).toHaveLength(4);
+    expect(nav.querySelectorAll('svg.tab-icon')).toHaveLength(3);
   });
 
   it('플레이 탭이 첫 화면이고, 게임 7개가 주인공이며 3분 측정은 한 줄로 내려간다', () => {

@@ -346,7 +346,7 @@ main > * { flex-shrink: 0; }
 .level-warn { margin-top: 10px; color: var(--g-muted); font-size: 11.5px; line-height: 1.5; }
 
 /* ── 코스 제목과 진행 트랙 ────────────────────────────── */
-.course-eyebrow { margin-top: 22px; }
+.course-eyebrow { margin-top: 18px; }
 
 .course-title {
   margin: 5px 0 0;
@@ -365,7 +365,7 @@ main > * { flex-shrink: 0; }
   display: grid;
   grid-template-columns: 22px 1fr;
   gap: 14px;
-  padding-bottom: 15px;
+  padding-bottom: 12px;
 }
 
 .track-step:last-child { padding-bottom: 0; }
@@ -381,7 +381,7 @@ main > * { flex-shrink: 0; }
   content: "";
   position: absolute;
   top: 18px;
-  bottom: -19px;
+  bottom: -16px;
   width: 2px;
   background: var(--g-border-dec);
 }
@@ -405,14 +405,28 @@ main > * { flex-shrink: 0; }
 
 /* 플레이 화면은 주 버튼을 화면 아래쪽에 붙인다. 트랙이 짧아도 빈 공간이 위가 아니라 트랙 뒤에 생긴다. */
 .play-panel { display: flex; flex-direction: column; }
-.play-spacer { flex: 1; min-height: 12px; }
+.play-spacer { flex: 1; min-height: 8px; }
 
+/* 홈 탭을 없앴으므로 앱 이름이 보이는 곳은 여기 하나다. */
+.app-name {
+  margin-bottom: 14px;
+  color: var(--g-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.boundary-line {
+  margin-top: 10px;
+  color: var(--g-muted);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
 /* ── 코스 주 버튼과 3분 측정 줄 ──────────────────────── */
 .lime-button {
   display: block;
   width: 100%;
   min-height: 58px;
-  margin-top: 22px;
+  margin-top: 16px;
   padding: 14px 18px;
   border: none;
   border-radius: 12px;
@@ -432,7 +446,7 @@ main > * { flex-shrink: 0; }
   align-items: center;
   width: 100%;
   min-height: 50px;
-  margin-top: 12px;
+  margin-top: 10px;
   padding: 15px 0 5px;
   border: none;
   border-top: 1px solid var(--g-border-dec);
@@ -873,7 +887,7 @@ main > * { flex-shrink: 0; }
   left: 0;
   z-index: 4;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 2px;
   max-width: 480px;
   margin: 0 auto;

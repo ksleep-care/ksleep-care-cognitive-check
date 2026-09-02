@@ -1,6 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
 import GuideTab from './components/GuideTab';
-import HomeTab from './components/HomeTab';
 import PlayTab from './components/PlayTab';
 import PvtReport from './components/PvtReport';
 import Report from './components/Report';
@@ -203,11 +202,6 @@ export default function App() {
     setMode({ kind: 'session', step: { type: 'transition', index: doneCount } });
   };
 
-  const baselineCount = useMemo(() => {
-    if (store === null) return null;
-    return store.entries.filter((item) => item.protocol === PVT_PROTOCOL_VERSION).length;
-  }, [store]);
-
   const renderGame = (key: GameKey) => {
     const done = (value: GameResult) => completeGame(key, value);
     if (key === 'story') return <StoryGame mode="immediate" level={level} onComplete={done} />;
@@ -240,14 +234,6 @@ export default function App() {
       )}
 
       <main aria-live="polite">
-        {mode.kind === 'tabs' && tab === 'home' && (
-          <HomeTab
-            baselineCount={baselineCount}
-            onStartPvt={startPvt}
-            onStartSession={() => setTab('play')}
-            onOpenGuide={() => setTab('guide')}
-          />
-        )}
         {mode.kind === 'tabs' && tab === 'play' && (
           <PlayTab
             level={level}

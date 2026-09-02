@@ -15,9 +15,6 @@ const TAB_ICON: Record<TabKey, JSX.Element> = {
   play: (
     <polygon points="4,3 15,9 4,15" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
   ),
-  home: (
-    <rect x="2.5" y="2.5" width="13" height="13" rx="3.5" fill="none" stroke="currentColor" strokeWidth="1.8" />
-  ),
   trend: (
     <polyline
       points="2,13 6.5,8 10,11 16,4"

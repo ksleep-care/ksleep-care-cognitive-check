@@ -31,7 +31,7 @@ describe('동의 전에는 아무것도 저장하지 않는다', () => {
     const user = userEvent.setup();
     render(<App />);
 
-    for (const name of [/플레이/, /나의 변화/, /게임 안내/, /홈/]) {
+    for (const name of [/플레이/, /나의 변화/, /게임 안내/]) {
       await user.click(tab(name));
     }
 
