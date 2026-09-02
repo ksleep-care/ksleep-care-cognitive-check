@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import Burst from '../ui/Burst';
+import { play } from '../ui/sound';
 import { useAutoAdvance } from '../ui/useAutoAdvance';
 import type { VigilanceResult } from '../domain/types';
 
@@ -44,6 +46,7 @@ export default function VigilanceGame({
       misses.current += 1;
       setLastMs(null);
       setPhase('feedback');
+      play('miss');
     }, missAfterMs);
     return () => window.clearTimeout(timer);
   }, [missAfterMs, phase]);
@@ -53,6 +56,7 @@ export default function VigilanceGame({
     times.current.push(elapsed);
     setLastMs(elapsed);
     setPhase('feedback');
+    play('hit');
   };
 
   const advanceNow = () => {
@@ -94,6 +98,7 @@ export default function VigilanceGame({
 
       {phase === 'feedback' && (
         <div className={`vigilance-stage is-feedback ${lastMs === null ? 'is-miss' : 'is-hit'}`}>
+          {lastMs !== null && <Burst trigger={trial} colors={['#FFE08A', '#FFB27A', '#C6F26A']} />}
           <p className="reaction-readout">{lastMs === null ? '놓쳤어요' : `${lastMs}ms`}</p>
           <div className="feedback-timer feedback-timer-long" aria-hidden="true">
             <span className="feedback-timer-fill" />

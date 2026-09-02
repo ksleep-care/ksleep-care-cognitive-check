@@ -15,3 +15,4 @@ export const 은는 = (w: string): string => particle(w, '은', '는');
 export const 과와 = (w: string): string => particle(w, '과', '와');
 export const 으로로 = (w: string): string => particle(w, '으로', '로');
 export const 이라고라고 = (w: string): string => particle(w, '"이라고', '"라고');
+export const 이었였 = (w: string): string => particle(w, '이었', '였');

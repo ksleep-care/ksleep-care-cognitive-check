@@ -26,6 +26,7 @@ export default function Transition({ index, level, onReady }: TransitionProps) {
       <h1 id="transition-title">{meta.title}</h1>
       <p className="lead">{meta.description}</p>
       <p className="game-note">{meta.looksAt}</p>
+      <p className="game-basis">{meta.basis}</p>
 
       <button className="primary-button" type="button" onClick={onReady}>준비됐어요</button>
     </section>

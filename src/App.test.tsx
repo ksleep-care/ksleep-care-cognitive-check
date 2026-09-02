@@ -81,7 +81,7 @@ describe('세션 시작', () => {
 
     await user.click(screen.getByRole('button', { name: /3분 집중 측정/ }));
 
-    expect(screen.getByRole('heading', { name: '숫자가 나타나면 바로 누르세요' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: '빈 화면에 숫자가 튀어나오면 바로 누르세요' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: '연습 시작' })).toBeInTheDocument();
     expect(screen.queryByRole('navigation', { name: '주요 화면' })).not.toBeInTheDocument();
   });

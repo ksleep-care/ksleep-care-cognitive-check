@@ -1,4 +1,7 @@
+import { useEffect } from 'react';
+import Burst from '../ui/Burst';
 import Icon3D from '../ui/Icon3D';
+import { play } from '../ui/sound';
 import MetricTable, { MetricGlossary } from './MetricTable';
 import { buildGameCards, calculateReport } from '../domain/scoring';
 import { LEVEL_META } from '../domain/session';
@@ -17,8 +20,13 @@ export default function Report({ results, level, onRestart, onGoPvt, onClose }: 
   const levelName = LEVEL_META[level].name;
   const cards = buildGameCards(report, levelName);
 
+  useEffect(() => {
+    play('finish');
+  }, []);
+
   return (
     <section className="report-card" aria-labelledby="report-title">
+      <span className="report-burst"><Burst trigger="done" count={18} /></span>
       <p className="eyebrow">{levelName} 코스 · 게임 7개 완료</p>
       <h1 id="report-title">오늘 한눈에 보기</h1>
       <p className="lead">

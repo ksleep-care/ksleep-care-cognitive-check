@@ -1,5 +1,5 @@
 import { makeRandom, shuffle } from './levels';
-import { 이라고라고 } from './particle';
+import { 이라고라고, 이었였 } from './particle';
 import { STORY_TEMPLATES, type StoryTemplate } from './storyTemplates';
 
 /** 가상의 이야기다. 실제 인물·환자 정보를 쓰지 않는다. */
@@ -18,10 +18,103 @@ export interface Story {
   questions: StoryQuestion[];
 }
 
+/** 보기 수. 변수 값이 이보다 적은 틀(예: 터미널 2개)은 있는 만큼만 보여준다. */
+export const STORY_OPTION_COUNT = 4;
+
+/* ── 조합 번호 ───────────────────────────────────────────
+   이야기에 0부터 차례로 번호를 매긴다. 번호 % 10 = 틀, 번호 / 10 = 그 틀 안의 변수 조합.
+   틀 10개가 똑같이 자주 나오도록, 틀마다 가장 작은 틀의 조합 수만큼만 쓴다.
+   번호 하나가 이야기 하나이므로, 번호가 다르면 이야기가 다르다는 것이 보장된다. */
+
+const TEMPLATE_COUNT = STORY_TEMPLATES.length;
+
+/** 틀마다 만들 수 있는 이야기 수 (전부). */
+const TEMPLATE_SIZES: number[] = STORY_TEMPLATES.map((template) =>
+  Object.values(template.variables).reduce((product, pool) => product * pool.length, 1));
+
+/** 틀마다 실제로 쓰는 조합 수. 가장 작은 틀에 맞춘다. */
+const PER_TEMPLATE = Math.min(...TEMPLATE_SIZES);
+
+/** 번호가 한 바퀴 도는 길이 = 서로 다른 이야기 수. */
+export const STORY_CYCLE: number = TEMPLATE_COUNT * PER_TEMPLATE;
+
+/** 틀을 전부 쓰면 만들 수 있는 이야기 수. 안내 문구에 쓴다. */
+export const STORY_COMBINATIONS: number = TEMPLATE_SIZES.reduce((sum, size) => sum + size, 0);
+
+export function countStoryCombinations(): number {
+  return STORY_COMBINATIONS;
+}
+
+/** 번호가 가리키는 틀. 이웃 번호는 항상 다른 틀이다. */
+export function templateOf(index: number): number {
+  return ((index % TEMPLATE_COUNT) + TEMPLATE_COUNT) % TEMPLATE_COUNT;
+}
+
+function decode(index: number): { template: StoryTemplate; values: Record<string, string> } {
+  const normalized = ((index % STORY_CYCLE) + STORY_CYCLE) % STORY_CYCLE;
+  const template = STORY_TEMPLATES[templateOf(normalized)];
+  let rest = Math.floor(normalized / TEMPLATE_COUNT);
+  const values: Record<string, string> = {};
+  for (const [key, pool] of Object.entries(template.variables)) {
+    values[key] = pool[rest % pool.length];
+    rest = Math.floor(rest / pool.length);
+  }
+  return { template, values };
+}
+
+/* ── 시간 칸 → 조합 번호 ──────────────────────────────────
+   저장소를 쓰지 않고도 같은 이야기가 다시 나오지 않게 한다.
+   1분짜리 시간 칸마다 번호를 하나씩 배정하되, 칸 번호를 일대일로 뒤섞어
+   이웃한 칸이든 5분 간격이든 전혀 다른 이야기를 받게 한다. 한 바퀴 도는 데 32만 칸 ≈ 222일이 걸리므로
+   같은 기기에서 몇백 번을 해도 같은 이야기를 두 번 받지 않는다. 한 판은 1분보다 길어서 칸이 겹치지 않는다. */
+
+export const STORY_SLOT_MS = 60_000;
+/** 한 방문 안에서 번호가 겹치거나 방금 한 틀과 같으면 이만큼 건너뛴다. 실제 시각으로는 69일쯤 떨어진 칸이다. */
+const RETRY_STRIDE = 100_003;
+/** 번호 범위를 덮는 2의 거듭제곱 비트 수. */
+const PERM_BITS = Math.ceil(Math.log2(STORY_CYCLE));
+const PERM_MASK = (2 ** PERM_BITS) - 1;
+
+/** 고정 비트 정수를 섞는 일대일 함수. 곱셈(홀수)과 xorshift는 모두 되돌릴 수 있으므로 겹치는 출력이 없다. */
+function mixBits(x: number): number {
+  let y = x & PERM_MASK;
+  y = Math.imul(y, 0x9E3779B1 | 1) & PERM_MASK;
+  y ^= y >>> 7;
+  y = Math.imul(y, 0x85EBCA6B | 1) & PERM_MASK;
+  y ^= y >>> 11;
+  y = Math.imul(y, 0xC2B2AE35 | 1) & PERM_MASK;
+  y ^= y >>> 5;
+  return y;
+}
+
+/** [0, STORY_CYCLE) 안에서의 일대일 섞기. 범위를 벗어나면 다시 섞는다(cycle walking). */
+function permute(x: number): number {
+  let y = mixBits(x);
+  while (y >= STORY_CYCLE) y = mixBits(y);
+  return y;
+}
+
 /**
- * seed를 한 번 섞는다. 시각(ms)으로 만든 seed는 몇 초 차이면 앞자리가 거의 같아서
- * 그대로 쓰면 연달아 같은 틀이 나오기 쉽다. (lowbias32 해시)
+ * 지금 시각에 해당하는 이야기 번호.
+ * `seen`은 이번 방문에서 이미 쓴 번호, `lastTemplate`은 방금 한 틀이다.
+ * 새로고침 없이 연달아 시작해도 번호가 겹치지 않고, 같은 틀이 두 번 연달아 나오지 않는다.
  */
+export function pickStoryIndex(
+  now: number,
+  seen: ReadonlySet<number> = new Set(),
+  lastTemplate: number | null = null,
+): number {
+  const slot = Math.floor(now / STORY_SLOT_MS);
+  for (let attempt = 0; attempt < 64; attempt += 1) {
+    const index = permute((slot + attempt * RETRY_STRIDE) % STORY_CYCLE);
+    if (seen.has(index)) continue;
+    if (lastTemplate !== null && templateOf(index) === lastTemplate) continue;
+    return index;
+  }
+  return permute(slot % STORY_CYCLE);
+}
+
+/** 질문 순서와 보기 순서를 섞을 난수의 씨앗. 번호를 한 번 더 섞어 이웃 번호끼리 닮지 않게 한다. */
 function scramble(seed: number): number {
   let x = seed >>> 0;
   x ^= x >>> 16;
@@ -32,34 +125,59 @@ function scramble(seed: number): number {
   return x >>> 0;
 }
 
-/** 보기 수. 변수 값이 이보다 적은 틀(예: 터미널 2개)은 있는 만큼만 보여준다. */
-export const STORY_OPTION_COUNT = 4;
-
 function pickOptions(answer: string, pool: string[], random: () => number): string[] {
   const others = shuffle(pool.filter((value) => value !== answer), random);
   return shuffle([answer, ...others.slice(0, STORY_OPTION_COUNT - 1)], random);
 }
 
-/**
- * 같은 seed면 같은 이야기·같은 질문·같은 보기 순서가 나온다.
- * 바로 맞추기와 다시 퀴즈가 seed를 공유해야 같은 이야기를 묻는다.
- * 틀 10가지 × 변수 조합이라 한 판마다 다른 이야기가 나온다.
- */
-export function generateStory(seed: number, questionCount: number): Story {
-  const random = makeRandom(scramble(seed));
-  const template: StoryTemplate = STORY_TEMPLATES[Math.floor(random() * STORY_TEMPLATES.length)];
+export interface StoryShape {
+  /** 낼 질문 수. */
+  questions: number;
+  /** 보여줄 문단 수. 질문에 필요한 사실이 모자라면 문단을 더 보여준다. */
+  paragraphs?: number;
+  /** 정답과 헷갈리는 문장을 하나 덧붙인다. */
+  distractor?: boolean;
+}
 
-  const values: Record<string, string> = {};
-  for (const [key, pool] of Object.entries(template.variables)) {
-    values[key] = pool[Math.floor(random() * pool.length)];
-  }
+/**
+ * 같은 번호면 같은 이야기·같은 질문·같은 보기 순서가 나온다.
+ * 바로 맞추기와 다시 퀴즈가 번호를 공유해야 같은 이야기를 묻는다.
+ *
+ * 레벨은 문단 수(기억할 사실의 양)·질문 수·헷갈림 문장으로 난이도를 만든다.
+ * 질문은 보여준 문단 안에 답이 있는 것만 낸다.
+ */
+export function generateStory(index: number, shape: number | StoryShape): Story {
+  const wanted: StoryShape = typeof shape === 'number' ? { questions: shape } : shape;
+  const { template, values } = decode(index);
+  const random = makeRandom(scramble(index));
 
   const generated = template.generate(values);
-  const picked = shuffle(generated.questions, random).slice(0, questionCount);
+  const allParagraphs = generated.content.split('\n\n').map((line) => line.trim()).filter((line) => line.length > 0);
+
+  // 보여줄 문단을 정한다. 답이 들어 있는 문단만 세어, 질문 수를 채울 때까지 늘린다.
+  let shown = Math.min(allParagraphs.length, Math.max(1, wanted.paragraphs ?? allParagraphs.length));
+  const eligible = (count: number) => {
+    const text = allParagraphs.slice(0, count).join(' ');
+    return generated.questions.filter((question) => text.includes(question.answer));
+  };
+  while (eligible(shown).length < wanted.questions && shown < allParagraphs.length) shown += 1;
+
+  const paragraphs = allParagraphs.slice(0, shown);
+  const picked = shuffle(eligible(shown), random).slice(0, wanted.questions);
+
+  if (wanted.distractor && picked.length > 0) {
+    // 물어볼 사실 하나를 골라, 같은 종류의 다른 값을 "지난번" 이야기로 덧붙인다.
+    const target = picked[Math.floor(random() * picked.length)];
+    const pool = template.variables[target.pool].filter((value) => value !== target.answer);
+    if (pool.length > 0) {
+      const other = pool[Math.floor(random() * pool.length)];
+      paragraphs.push(`참고로 지난번에는 ${이었였(other)}는데, 이번에는 다릅니다.`);
+    }
+  }
 
   return {
     title: template.title,
-    paragraphs: generated.content.split('\n\n').map((line) => line.trim()).filter((line) => line.length > 0),
+    paragraphs,
     questions: picked.map((question) => ({
       prompt: question.q,
       answer: question.answer,
@@ -67,12 +185,4 @@ export function generateStory(seed: number, questionCount: number): Story {
       hint: `이야기에 "${이라고라고(question.answer)} 나왔어요.`,
     })),
   };
-}
-
-/** 이 게임이 만들 수 있는 서로 다른 이야기 수. 안내 문구에 쓴다. */
-export function countStoryCombinations(): number {
-  return STORY_TEMPLATES.reduce(
-    (sum, template) => sum + Object.values(template.variables).reduce((product, pool) => product * pool.length, 1),
-    0,
-  );
 }

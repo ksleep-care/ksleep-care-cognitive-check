@@ -10,7 +10,9 @@ export default function GuideTab() {
     <div className="tab-panel">
       <h1 className="panel-title">게임 안내</h1>
       <p className="lead">
-        각 게임이 무엇을 보는지, 그리고 <strong>무엇을 말할 수 없는지</strong>를 같이 적었어요.
+        게임 7개는 인지·주의 연구에서 오래 쓰인 과제 형식을 가져와 짧게 다듬은 거예요.
+        각 게임이 <strong>어디서 왔는지</strong>, 무엇을 보는지, 그리고 <strong>무엇을 말할 수 없는지</strong>를 같이 적었어요.
+        형식은 같지만 점수는 그 검사들과 비교할 수 없어요.
       </p>
 
       <section className="guide-card guide-card-measure" aria-labelledby="guide-pvt">
@@ -18,6 +20,11 @@ export default function GuideTab() {
           <Icon3D name="pvt" size={32} />
           <h2 id="guide-pvt">{MINUTES}분 집중 측정</h2>
         </div>
+        <p>
+          <strong>왜 하나요</strong> · 정신운동 각성 검사(PVT)의 3분 판 형식이에요. 잠이 부족하거나 피로하면
+          반응이 느려지고 놓치는 순간이 늘어나는 변화를 가장 민감하게 잡아내는 과제라, 수면 연구와
+          우주비행사 피로 연구에서 표준처럼 써 왔어요. 반복해도 익숙해져서 잘해지는 효과가 거의 없어요.
+        </p>
         <p><strong>무엇을 보나요</strong> · 아무 예고 없이 뜨는 신호에 얼마나 일정하게 반응하는지를 봐요.</p>
         <p>
           <strong>어떻게 만들었나요</strong> · 3분 PVT-B 연구 프로토콜의 측정 계약을 그대로 옮겼어요.
@@ -53,6 +60,7 @@ export default function GuideTab() {
                   {meta.scalesWithLevel ? '난이도 적용' : '난이도 고정'}
                 </span>
               </div>
+              <p className="guide-basis">{meta.basis}</p>
               <details className="guide-detail">
                 <summary>무엇을 보고 무엇을 못 보나요</summary>
                 <p><strong>무엇을 보나요</strong> · {meta.looksAt}</p>

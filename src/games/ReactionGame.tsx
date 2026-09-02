@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import Burst from '../ui/Burst';
+import { play } from '../ui/sound';
 import { useAutoAdvance } from '../ui/useAutoAdvance';
 import type { ReactionResult } from '../domain/types';
 
@@ -41,6 +43,7 @@ export default function ReactionGame({
     setEarly(true);
     setLastMs(null);
     setPhase('feedback');
+    play('early');
   };
 
   const hit = () => {
@@ -49,10 +52,12 @@ export default function ReactionGame({
       earlyPresses.current += 1;
       setEarly(true);
       setLastMs(null);
+      play('early');
     } else {
       times.current.push(elapsed);
       setEarly(false);
       setLastMs(elapsed);
+      play('hit');
     }
     setPhase('feedback');
   };
@@ -96,6 +101,7 @@ export default function ReactionGame({
 
       {phase === 'feedback' && (
         <div className={`reaction-stage is-feedback ${early ? 'is-early' : 'is-hit'}`}>
+          {!early && <Burst trigger={trial} />}
           <p className="reaction-readout">
             {early ? '너무 일찍 눌렀어요' : `${lastMs}ms`}
           </p>

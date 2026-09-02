@@ -9,6 +9,10 @@ export interface LevelConfig {
    * 레벨이 오를수록 질문은 늘고 시간은 줄어든다.
    */
   storyReadMs: number;
+  /** 보여주는 문단 수. 루키는 앞 두 문단만 읽고, 위 레벨은 세 문단 전부 읽는다. */
+  storyParagraphs: number;
+  /** 헷갈리는 문장(지난번에는 …였다)을 하나 덧붙이는가. 마스터만. */
+  storyDistractor: boolean;
   digitSequences: string[];
   stroopTrials: number;
   patternTrials: number;
@@ -19,6 +23,8 @@ export const LEVEL_CONFIG: Record<Level, LevelConfig> = {
   1: {
     storyQuestions: 4,
     storyReadMs: 25_000,
+    storyParagraphs: 2,
+    storyDistractor: false,
     digitSequences: ['927', '6481', '3057'],
     stroopTrials: 6,
     patternTrials: 6,
@@ -27,6 +33,8 @@ export const LEVEL_CONFIG: Record<Level, LevelConfig> = {
   2: {
     storyQuestions: 5,
     storyReadMs: 22_000,
+    storyParagraphs: 3,
+    storyDistractor: false,
     digitSequences: ['4172', '90563', '38215'],
     stroopTrials: 8,
     patternTrials: 6,
@@ -35,6 +43,8 @@ export const LEVEL_CONFIG: Record<Level, LevelConfig> = {
   3: {
     storyQuestions: 6,
     storyReadMs: 20_000,
+    storyParagraphs: 3,
+    storyDistractor: false,
     digitSequences: ['61840', '275093', '480716'],
     stroopTrials: 10,
     patternTrials: 8,
@@ -43,6 +53,8 @@ export const LEVEL_CONFIG: Record<Level, LevelConfig> = {
   4: {
     storyQuestions: 7,
     storyReadMs: 18_000,
+    storyParagraphs: 3,
+    storyDistractor: true,
     digitSequences: ['582074', '3197462', '6408351'],
     stroopTrials: 12,
     patternTrials: 8,

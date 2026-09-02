@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { play } from './sound';
 import { useAutoAdvance } from './useAutoAdvance';
 
 /**
@@ -24,6 +26,10 @@ const CORRECT_DWELL_MS = 900;
 
 export default function Feedback({ correct, answer, hint, nextLabel, onNext }: FeedbackProps) {
   const advance = useAutoAdvance(correct, CORRECT_DWELL_MS, onNext);
+
+  useEffect(() => {
+    play(correct ? 'correct' : 'wrong');
+  }, [correct]);
 
   return (
     <div className={`feedback feedback-${correct ? 'correct' : 'wrong'}`} role="status">

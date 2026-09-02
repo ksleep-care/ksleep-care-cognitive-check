@@ -13,10 +13,14 @@ interface StoryGameProps {
 }
 
 export default function StoryGame({ mode, level, seed, onComplete }: StoryGameProps) {
-  const story = useMemo(
-    () => generateStory(seed, LEVEL_CONFIG[level].storyQuestions),
-    [level, seed],
-  );
+  const story = useMemo(() => {
+    const config = LEVEL_CONFIG[level];
+    return generateStory(seed, {
+      questions: config.storyQuestions,
+      paragraphs: config.storyParagraphs,
+      distractor: config.storyDistractor,
+    });
+  }, [level, seed]);
   const questions = story.questions;
 
   const readMs = LEVEL_CONFIG[level].storyReadMs;

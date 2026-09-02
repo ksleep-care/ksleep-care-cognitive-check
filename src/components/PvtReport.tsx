@@ -1,3 +1,6 @@
+import { useEffect } from 'react';
+import Burst from '../ui/Burst';
+import { play } from '../ui/sound';
 import MetricList from './MetricList';
 import { PVT_QUALITY_MESSAGE, type PvtMetrics, type PvtQuality } from '../domain/pvt';
 import { PVT_LIMITS, PVT_SOURCES, buildPvtCards } from '../domain/pvtReport';
@@ -106,8 +109,13 @@ export default function PvtReport({
   onRetry,
   onClose,
 }: PvtReportProps) {
+  useEffect(() => {
+    if (quality.ok) play('finish');
+  }, [quality.ok]);
+
   return (
     <section className="report-card" aria-labelledby="pvt-report-title">
+      {quality.ok && <span className="report-burst"><Burst trigger="done" count={18} /></span>}
       <p className="eyebrow">3분 집중 측정 완료</p>
       <h1 id="pvt-report-title">3분 집중 측정 결과</h1>
 

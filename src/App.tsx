@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import GuideTab from './components/GuideTab';
 import PlayTab from './components/PlayTab';
 import PvtReport from './components/PvtReport';
@@ -6,6 +6,7 @@ import Report from './components/Report';
 import TabBar from './components/TabBar';
 import TrendTab from './components/TrendTab';
 import Transition from './components/Transition';
+import SoundToggle from './ui/SoundToggle';
 import {
   appendResult,
   clearBaseline,
@@ -24,6 +25,7 @@ import {
   type PvtTrial,
 } from './domain/pvt';
 import { DEFAULT_LEVEL, FIRST_STEP, GAME_META, GAME_ORDER, nextStep } from './domain/session';
+import { pickStoryIndex, templateOf } from './domain/story';
 import type {
   GameKey,
   GameResult,
@@ -77,8 +79,19 @@ export default function App() {
   const [level, setLevel] = useState<Level>(DEFAULT_LEVEL);
   const [mode, setMode] = useState<Mode>({ kind: 'tabs' });
   const [results, setResults] = useState<SessionDraft>({});
-  /** 이야기 seed. 판을 새로 시작할 때만 바뀌므로 바로 맞추기와 다시 퀴즈가 같은 이야기를 쓴다. */
-  const [storySeed, setStorySeed] = useState(() => Date.now());
+  /**
+   * 이야기 번호. 판을 새로 시작할 때만 바뀌므로 바로 맞추기와 다시 퀴즈가 같은 이야기를 쓴다.
+   * 번호는 시각으로 정해져 새로고침해도 겹치지 않고, 이번 방문에서 쓴 번호는 따로 기억해 연달아 시작해도 겹치지 않는다.
+   */
+  const seenStories = useRef<Set<number>>(new Set());
+  const lastTemplate = useRef<number | null>(null);
+  const nextStory = () => {
+    const index = pickStoryIndex(Date.now(), seenStories.current, lastTemplate.current);
+    seenStories.current.add(index);
+    lastTemplate.current = templateOf(index);
+    return index;
+  };
+  const [storySeed, setStorySeed] = useState(nextStory);
   const [leaving, setLeaving] = useState(false);
   const [store, setStore] = useState<BaselineStore | null>(() => {
     const storage = safeStorage();
@@ -93,7 +106,7 @@ export default function App() {
   const startSession = () => {
     setLeaving(false);
     setResults({});
-    setStorySeed(Date.now());
+    setStorySeed(nextStory());
     setMode({ kind: 'session', step: FIRST_STEP });
   };
 
@@ -122,7 +135,7 @@ export default function App() {
     if (next === level) return;
     setLevel(next);
     setResults({});
-    setStorySeed(Date.now());
+    setStorySeed(nextStory());
   };
 
   const completeGame = (key: GameKey, result: GameResult) => {
@@ -228,7 +241,10 @@ export default function App() {
           <span className="header-progress">
             {mode.step.index + 1} / {GAME_ORDER.length} · {GAME_META[GAME_ORDER[mode.step.index]].title}
           </span>
-          <button className="quiet-button" type="button" onClick={leaveSession}>그만두기</button>
+          <span className="header-actions">
+            <SoundToggle />
+            <button className="quiet-button" type="button" onClick={leaveSession}>그만두기</button>
+          </span>
         </header>
       )}
 

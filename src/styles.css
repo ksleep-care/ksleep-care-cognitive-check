@@ -60,6 +60,50 @@ a:hover { color: var(--g-accent-hover); }
 /* 3D 아이콘은 그림이다. 옆 글자와 가운데를 맞춘다. */
 .icon-3d { display: block; flex: none; }
 
+/* ── 소리 토글 ────────────────────────────────────────── */
+.sound-toggle {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--g-border-dec);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--g-muted);
+  font-size: 13px;
+  font-weight: 600;
+  transition: color 160ms ease, border-color 160ms ease;
+}
+
+.sound-toggle.is-on { color: var(--g-accent); border-color: var(--g-accent); }
+.header-actions { display: inline-flex; gap: 8px; align-items: center; }
+.app-name-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.app-name-row .app-name { margin-bottom: 0; }
+
+/* ── 폭죽 ─────────────────────────────────────────────── */
+.burst { position: absolute; top: 50%; left: 50%; width: 0; height: 0; pointer-events: none; }
+
+.burst-piece {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  transform: rotate(var(--angle)) translateX(0) scale(1);
+  animation: burst-fly 600ms cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+@keyframes burst-fly {
+  0% { opacity: 1; transform: rotate(var(--angle)) translateX(0) scale(1); }
+  100% { opacity: 0; transform: rotate(var(--angle)) translateX(var(--distance)) scale(0.3); }
+}
+
+.reaction-stage, .vigilance-stage { position: relative; overflow: hidden; }
+.report-burst { position: absolute; top: 40px; left: 0; right: 0; height: 0; display: block; }
+.report-card { position: relative; }
+
 /* ── 셸 ───────────────────────────────────────────────── */
 .app-shell {
   position: relative;
@@ -73,7 +117,7 @@ a:hover { color: var(--g-accent-hover); }
 
 .app-shell.is-immersive { padding-bottom: 48px; }
 
-main { flex: 1; display: flex; flex-direction: column; padding: 16px 0 24px; }
+main { flex: 1; display: flex; flex-direction: column; padding: 12px 0 16px; }
 
 /* 세로 flex 안에서 내용이 눌리지 않게 한다. 탭 화면만 남는 높이를 채운다. */
 main > * { flex-shrink: 0; }
@@ -172,7 +216,7 @@ main > * { flex-shrink: 0; }
 
 .primary-button:hover:not(:disabled), .lime-button:hover { background: var(--g-accent-hover); }
 .primary-button:active:not(:disabled), .lime-button:active { background: var(--g-accent); }
-.lime-button { margin-top: 16px; }
+.lime-button { margin-top: 12px; }
 
 /* 보조 버튼은 표면색과 테두리만 */
 .ghost-button {
@@ -233,8 +277,8 @@ main > * { flex-shrink: 0; }
   gap: 12px;
   align-items: center;
   width: 100%;
-  min-height: 52px;
-  padding: 12px 0;
+  min-height: 44px;
+  padding: 8px 0;
   border: none;
   border-bottom: 1px solid var(--g-border-dec);
   background: transparent;
@@ -280,11 +324,11 @@ main > * { flex-shrink: 0; }
 .level-warn { margin-top: 12px; color: var(--g-warn); font-size: 13px; line-height: 1.5; }
 
 /* ── 코스 제목과 진행 트랙 ────────────────────────────── */
-.course-eyebrow { margin-top: 24px; }
+.course-eyebrow { margin-top: 16px; }
 
 .course-title {
   margin: 4px 0 0;
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.02em;
@@ -292,15 +336,15 @@ main > * { flex-shrink: 0; }
 
 .course-title .accent { color: var(--g-accent); }
 
-.track { margin: 20px 0 0; padding: 0; list-style: none; }
+.track { margin: 12px 0 0; padding: 0; list-style: none; }
 
 /* 점·아이콘·이름을 한 행에 두어야 셋이 어긋나지 않는다. */
 .track-step {
   display: grid;
-  grid-template-columns: 20px 28px 1fr;
+  grid-template-columns: 20px 24px 1fr;
   gap: 12px;
   align-items: center;
-  padding-bottom: 12px;
+  padding-bottom: 6px;
 }
 
 .track-step:last-child { padding-bottom: 0; }
@@ -357,7 +401,7 @@ main > * { flex-shrink: 0; }
 }
 
 .boundary-line {
-  margin-top: 12px;
+  margin-top: 8px;
   color: var(--g-muted);
   font-size: 13px;
   line-height: 1.5;
@@ -369,9 +413,9 @@ main > * { flex-shrink: 0; }
   gap: 12px;
   align-items: center;
   width: 100%;
-  min-height: 52px;
-  margin-top: 12px;
-  padding: 12px 0;
+  min-height: 48px;
+  margin-top: 8px;
+  padding: 8px 0;
   border: none;
   border-top: 1px solid var(--g-border-dec);
   border-bottom: 1px solid var(--g-border-dec);
@@ -413,7 +457,9 @@ main > * { flex-shrink: 0; }
 .transition-card .progress-track { margin-top: 4px; }
 .transition-card .transition-icon { margin: 16px auto 16px; }
 .transition-card .lead { margin-bottom: 8px; font-size: 17px; }
-.transition-card .game-note { margin-bottom: 24px; }
+.transition-card .game-note { margin-bottom: 12px; }
+.transition-card .game-basis { max-width: 36em; margin: 0 auto 24px; color: var(--g-muted); font-size: 13px; line-height: 1.55; }
+.guide-basis { margin: 8px 0 0; color: var(--g-body); font-size: 14px; line-height: 1.55; }
 
 .story-copy {
   padding: 20px;
@@ -633,6 +679,7 @@ main > * { flex-shrink: 0; }
 
 .pvt-brief { padding: 0; }
 
+.pvt-why { margin: 0 0 16px; padding: 12px 16px; border-left: 2px solid var(--g-accent); color: var(--g-body); font-size: 15px; line-height: 1.6; }
 .pvt-rules { margin: 0 0 16px; padding-left: 20px; color: var(--g-body); font-size: 16px; line-height: 1.7; }
 .pvt-note { margin-bottom: 20px; color: var(--g-muted); font-size: 14px; line-height: 1.55; }
 .pvt-brief .quiet-button { width: 100%; margin-top: 8px; }

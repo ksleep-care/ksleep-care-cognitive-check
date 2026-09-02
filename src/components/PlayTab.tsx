@@ -1,4 +1,5 @@
 import Icon3D from '../ui/Icon3D';
+import SoundToggle from '../ui/SoundToggle';
 import { GAME_META, GAME_ORDER, LEVELS, LEVEL_META } from '../domain/session';
 import type { GameKey, Level } from '../domain/types';
 
@@ -39,7 +40,10 @@ export default function PlayTab({
 
   return (
     <div className="tab-panel play-panel">
-      <p className="app-name">인지 컨디션 체크</p>
+      <div className="app-name-row">
+        <p className="app-name">인지 컨디션 체크</p>
+        <SoundToggle />
+      </div>
 
       <p className="eyebrow">난이도 · 처음이면 루키</p>
 
@@ -87,7 +91,7 @@ export default function PlayTab({
               <span className="track-rail" aria-hidden="true">
                 <span className="track-node" />
               </span>
-              <Icon3D name={key} size={28} className="track-icon" />
+              <Icon3D name={key} size={24} className="track-icon" />
               <span className="track-name">{GAME_META[key].title}</span>
               <span className="sr-only">{STATE_LABEL[state]}</span>
             </li>
