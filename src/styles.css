@@ -174,7 +174,7 @@ main > * { flex-shrink: 0; }
 
 /* ── 카드 ─────────────────────────────────────────────── */
 .hero-card, .side-card, .play-card, .game-card, .transition-card,
-.report-card, .consent-card, .guide-card, .metric-card {
+.report-card, .consent-card, .guide-card-measure {
   position: relative;
   padding: 20px;
   border: 1px solid var(--g-border-dec);
@@ -283,7 +283,8 @@ main > * { flex-shrink: 0; }
 }
 
 .report-actions { margin-top: 20px; }
-.report-actions .quiet-button { width: 100%; margin-top: 8px; }
+.report-actions .lime-button { margin-top: 0; }
+.report-actions .quiet-button { width: 100%; margin-top: 14px; }
 
 /* ── 3D 타일 ──────────────────────────────────────────── */
 .tilt {
@@ -758,13 +759,18 @@ main > * { flex-shrink: 0; }
 
 .layer-title { margin: 26px 0 8px; font-size: 17px; }
 
-.metric-list { display: grid; gap: 12px; margin: 0 0 4px; padding: 0; list-style: none; }
+.metric-list { display: grid; gap: 0; margin: 4px 0; padding: 0; list-style: none; }
 
-.metric-card { padding: 16px; }
+.metric-row {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--g-border-dec);
+}
 
-.metric-head { display: flex; gap: 8px; align-items: baseline; margin-bottom: 10px; }
-.metric-head h3 { flex: 1; margin: 0; font-size: 15px; }
-.metric-icon { font-size: 18px; }
+.metric-row:last-child { border-bottom: 0; }
+
+
+.metric-head { display: flex; gap: 10px; align-items: baseline; }
+.metric-head h3 { flex: 1; margin: 0; font-size: 15px; font-weight: 700; }
 
 .metric-value {
   color: var(--g-cyan);
@@ -778,6 +784,26 @@ main > * { flex-shrink: 0; }
 .metric-body > div { display: grid; gap: 2px; }
 .metric-body dt { color: var(--g-muted); font-size: 11px; font-weight: 700; letter-spacing: 0.04em; }
 .metric-body dd { margin: 0; color: var(--g-body); font-size: 13px; line-height: 1.6; }
+
+/* 접어 두는 설명. 값보다 작게, 눌러야 펴진다. */
+/* 접기 손잡이는 전부 같은 규칙을 쓴다. 누를 수 있으므로 44px 아래로 내려가지 않는다. */
+summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--g-muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+summary::-webkit-details-marker { display: none; }
+summary::after { content: " +"; }
+details[open] > summary::after { content: " −"; }
+
+.metric-detail[open] .metric-body { margin-top: 10px; }
+.guide-detail[open] p { margin-top: 8px; }
 
 .notice-box {
   display: grid;
@@ -855,12 +881,20 @@ main > * { flex-shrink: 0; }
 .sources li { margin-bottom: 4px; font-size: 13px; line-height: 1.6; }
 
 /* ── 안내 탭 ──────────────────────────────────────────── */
-.guide-list { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.guide-list { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+
+.guide-row {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--g-border-dec);
+}
+
+.guide-row:last-child { border-bottom: 0; }
+.guide-row p { margin-bottom: 8px; color: var(--g-body); font-size: 14px; line-height: 1.65; }
+.guide-row p:last-of-type { margin-bottom: 0; }
 .guide-card p { margin-bottom: 8px; color: var(--g-body); font-size: 14px; line-height: 1.65; }
 .guide-card p:last-of-type { margin-bottom: 0; }
-.guide-head { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+.guide-head { display: flex; gap: 8px; align-items: center; }
 .guide-head h2, .guide-head h3 { flex: 1; margin: 0; }
-.guide-icon { font-size: 20px; }
 
 .guide-card-measure {
   border-color: var(--g-border-fn);
@@ -935,8 +969,6 @@ main > * { flex-shrink: 0; }
 @media (min-width: 1200px) {
   .app-shell { max-width: 720px; }
   .tab-bar { max-width: 720px; }
-  .metric-list { grid-template-columns: repeat(2, 1fr); }
-  .metric-card { align-content: start; }
 }
 
 /* ── 동작 줄이기: 의미를 잃지 않는 정적 대체 ──────────── */

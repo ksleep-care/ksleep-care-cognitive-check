@@ -20,10 +20,9 @@ export default function Transition({ index, level, onReady }: TransitionProps) {
       </div>
       <p className="progress-text">
         {index + 1} / {GAME_ORDER.length}
-        {meta.scalesWithLevel && ` · ${LEVEL_META[level].icon} ${LEVEL_META[level].name}`}
+        {meta.scalesWithLevel && ` · ${LEVEL_META[level].name}`}
       </p>
 
-      <div className="transition-icon" aria-hidden="true">{meta.icon}</div>
       <h1 id="transition-title">{meta.title}</h1>
       <p className="lead">{meta.description}</p>
       <p className="game-note">{meta.looksAt}</p>

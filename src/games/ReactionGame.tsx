@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useAutoAdvance } from '../ui/useAutoAdvance';
 import type { ReactionResult } from '../domain/types';
 
 interface ReactionGameProps {
@@ -55,7 +56,7 @@ export default function ReactionGame({
     setPhase('feedback');
   };
 
-  const advance = () => {
+  const advanceNow = () => {
     const done = trial + 1;
     if (done >= TOTAL_TRIALS) {
       const values = times.current;
@@ -72,6 +73,9 @@ export default function ReactionGame({
     setTrial(done);
     setPhase('waiting');
   };
+
+  /** 결과를 1200ms 보여준 뒤 알아서 다음 문제로 간다. 손으로 눌러도 한 번만 넘어간다. */
+  const advance = useAutoAdvance(phase === 'feedback', 1200, advanceNow);
 
   if (phase === 'ready') {
     return (

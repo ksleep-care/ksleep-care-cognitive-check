@@ -34,7 +34,7 @@ export default function TrendTab({ store, onEnable, onClearAll, onStartPvt }: Tr
             서버로 보내지 않고, 계정도 쿠키도 만들지 않아요.
           </p>
           <p className="warn-line">
-            ⚠️ 이 기기에만 저장돼요. 같은 기기를 쓰는 다른 사람도 이 기록을 볼 수 있어요.
+            이 기기에만 저장돼요. 같은 기기를 쓰는 다른 사람도 이 기록을 볼 수 있어요.
           </p>
           <button className="primary-button" type="button" onClick={onEnable}>
             이 기기에 나의 변화 저장
@@ -89,9 +89,9 @@ export default function TrendTab({ store, onEnable, onClearAll, onStartPvt }: Tr
       )}
 
       <div className="notice-box">
-        <p>🔒 이 기기에만 저장돼요. 같은 기기를 쓰는 다른 사람도 이 기록을 볼 수 있어요.</p>
-        <p>📡 서버로 보내지 않아요. 계정도 쿠키도 만들지 않아요.</p>
-        {PVT_LIMITS.map((limit) => <p key={limit}>ℹ️ {limit}</p>)}
+        <p>이 기기에만 저장돼요. 같은 기기를 쓰는 다른 사람도 이 기록을 볼 수 있어요.</p>
+        <p>서버로 보내지 않아요. 계정도 쿠키도 만들지 않아요.</p>
+        {PVT_LIMITS.map((limit) => <p key={limit}>{limit}</p>)}
       </div>
 
       {confirming ? (

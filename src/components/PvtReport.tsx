@@ -42,7 +42,7 @@ function BaselineLayer({ comparison, savedCount, quality, onEnableBaseline }: {
           서버로 보내지 않고, 계정도 쿠키도 만들지 않아요.
         </p>
         <p className="warn-line">
-          ⚠️ 이 기기에만 저장돼요. 같은 기기를 쓰는 다른 사람도 이 기록을 볼 수 있어요.
+          이 기기에만 저장돼요. 같은 기기를 쓰는 다른 사람도 이 기록을 볼 수 있어요.
         </p>
         <button className="primary-button" type="button" onClick={onEnableBaseline}>
           이 기기에 나의 변화 저장
@@ -113,7 +113,7 @@ export default function PvtReport({
 
       {!quality.ok && (
         <div className="quality-warning" role="alert">
-          <p className="quality-headline">⚠️ 다시 측정 권장</p>
+          <p className="quality-headline">다시 측정 권장</p>
           <ul>
             {quality.reasons.map((reason) => (
               <li key={reason}>{PVT_QUALITY_MESSAGE[reason]}</li>
@@ -154,7 +154,7 @@ export default function PvtReport({
       <MetricList cards={buildPvtCards(metrics)} />
 
       <div className="notice-box">
-        {PVT_LIMITS.map((limit) => <p key={limit}>ℹ️ {limit}</p>)}
+        {PVT_LIMITS.map((limit) => <p key={limit}>{limit}</p>)}
       </div>
 
       <details className="sources">

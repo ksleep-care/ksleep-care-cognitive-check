@@ -14,7 +14,6 @@ export default function GuideTab() {
 
       <section className="guide-card guide-card-measure" aria-labelledby="guide-pvt">
         <div className="guide-head">
-          <span className="guide-icon" aria-hidden="true">🎯</span>
           <h2 id="guide-pvt">{MINUTES}분 집중 측정</h2>
         </div>
         <p><strong>무엇을 보나요</strong> · 아무 예고 없이 뜨는 신호에 얼마나 일정하게 반응하는지를 봐요.</p>
@@ -44,24 +43,26 @@ export default function GuideTab() {
         {GAME_ORDER.map((key) => {
           const meta = GAME_META[key];
           return (
-            <li className="guide-card" key={key}>
+            <li className="guide-row" key={key}>
               <div className="guide-head">
-                <span className="guide-icon" aria-hidden="true">{meta.icon}</span>
                 <h3>{meta.title}</h3>
                 <span className={`guide-chip${meta.scalesWithLevel ? '' : ' is-fixed'}`}>
                   {meta.scalesWithLevel ? '난이도 적용' : '난이도 고정'}
                 </span>
               </div>
-              <p><strong>무엇을 보나요</strong> · {meta.looksAt}</p>
-              <p><strong>한계</strong> · {meta.limit}</p>
+              <details className="guide-detail">
+                <summary>무엇을 보고 무엇을 못 보나요</summary>
+                <p><strong>무엇을 보나요</strong> · {meta.looksAt}</p>
+                <p><strong>한계</strong> · {meta.limit}</p>
+              </details>
             </li>
           );
         })}
       </ul>
 
       <div className="notice-box">
-        <p>ℹ️ 이 앱은 어떤 게임도 진단·선별·치료 판단에 쓰지 않아요.</p>
-        {PVT_LIMITS.map((limit) => <p key={limit}>ℹ️ {limit}</p>)}
+        <p>이 앱은 어떤 게임도 진단·선별·치료 판단에 쓰지 않아요.</p>
+        {PVT_LIMITS.map((limit) => <p key={limit}>{limit}</p>)}
       </div>
     </div>
   );
