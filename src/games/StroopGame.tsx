@@ -85,7 +85,7 @@ export default function StroopGame({ level, onComplete, seed }: StroopGameProps)
                 : ' is-dim';
           return (
             <button
-              className={`color-button color-button-${color} tilt${state}`}
+              className={`color-button color-button-${color}${state}`}
               type="button"
               key={color}
               disabled={picked !== null}

@@ -1,3 +1,4 @@
+import Icon3D from '../ui/Icon3D';
 import { GAME_META, GAME_ORDER } from '../domain/session';
 import { PVT_LAPSE_MS, PVT_SCORED_DURATION_MS } from '../domain/pvt';
 import { PVT_LIMITS, PVT_SOURCES } from '../domain/pvtReport';
@@ -14,6 +15,7 @@ export default function GuideTab() {
 
       <section className="guide-card guide-card-measure" aria-labelledby="guide-pvt">
         <div className="guide-head">
+          <Icon3D name="pvt" size={32} />
           <h2 id="guide-pvt">{MINUTES}분 집중 측정</h2>
         </div>
         <p><strong>무엇을 보나요</strong> · 아무 예고 없이 뜨는 신호에 얼마나 일정하게 반응하는지를 봐요.</p>
@@ -45,6 +47,7 @@ export default function GuideTab() {
           return (
             <li className="guide-row" key={key}>
               <div className="guide-head">
+                <Icon3D name={key} size={28} />
                 <h3>{meta.title}</h3>
                 <span className="guide-meta">
                   {meta.scalesWithLevel ? '난이도 적용' : '난이도 고정'}

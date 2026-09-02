@@ -1,3 +1,4 @@
+import Icon3D from '../ui/Icon3D';
 import { GAME_META, GAME_ORDER, LEVELS, LEVEL_META } from '../domain/session';
 import type { GameKey, Level } from '../domain/types';
 
@@ -86,6 +87,7 @@ export default function PlayTab({
               <span className="track-rail" aria-hidden="true">
                 <span className="track-node" />
               </span>
+              <Icon3D name={key} size={28} className="track-icon" />
               <span className="track-name">{GAME_META[key].title}</span>
               <span className="sr-only">{STATE_LABEL[state]}</span>
             </li>
@@ -106,6 +108,7 @@ export default function PlayTab({
       </button>
 
       <button className="pvt-row" type="button" onClick={onStartPvt}>
+        <Icon3D name="pvt" size={28} />
         <span className="pvt-row-title">3분 집중 측정</span>
         <span className="pvt-row-note">내 기준선 만들기</span>
         <span className="pvt-row-arrow" aria-hidden="true">→</span>

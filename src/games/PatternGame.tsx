@@ -97,7 +97,7 @@ export default function PatternGame({ level, onComplete, seed }: PatternGameProp
                 : ' is-dim';
           return (
             <button
-              className={`pattern-button tilt${state}`}
+              className={`pattern-button${state}`}
               type="button"
               aria-label={`패턴 ${pattern}`}
               key={pattern}

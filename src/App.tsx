@@ -214,16 +214,11 @@ export default function App() {
   };
 
   const immersive = mode.kind === 'session' || mode.kind === 'pvt';
-  // 측정 중에는 배경도 움직이지 않는다. 시각 방해와 GPU 부하를 없앤다.
+  // 측정 중 표시. 화면 전환 애니메이션도 끈다.
   const measuring = mode.kind === 'pvt';
 
   return (
     <div className={`app-shell${immersive ? ' is-immersive' : ''}${measuring ? ' is-measuring' : ''}`}>
-      <div className="sky" aria-hidden="true">
-        <span className="sky-layer sky-layer-1" />
-        <span className="sky-layer sky-layer-2" />
-      </div>
-
       {mode.kind === 'session' && mode.step.type !== 'report' && (
         <header className="app-header">
           <span className="header-progress">

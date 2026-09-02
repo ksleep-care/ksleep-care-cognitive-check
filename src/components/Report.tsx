@@ -1,3 +1,4 @@
+import Icon3D from '../ui/Icon3D';
 import MetricList from './MetricList';
 import { buildGameCards, calculateReport } from '../domain/scoring';
 import { LEVEL_META } from '../domain/session';
@@ -40,6 +41,7 @@ export default function Report({ results, level, onRestart, onGoPvt, onClose }: 
         </button>
 
         <button className="pvt-row" type="button" onClick={onRestart}>
+          <Icon3D name="play" size={28} />
           <span className="pvt-row-title">{levelName}로 한 판 더</span>
           <span className="pvt-row-note">게임 7개 · 5분</span>
           <span className="pvt-row-arrow" aria-hidden="true">→</span>

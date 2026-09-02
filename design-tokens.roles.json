@@ -1,10 +1,10 @@
 {
   "_readme": [
-    "게임 표면 전용 팔레트다. 어두운 카드면 --g-surface 위 대비로 확정했다.",
+    "인지 컨디션 체크 팔레트. 페이지 배경 --g-void 위 대비로 확정했다.",
     "색상값은 참고용이며 검증기는 src/tokens.css에서 다시 읽는다.",
-    "방향과 근거는 DESIGN.md에 있다."
+    "방향과 근거는 DESIGN.md에 있다. 출처: IT Quiz 디자인 가이드 다크 팔레트."
   ],
-  "defaultBackdrop": "--g-surface",
+  "defaultBackdrop": "--g-void",
   "aliases": {
     "surface-raised": "--g-surface",
     "surface-sunken": "--g-bg",
@@ -12,140 +12,118 @@
     "ink-muted": "--g-muted",
     "border-decorative": "--g-border-dec",
     "border-functional": "--g-border-fn",
-    "brand": "--g-brand",
-    "accent": "--g-violet",
-    "urgent": "--g-coral",
-    "urgent-bg": "--g-wash-coral",
-    "warning": "--g-cyan",
-    "warning-bg": "--g-wash-cyan",
-    "stable": "--g-lime",
-    "stable-bg": "--g-wash-lime"
+    "accent": "--g-accent",
+    "urgent": "--g-bad",
+    "urgent-bg": "--g-wash-bad",
+    "warning": "--g-warn",
+    "stable": "--g-ok",
+    "stable-bg": "--g-wash-ok"
   },
   "tokens": {
     "--g-void": {
       "role": "surface",
       "on": null,
-      "value": "#070A16"
+      "value": "#0F141D"
     },
     "--g-bg": {
       "role": "surface",
       "on": null,
-      "value": "#0C1122"
+      "value": "#171E2A"
     },
     "--g-surface": {
       "role": "surface",
       "on": null,
-      "value": "#151C36"
+      "value": "#171E2A"
     },
     "--g-surface-lift": {
       "role": "surface",
       "on": null,
-      "value": "#232C50"
+      "value": "#202938"
     },
     "--g-ink": {
       "role": "text",
-      "on": "--g-surface",
-      "value": "#F5F7FF"
+      "on": "--g-void",
+      "value": "#EDF1F7"
     },
     "--g-body": {
       "role": "text",
-      "on": "--g-surface",
-      "value": "#C9D2F0"
+      "on": "--g-void",
+      "value": "#EDF1F7"
     },
     "--g-muted": {
       "role": "text",
-      "on": "--g-surface",
-      "value": "#97A2C9"
+      "on": "--g-void",
+      "value": "#A8B3C5"
     },
-    "--g-violet": {
+    "--g-accent": {
       "role": "text",
-      "on": "--g-surface",
-      "value": "#B39CFF"
-    },
-    "--g-cyan": {
-      "role": "text",
-      "on": "--g-surface",
-      "value": "#5FE3EC"
-    },
-    "--g-coral": {
-      "role": "text",
-      "on": "--g-surface",
-      "value": "#FF93A6"
-    },
-    "--g-lime": {
-      "role": "text",
-      "on": "--g-surface",
+      "on": "--g-void",
       "value": "#C6F26A"
     },
-    "--g-brand": {
+    "--g-accent-hover": {
+      "role": "text",
+      "on": "--g-void",
+      "value": "#D9F78F"
+    },
+    "--g-wash-accent": {
       "role": "surface",
       "on": null,
-      "value": "#0059B8"
-    },
-    "--g-brand-lit": {
-      "role": "text",
-      "on": "--g-surface",
-      "value": "#86C0FF"
-    },
-    "--g-on-brand": {
-      "role": "text",
-      "on": "--g-brand",
-      "value": "#FFFFFF"
+      "value": "#26331E"
     },
     "--g-on-accent": {
       "role": "text",
-      "on": "--g-violet",
-      "value": "#0A0F1F"
+      "on": "--g-accent",
+      "value": "#0F141D"
     },
-    "--g-border-fn": {
-      "role": "ui-boundary",
-      "on": "--g-surface",
-      "value": "#5A68A4"
+    "--g-ok": {
+      "role": "text",
+      "on": "--g-void",
+      "value": "#67D39B"
+    },
+    "--g-wash-ok": {
+      "role": "surface",
+      "on": null,
+      "value": "#153B2D"
+    },
+    "--g-bad": {
+      "role": "text",
+      "on": "--g-void",
+      "value": "#FF8994"
+    },
+    "--g-wash-bad": {
+      "role": "surface",
+      "on": null,
+      "value": "#4A2028"
+    },
+    "--g-warn": {
+      "role": "text",
+      "on": "--g-void",
+      "value": "#F4C464"
     },
     "--g-border-dec": {
       "role": "decorative",
-      "on": "--g-surface",
-      "value": "#232C4E"
+      "on": null,
+      "value": "#344054"
+    },
+    "--g-border-fn": {
+      "role": "ui-boundary",
+      "on": "--g-void",
+      "value": "#667085"
     },
     "--g-shadow": {
       "role": "decorative",
-      "on": "--g-surface",
-      "value": "rgba(3, 6, 18, 0.55)"
+      "on": null,
+      "value": "rgba(19, 31, 53, 0.18)"
     },
-    "--g-glow-violet": {
+    "--g-focus": {
       "role": "decorative",
-      "on": "--g-surface",
-      "value": "rgba(179, 156, 255, 0.34)"
-    },
-    "--g-glow-cyan": {
-      "role": "decorative",
-      "on": "--g-surface",
-      "value": "rgba(95, 227, 236, 0.28)"
-    },
-    "--g-wash-violet": {
-      "role": "surface",
       "on": null,
-      "value": "rgba(179, 156, 255, 0.13)"
+      "value": "rgba(198, 242, 106, 0.35)"
     },
-    "--g-wash-lime": {
-      "role": "surface",
-      "on": null,
-      "value": "rgba(198, 242, 106, 0.14)"
-    },
-    "--g-wash-coral": {
-      "role": "surface",
-      "on": null,
-      "value": "rgba(255, 147, 166, 0.14)"
-    },
-    "--g-wash-cyan": {
-      "role": "surface",
-      "on": null,
-      "value": "rgba(95, 227, 236, 0.13)"
-    },
-    "--g-amber": {
+    "--g-blue": {
       "role": "text",
-      "on": "--g-surface",
-      "value": "#FFD35C"
+      "on": "--g-void",
+      "value": "#7AA2FF"
     }
   }
 }

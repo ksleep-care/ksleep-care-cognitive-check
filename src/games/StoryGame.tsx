@@ -115,7 +115,7 @@ export default function StoryGame({ mode, level, onComplete }: StoryGameProps) {
                 : ' is-dim';
           return (
             <button
-              className={`option-button tilt${state}`}
+              className={`option-button${state}`}
               type="button"
               key={option}
               disabled={picked !== null}

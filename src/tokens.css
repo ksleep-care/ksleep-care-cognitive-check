@@ -1,39 +1,38 @@
-/* 인지 컨디션 체크 전용 게임 팔레트.
+/* 인지 컨디션 체크 팔레트.
    값의 원천은 이 파일 하나다. 대비 수치는 docs/design/token-report.md에만 존재한다.
-   방향과 근거: ../DESIGN.md */
+   방향과 근거: ../DESIGN.md
+   출처: IT Quiz 디자인 가이드(2026-09-02) 다크 팔레트. 강조색만 Sylvie 지정 라임으로 바꿨다. 색 이름은 역할로만 부른다. */
 :root {
   /* 면 */
-  --g-void: #070A16;
-  --g-bg: #0C1122;
-  --g-surface: #151C36;
-  --g-surface-lift: #232C50;
+  --g-void: #0F141D;          /* 페이지 배경 */
+  --g-bg: #171E2A;            /* 선택지·입력창·버튼 표면 */
+  --g-surface: #171E2A;       /* 대화상자 표면 (기본 표면과 같은 값) */
+  --g-surface-lift: #202938;  /* hover, 약한 구분 영역 */
 
   /* 글자 */
-  --g-ink: #F5F7FF;
-  --g-body: #C9D2F0;
-  --g-muted: #97A2C9;
+  --g-ink: #EDF1F7;           /* 제목, 문제, 핵심 정보 */
+  --g-body: #EDF1F7;          /* 본문. 위계는 크기와 굵기로 만든다 */
+  --g-muted: #A8B3C5;         /* 설명, 진행률, 안내 */
 
-  /* 상태 · 강조 */
-  --g-violet: #B39CFF;
-  --g-cyan: #5FE3EC;
-  --g-coral: #FF93A6;
-  --g-lime: #C6F26A;
-  --g-amber: #FFD35C;
-  --g-brand: #0059B8;
-  --g-brand-lit: #86C0FF;
-  --g-on-brand: #FFFFFF;
-  --g-on-accent: #0A0F1F;
+  /* 강조 — 진행과 다음 행동에만. Sylvie 지정: 라임 형광색을 그대로 쓴다 (가이드의 파랑 대신) */
+  --g-accent: #C6F26A;
+  --g-accent-hover: #D9F78F;
+  --g-wash-accent: #26331E;
+  --g-on-accent: #0F141D;     /* 라임 위 글자. 흰 글자는 대비가 모자란다 */
+
+  /* 상태 — 정오답과 주의에만 */
+  --g-ok: #67D39B;
+  --g-wash-ok: #153B2D;
+  --g-bad: #FF8994;
+  --g-wash-bad: #4A2028;
+  --g-warn: #F4C464;
+  --g-blue: #7AA2FF;          /* 색깔 단어 게임의 '파랑'에만. 가이드의 파랑 값 */
 
   /* 경계 */
-  --g-border-fn: #5A68A4;
-  --g-border-dec: #232C4E;
+  --g-border-dec: #344054;    /* 목록·선택지 구분선 */
+  --g-border-fn: #667085;     /* 입력창, 큰 영역의 시작과 끝 */
 
-  /* 장식 */
-  --g-shadow: rgba(3, 6, 18, 0.55);
-  --g-glow-violet: rgba(179, 156, 255, 0.34);
-  --g-glow-cyan: rgba(95, 227, 236, 0.28);
-  --g-wash-violet: rgba(179, 156, 255, 0.13);
-  --g-wash-lime: rgba(198, 242, 106, 0.14);
-  --g-wash-coral: rgba(255, 147, 166, 0.14);
-  --g-wash-cyan: rgba(95, 227, 236, 0.13);
+  /* 떠 있는 요소(대화상자)에만 */
+  --g-shadow: rgba(19, 31, 53, 0.18);
+  --g-focus: rgba(198, 242, 106, 0.35);
 }
