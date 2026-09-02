@@ -40,7 +40,7 @@ describe('레벨과 탭', () => {
   });
 
   it('하단 탭은 게임 전용 4개이며 K-Sleep 앱 탭을 복사하지 않는다', () => {
-    expect(TAB_ORDER).toEqual(['home', 'play', 'trend', 'guide']);
+    expect(TAB_ORDER).toEqual(['play', 'home', 'trend', 'guide']);
     expect(TAB_ORDER).not.toContain('chatbot');
     expect(TAB_ORDER).not.toContain('sleepTips');
   });

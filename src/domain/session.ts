@@ -92,14 +92,16 @@ export const GAME_META: Record<
   },
 };
 
-export const TAB_META: Record<TabKey, { icon: string; label: string }> = {
-  home: { icon: '🏠', label: '홈' },
-  play: { icon: '🎮', label: '플레이' },
-  trend: { icon: '📈', label: '나의 변화' },
-  guide: { icon: '📘', label: '게임 안내' },
+/** 아이콘은 이모지가 아니라 TabBar의 도형 SVG를 쓴다. 여기에는 라벨만 둔다. */
+export const TAB_META: Record<TabKey, { label: string }> = {
+  home: { label: '홈' },
+  play: { label: '플레이' },
+  trend: { label: '나의 변화' },
+  guide: { label: '게임 안내' },
 };
 
-export const TAB_ORDER: TabKey[] = ['home', 'play', 'trend', 'guide'];
+/** 게임 7개가 이 앱의 본체다. 플레이가 첫 탭이자 기본 탭이다. */
+export const TAB_ORDER: TabKey[] = ['play', 'home', 'trend', 'guide'];
 
 export function nextStep(step: SessionStep): SessionStep {
   if (step.type === 'transition') {

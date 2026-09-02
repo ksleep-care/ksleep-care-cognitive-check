@@ -44,7 +44,7 @@ describe('동의 전에는 아무것도 저장하지 않는다', () => {
     render(<App />);
 
     await user.click(tab(/플레이/));
-    await user.click(screen.getByRole('button', { name: '시작하기' }));
+    await user.click(screen.getByRole('button', { name: /게임 7개 시작/ }));
     await user.click(screen.getByRole('button', { name: '준비됐어요' }));
 
     expect(window.localStorage.length).toBe(0);

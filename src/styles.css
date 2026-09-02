@@ -96,7 +96,10 @@ a { color: var(--g-brand-lit); }
 
 .app-shell.is-immersive { padding-bottom: 24px; }
 
-main { flex: 1; padding: 16px 0 24px; }
+main { flex: 1; display: flex; flex-direction: column; padding: 16px 0 24px; }
+
+/* 세로 flex 안에서 내용이 눌리지 않게 한다. 탭 화면만 남는 높이를 채운다. */
+main > * { flex-shrink: 0; }
 
 .app-header {
   position: sticky;
@@ -148,7 +151,21 @@ main { flex: 1; padding: 16px 0 24px; }
   line-height: 1.6;
 }
 
-.tab-panel { animation: rise 260ms ease-out both; }
+/* 눈에는 안 보이지만 스크린리더는 읽는 텍스트. 상태를 색으로만 알리지 않기 위해 쓴다. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.tab-panel { flex: 1 0 auto; animation: rise 260ms ease-out both; }
 
 @keyframes rise {
   from { opacity: 0; transform: translate3d(0, 12px, 0); }
@@ -196,16 +213,6 @@ main { flex: 1; padding: 16px 0 24px; }
 .side-card { margin-top: 14px; }
 .side-card p { color: var(--g-muted); font-size: 14px; }
 
-.play-card { margin-top: 16px; }
-.play-card p { color: var(--g-body); font-size: 14px; line-height: 1.6; }
-
-.play-card-measure {
-  border-color: var(--g-border-fn);
-  background: linear-gradient(160deg, var(--g-wash-cyan), transparent 60%), var(--g-surface);
-}
-
-.game-line { display: grid; gap: 6px; margin: 12px 0 16px; padding: 0; list-style: none; }
-.game-line li { display: flex; gap: 8px; align-items: center; color: var(--g-muted); font-size: 14px; }
 
 /* ── 버튼 ─────────────────────────────────────────────── */
 .primary-button {
@@ -214,12 +221,11 @@ main { flex: 1; padding: 16px 0 24px; }
   padding: 14px 18px;
   border: none;
   border-radius: 14px;
-  background: linear-gradient(135deg, var(--g-violet), var(--g-cyan));
+  background: var(--g-lime);
   color: var(--g-on-accent);
   font-size: 16px;
-  font-weight: 700;
-  transition: transform 160ms ease, box-shadow 160ms ease;
-  box-shadow: 0 12px 24px -14px var(--g-glow-violet);
+  font-weight: 800;
+  transition: transform 160ms ease;
 }
 
 .primary-button:hover:not(:disabled) { transform: translateY(-1px); }
@@ -288,32 +294,155 @@ main { flex: 1; padding: 16px 0 24px; }
 .tilt:hover:not(:disabled) { transform: perspective(700px) rotateX(4deg) translateZ(6px); }
 .tilt:active:not(:disabled) { transform: perspective(700px) translateZ(-8px) scale(0.98); }
 
-/* ── 레벨 ─────────────────────────────────────────────── */
-.level-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+/* ── 레벨: 같은 위계의 줄 4개. 그림자도 카드 배경도 쓰지 않는다 ── */
+.level-rows { display: flex; flex-direction: column; }
 
-.level-tile {
-  display: grid;
-  gap: 2px;
-  padding: 14px 12px;
-  border: 1px solid var(--g-border-fn);
-  border-radius: 18px;
-  background: var(--g-surface);
-  color: var(--g-body);
+.level-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 0;
+  border: none;
+  border-bottom: 1px solid var(--g-border-dec);
+  background: transparent;
   text-align: left;
 }
 
-.level-tile.is-selected {
-  border-color: var(--g-violet);
-  background: linear-gradient(150deg, var(--g-wash-violet), var(--g-surface-lift));
-  box-shadow: 0 14px 30px -18px var(--g-glow-violet);
-  transform: perspective(700px) translateZ(10px);
+.level-index {
+  flex: none;
+  width: 18px;
+  color: var(--g-border-fn);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  font-weight: 700;
 }
 
-.level-icon { font-size: 22px; }
-.level-rank { color: var(--g-muted); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; }
-.level-name { color: var(--g-ink); font-size: 16px; font-weight: 700; }
-.level-blurb { color: var(--g-muted); font-size: 12px; line-height: 1.45; }
-.level-check { margin-top: 4px; color: var(--g-violet); font-size: 12px; font-weight: 700; }
+.level-name { color: var(--g-muted); font-size: 17px; font-weight: 700; }
+
+/* 선택은 색만으로 알리지 않는다. 글자 굵기와 점 모양이 함께 바뀐다. */
+.level-row.is-selected .level-name { color: var(--g-ink); font-weight: 800; }
+
+.level-hint {
+  margin-left: auto;
+  padding-right: 12px;
+  color: var(--g-muted);
+  font-size: 11.5px;
+  line-height: 1.4;
+  text-align: right;
+}
+
+.level-dot {
+  flex: none;
+  width: 11px;
+  height: 11px;
+  border: 1.5px solid var(--g-border-fn);
+  border-radius: 50%;
+}
+
+.level-row.is-selected .level-dot { border-color: var(--g-lime); background: var(--g-lime); }
+
+.level-warn { margin-top: 10px; color: var(--g-muted); font-size: 11.5px; line-height: 1.5; }
+
+/* ── 코스 제목과 진행 트랙 ────────────────────────────── */
+.course-eyebrow { margin-top: 22px; }
+
+.course-title {
+  margin: 5px 0 0;
+  font-size: 27px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.course-title .accent { color: var(--g-lime); }
+
+.track { margin: 16px 0 0; padding: 0; list-style: none; }
+
+/* 점과 이름을 한 행에 두어야 둘이 어긋나지 않는다. */
+.track-step {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 14px;
+  padding-bottom: 15px;
+}
+
+.track-step:last-child { padding-bottom: 0; }
+
+.track-rail {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding-top: 3px;
+}
+
+.track-rail::before {
+  content: "";
+  position: absolute;
+  top: 18px;
+  bottom: -19px;
+  width: 2px;
+  background: var(--g-border-dec);
+}
+
+.track-step:last-child .track-rail::before { display: none; }
+.track-step.is-done .track-rail::before { background: var(--g-lime); }
+
+.track-node {
+  flex: none;
+  width: 13px;
+  height: 13px;
+  border: 2px solid var(--g-border-fn);
+  border-radius: 50%;
+}
+
+.track-step.is-done .track-node { border-color: var(--g-lime); background: var(--g-lime); }
+.track-step.is-now .track-node { border-color: var(--g-lime); }
+
+.track-name { color: var(--g-muted); font-size: 15px; font-weight: 600; line-height: 1.27; }
+.track-step.is-now .track-name { color: var(--g-ink); font-weight: 700; }
+
+/* 플레이 화면은 주 버튼을 화면 아래쪽에 붙인다. 트랙이 짧아도 빈 공간이 위가 아니라 트랙 뒤에 생긴다. */
+.play-panel { display: flex; flex-direction: column; }
+.play-spacer { flex: 1; min-height: 12px; }
+
+/* ── 코스 주 버튼과 3분 측정 줄 ──────────────────────── */
+.lime-button {
+  display: block;
+  width: 100%;
+  min-height: 58px;
+  margin-top: 22px;
+  padding: 14px 18px;
+  border: none;
+  border-radius: 12px;
+  background: var(--g-lime);
+  color: var(--g-on-accent);
+  font-size: 17px;
+  font-weight: 800;
+  transition: transform 160ms ease;
+}
+
+.lime-button:active { transform: translateY(1px) scale(0.99); }
+
+/* 누를 수 있는 줄이므로 44px 아래로 내려가면 안 된다. */
+.pvt-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  min-height: 50px;
+  margin-top: 12px;
+  padding: 15px 0 5px;
+  border: none;
+  border-top: 1px solid var(--g-border-dec);
+  background: transparent;
+  text-align: left;
+}
+
+.pvt-row-title { color: var(--g-body); font-size: 14px; font-weight: 700; }
+.pvt-row-note { color: var(--g-muted); font-size: 11.5px; }
+.pvt-row-arrow { margin-left: auto; color: var(--g-muted); font-size: 13px; font-weight: 700; }
 
 /* ── 진행 ─────────────────────────────────────────────── */
 .progress-track {
@@ -768,8 +897,8 @@ main { flex: 1; padding: 16px 0 24px; }
   transition: color 160ms ease;
 }
 
-.tab-button.is-active { color: var(--g-cyan); }
-.tab-icon { font-size: 19px; }
+.tab-button.is-active { color: var(--g-lime); }
+.tab-icon { display: block; }
 .tab-label { font-size: 11px; }
 
 .tab-dot {
@@ -779,14 +908,13 @@ main { flex: 1; padding: 16px 0 24px; }
   background: transparent;
 }
 
-.tab-button.is-active .tab-dot { background: var(--g-cyan); }
+.tab-button.is-active .tab-dot { background: var(--g-lime); }
 
 /* ── 반응형 ───────────────────────────────────────────── */
 @media (min-width: 768px) {
   .app-shell { max-width: 620px; padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
   .tab-bar { max-width: 620px; border-radius: 20px 20px 0 0; }
   h1 { font-size: 30px; }
-  .level-grid { grid-template-columns: repeat(4, 1fr); }
   .summary-strip > div { padding: 18px 12px; }
 }
 

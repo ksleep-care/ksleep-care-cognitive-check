@@ -74,7 +74,7 @@ function safeStorage(): Storage | null {
 }
 
 export default function App() {
-  const [tab, setTab] = useState<TabKey>('home');
+  const [tab, setTab] = useState<TabKey>('play');
   const [level, setLevel] = useState<Level>(DEFAULT_LEVEL);
   const [mode, setMode] = useState<Mode>({ kind: 'tabs' });
   const [results, setResults] = useState<SessionDraft>({});
@@ -97,18 +97,29 @@ export default function App() {
 
   const startPvt = () => setMode({ kind: 'pvt' });
 
-  const goHome = () => {
+  const exitToPlay = () => {
     setResults({});
     setMode({ kind: 'tabs' });
-    setTab('home');
+    setTab('play');
   };
 
   const leaveSession = () => setLeaving(true);
 
+  /**
+   * 중간에 그만둬도 이번 방문 동안은 진행을 기억한다.
+   * 저장소에는 쓰지 않는다 - 새로고침하면 사라지고, 동의 전 저장 금지 약속을 지킨다.
+   */
   const confirmLeave = () => {
     setLeaving(false);
-    setResults({});
     setMode({ kind: 'tabs' });
+    setTab('play');
+  };
+
+  /** 난이도가 바뀌면 앞뒤 게임을 같은 조건으로 볼 수 없으므로 진행 중이던 판을 버린다. */
+  const changeLevel = (next: Level) => {
+    if (next === level) return;
+    setLevel(next);
+    setResults({});
   };
 
   const completeGame = (key: GameKey, result: GameResult) => {
@@ -177,6 +188,21 @@ export default function App() {
         : current);
   };
 
+  /** 앞에서부터 연속으로 끝난 게임 수. 7개를 다 채운 상태는 결과 화면이 처리하므로 0으로 본다. */
+  const doneCount = useMemo(() => {
+    let count = 0;
+    for (const key of GAME_ORDER) {
+      if (results[key] === undefined) break;
+      count += 1;
+    }
+    return count >= GAME_ORDER.length ? 0 : count;
+  }, [results]);
+
+  const resumeSession = () => {
+    setLeaving(false);
+    setMode({ kind: 'session', step: { type: 'transition', index: doneCount } });
+  };
+
   const baselineCount = useMemo(() => {
     if (store === null) return null;
     return store.entries.filter((item) => item.protocol === PVT_PROTOCOL_VERSION).length;
@@ -225,8 +251,10 @@ export default function App() {
         {mode.kind === 'tabs' && tab === 'play' && (
           <PlayTab
             level={level}
-            onLevelChange={setLevel}
+            doneCount={doneCount}
+            onLevelChange={changeLevel}
             onStartSession={startSession}
+            onResumeSession={resumeSession}
             onStartPvt={startPvt}
           />
         )}
@@ -276,7 +304,7 @@ export default function App() {
             level={level}
             onRestart={startSession}
             onGoPvt={startPvt}
-            onClose={goHome}
+            onClose={exitToPlay}
           />
         )}
 
@@ -292,7 +320,7 @@ export default function App() {
             savedCount={mode.savedCount}
             onEnableBaseline={() => enableAndSave(mode.metrics, mode.quality)}
             onRetry={startPvt}
-            onClose={goHome}
+            onClose={exitToPlay}
           />
         )}
       </main>
