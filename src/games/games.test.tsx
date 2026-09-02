@@ -8,20 +8,24 @@ import StroopGame from './StroopGame';
 import PatternGame from './PatternGame';
 import VigilanceGame from './VigilanceGame';
 import { LEVEL_CONFIG } from '../domain/levels';
-import { STORY_QUESTIONS } from '../domain/story';
+import { generateStory } from '../domain/story';
 
 afterEach(() => {
   vi.useRealTimers();
 });
 
-/** 레벨 1의 이야기 정답 4개. */
-const LEVEL1_ANSWERS = STORY_QUESTIONS.slice(0, LEVEL_CONFIG[1].storyQuestions).map((q) => q.answer);
+/** 테스트는 seed를 고정해 같은 이야기를 본다. */
+const SEED = 20260902;
+const STORY = generateStory(SEED, LEVEL_CONFIG[1].storyQuestions);
+const STORY_QUESTIONS = STORY.questions;
+const LEVEL1_ANSWERS = STORY_QUESTIONS.map((q) => q.answer);
+const FIRST_LINE = new RegExp(STORY.paragraphs[0].slice(0, 12).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
 
 describe('이야기 기억하기', () => {
   it('문제마다 정오답을 먼저 보여준 뒤 사용자가 다음으로 넘어간다', async () => {
     const user = userEvent.setup();
     const onComplete = vi.fn();
-    render(<StoryGame mode="immediate" level={1} onComplete={onComplete} />);
+    render(<StoryGame mode="immediate" level={1} seed={SEED} onComplete={onComplete} />);
 
     await user.click(screen.getByRole('button', { name: '다 읽었어요' }));
     await user.click(screen.getByRole('button', { name: LEVEL1_ANSWERS[0] }));
@@ -35,7 +39,7 @@ describe('이야기 기억하기', () => {
 
   it('틀리면 정답과 한 줄 설명을 알려준다', async () => {
     const user = userEvent.setup();
-    render(<StoryGame mode="immediate" level={1} onComplete={vi.fn()} />);
+    render(<StoryGame mode="immediate" level={1} seed={SEED} onComplete={vi.fn()} />);
 
     await user.click(screen.getByRole('button', { name: '다 읽었어요' }));
     const wrong = STORY_QUESTIONS[0].options.find((o) => o !== STORY_QUESTIONS[0].answer)!;
@@ -50,7 +54,7 @@ describe('이야기 기억하기', () => {
   it('정답을 본 뒤 다시 눌러도 점수가 바뀌지 않는다', async () => {
     const user = userEvent.setup();
     const onComplete = vi.fn();
-    render(<StoryGame mode="immediate" level={1} onComplete={onComplete} />);
+    render(<StoryGame mode="immediate" level={1} seed={SEED} onComplete={onComplete} />);
 
     await user.click(screen.getByRole('button', { name: '다 읽었어요' }));
     for (let i = 0; i < LEVEL1_ANSWERS.length; i += 1) {
@@ -66,15 +70,15 @@ describe('이야기 기억하기', () => {
 
   it('레벨이 오르면 문제 수가 늘어난다', async () => {
     const user = userEvent.setup();
-    render(<StoryGame mode="immediate" level={4} onComplete={vi.fn()} />);
+    render(<StoryGame mode="immediate" level={4} seed={SEED} onComplete={vi.fn()} />);
     await user.click(screen.getByRole('button', { name: '다 읽었어요' }));
 
     expect(screen.getByText(/질문 1 \/ 7/)).toBeInTheDocument();
   });
 
   it('다시 퀴즈는 이야기를 다시 보여주지 않는다', () => {
-    render(<StoryGame mode="delayed" level={1} onComplete={vi.fn()} />);
-    expect(screen.queryByText(/토요일 오후 3시, 민지는/)).not.toBeInTheDocument();
+    render(<StoryGame mode="delayed" level={1} seed={SEED} onComplete={vi.fn()} />);
+    expect(screen.queryByText(FIRST_LINE)).not.toBeInTheDocument();
     expect(screen.getByText(/다시 떠올리기/)).toBeInTheDocument();
   });
 });
@@ -82,7 +86,7 @@ describe('이야기 기억하기', () => {
 describe('이야기 읽기 시간 제한', () => {
   it('남은 시간을 초 단위로 보여주고 1초마다 줄어든다', async () => {
     vi.useFakeTimers();
-    render(<StoryGame mode="immediate" level={1} onComplete={vi.fn()} />);
+    render(<StoryGame mode="immediate" level={1} seed={SEED} onComplete={vi.fn()} />);
 
     expect(screen.getByRole('timer')).toHaveTextContent('25초');
     await act(() => vi.advanceTimersByTimeAsync(1000));
@@ -91,29 +95,29 @@ describe('이야기 읽기 시간 제한', () => {
 
   it('레벨이 오를수록 읽는 시간이 줄어든다', () => {
     vi.useFakeTimers();
-    const { unmount } = render(<StoryGame mode="immediate" level={1} onComplete={vi.fn()} />);
+    const { unmount } = render(<StoryGame mode="immediate" level={1} seed={SEED} onComplete={vi.fn()} />);
     expect(screen.getByRole('timer')).toHaveTextContent(`${LEVEL_CONFIG[1].storyReadMs / 1000}초`);
     unmount();
 
-    render(<StoryGame mode="immediate" level={4} onComplete={vi.fn()} />);
+    render(<StoryGame mode="immediate" level={4} seed={SEED} onComplete={vi.fn()} />);
     expect(screen.getByRole('timer')).toHaveTextContent(`${LEVEL_CONFIG[4].storyReadMs / 1000}초`);
     expect(LEVEL_CONFIG[4].storyReadMs).toBeLessThan(LEVEL_CONFIG[1].storyReadMs);
   });
 
   it('시간이 다 되면 이야기를 감추고 첫 질문으로 자동으로 넘어간다', async () => {
     vi.useFakeTimers();
-    render(<StoryGame mode="immediate" level={1} onComplete={vi.fn()} />);
+    render(<StoryGame mode="immediate" level={1} seed={SEED} onComplete={vi.fn()} />);
 
-    expect(screen.getByText(/토요일 오후 3시, 민지는/)).toBeInTheDocument();
+    expect(screen.getByText(FIRST_LINE)).toBeInTheDocument();
     await act(() => vi.advanceTimersByTimeAsync(LEVEL_CONFIG[1].storyReadMs));
 
-    expect(screen.queryByText(/토요일 오후 3시, 민지는/)).not.toBeInTheDocument();
+    expect(screen.queryByText(FIRST_LINE)).not.toBeInTheDocument();
     expect(screen.getByText(/질문 1 \/ 4/)).toBeInTheDocument();
   });
 
   it('먼저 다 읽으면 남은 시간을 기다리지 않고 넘어간다', async () => {
     const user = userEvent.setup();
-    render(<StoryGame mode="immediate" level={1} onComplete={vi.fn()} />);
+    render(<StoryGame mode="immediate" level={1} seed={SEED} onComplete={vi.fn()} />);
 
     await user.click(screen.getByRole('button', { name: '다 읽었어요' }));
     expect(screen.getByText(/질문 1 \/ 4/)).toBeInTheDocument();
@@ -121,7 +125,7 @@ describe('이야기 읽기 시간 제한', () => {
 
   it('넘어간 뒤에는 타이머가 더 돌지 않는다', async () => {
     vi.useFakeTimers();
-    render(<StoryGame mode="immediate" level={1} onComplete={vi.fn()} />);
+    render(<StoryGame mode="immediate" level={1} seed={SEED} onComplete={vi.fn()} />);
 
     await act(() => vi.advanceTimersByTimeAsync(LEVEL_CONFIG[1].storyReadMs));
     expect(screen.queryByRole('timer')).not.toBeInTheDocument();
@@ -132,7 +136,7 @@ describe('이야기 읽기 시간 제한', () => {
 
   it('마지막 5초부터 색 말고 글자 크기로도 급한 걸 알린다', async () => {
     vi.useFakeTimers();
-    render(<StoryGame mode="immediate" level={1} onComplete={vi.fn()} />);
+    render(<StoryGame mode="immediate" level={1} seed={SEED} onComplete={vi.fn()} />);
 
     // 25초 -> 6초 남음: 아직 평상 상태
     await act(() => vi.advanceTimersByTimeAsync(19_000));
@@ -146,7 +150,7 @@ describe('이야기 읽기 시간 제한', () => {
   });
 
   it('다시 퀴즈에는 읽기 화면도 타이머도 없다', () => {
-    render(<StoryGame mode="delayed" level={1} onComplete={vi.fn()} />);
+    render(<StoryGame mode="delayed" level={1} seed={SEED} onComplete={vi.fn()} />);
     expect(screen.queryByRole('timer')).not.toBeInTheDocument();
   });
 });
@@ -269,7 +273,7 @@ describe('반응속도와 별똥별 (게임 기록)', () => {
       await act(() => vi.advanceTimersByTimeAsync(10));
       await act(() => vi.advanceTimersByTimeAsync(200));
       fireEvent.click(screen.getByRole('button', { name: '지금 누르기' }));
-      fireEvent.click(screen.getByRole('button', { name: i === 5 ? '결과 보기' : '다음' }));
+      await act(() => vi.advanceTimersByTimeAsync(1200));
     }
 
     expect(onComplete).toHaveBeenCalledOnce();
@@ -286,7 +290,7 @@ describe('반응속도와 별똥별 (게임 기록)', () => {
     for (let i = 0; i < 6; i += 1) {
       await act(() => vi.advanceTimersByTimeAsync(10));
       fireEvent.click(screen.getByRole('button', { name: '별똥별 잡기' }));
-      fireEvent.click(screen.getByRole('button', { name: i === 5 ? '결과 보기' : '다음' }));
+      await act(() => vi.advanceTimersByTimeAsync(1200));
     }
 
     expect(onComplete).toHaveBeenCalledOnce();

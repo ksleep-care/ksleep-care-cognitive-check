@@ -73,8 +73,8 @@ export default function VigilanceGame({
     setPhase('waiting');
   };
 
-  /** 결과를 1200ms 보여준 뒤 알아서 다음 문제로 간다. 손으로 눌러도 한 번만 넘어간다. */
-  const advance = useAutoAdvance(phase === 'feedback', 1200, advanceNow);
+  /** 결과를 1200ms 보여준 뒤 알아서 다음 문제로 간다. 누를 버튼은 없다. 볼 것이 숫자 하나뿐이다. */
+  useAutoAdvance(phase === 'feedback', 1200, advanceNow);
 
   return (
     <section className="game-card center-card night-stage" aria-live="polite">
@@ -95,9 +95,6 @@ export default function VigilanceGame({
       {phase === 'feedback' && (
         <div className={`vigilance-stage is-feedback ${lastMs === null ? 'is-miss' : 'is-hit'}`}>
           <p className="reaction-readout">{lastMs === null ? '놓쳤어요' : `${lastMs}ms`}</p>
-          <button className="primary-button" type="button" autoFocus onClick={advance}>
-            {trial + 1 >= TOTAL_TRIALS ? '결과 보기' : '다음'}
-          </button>
           <div className="feedback-timer feedback-timer-long" aria-hidden="true">
             <span className="feedback-timer-fill" />
           </div>

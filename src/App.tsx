@@ -77,6 +77,8 @@ export default function App() {
   const [level, setLevel] = useState<Level>(DEFAULT_LEVEL);
   const [mode, setMode] = useState<Mode>({ kind: 'tabs' });
   const [results, setResults] = useState<SessionDraft>({});
+  /** 이야기 seed. 판을 새로 시작할 때만 바뀌므로 바로 맞추기와 다시 퀴즈가 같은 이야기를 쓴다. */
+  const [storySeed, setStorySeed] = useState(() => Date.now());
   const [leaving, setLeaving] = useState(false);
   const [store, setStore] = useState<BaselineStore | null>(() => {
     const storage = safeStorage();
@@ -91,6 +93,7 @@ export default function App() {
   const startSession = () => {
     setLeaving(false);
     setResults({});
+    setStorySeed(Date.now());
     setMode({ kind: 'session', step: FIRST_STEP });
   };
 
@@ -119,6 +122,7 @@ export default function App() {
     if (next === level) return;
     setLevel(next);
     setResults({});
+    setStorySeed(Date.now());
   };
 
   const completeGame = (key: GameKey, result: GameResult) => {
@@ -204,11 +208,11 @@ export default function App() {
 
   const renderGame = (key: GameKey) => {
     const done = (value: GameResult) => completeGame(key, value);
-    if (key === 'story') return <StoryGame mode="immediate" level={level} onComplete={done} />;
+    if (key === 'story') return <StoryGame mode="immediate" level={level} seed={storySeed} onComplete={done} />;
     if (key === 'reaction') return <ReactionGame onComplete={done} />;
     if (key === 'digit') return <DigitSpanGame level={level} onComplete={done} />;
     if (key === 'stroop') return <StroopGame level={level} onComplete={done} />;
-    if (key === 'storyDelayed') return <StoryGame mode="delayed" level={level} onComplete={done} />;
+    if (key === 'storyDelayed') return <StoryGame mode="delayed" level={level} seed={storySeed} onComplete={done} />;
     if (key === 'pattern') return <PatternGame level={level} onComplete={done} />;
     return <VigilanceGame onComplete={done} />;
   };

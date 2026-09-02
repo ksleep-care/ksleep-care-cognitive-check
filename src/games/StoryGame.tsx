@@ -1,20 +1,23 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Feedback from '../ui/Feedback';
 import { LEVEL_CONFIG } from '../domain/levels';
-import { STORY_QUESTIONS, STORY_TEXT, STORY_TITLE } from '../domain/story';
+import { generateStory } from '../domain/story';
 import type { Level, StoryResult } from '../domain/types';
 
 interface StoryGameProps {
   mode: 'immediate' | 'delayed';
   level: Level;
+  /** 한 판 동안 같은 값이어야 바로 맞추기와 다시 퀴즈가 같은 이야기를 묻는다. */
+  seed: number;
   onComplete: (result: StoryResult) => void;
 }
 
-export default function StoryGame({ mode, level, onComplete }: StoryGameProps) {
-  const questions = useMemo(
-    () => STORY_QUESTIONS.slice(0, LEVEL_CONFIG[level].storyQuestions),
-    [level],
+export default function StoryGame({ mode, level, seed, onComplete }: StoryGameProps) {
+  const story = useMemo(
+    () => generateStory(seed, LEVEL_CONFIG[level].storyQuestions),
+    [level, seed],
   );
+  const questions = story.questions;
 
   const readMs = LEVEL_CONFIG[level].storyReadMs;
 
@@ -68,8 +71,10 @@ export default function StoryGame({ mode, level, onComplete }: StoryGameProps) {
         </div>
 
         <p className="eyebrow">시간 안에 한 번 읽어보세요</p>
-        <h2 id="story-reading-title">{STORY_TITLE}</h2>
-        <p className="story-copy">{STORY_TEXT}</p>
+        <h2 id="story-reading-title">{story.title}</h2>
+        <div className="story-copy">
+          {story.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+        </div>
         <p className="game-note">시간이 끝나면 질문으로 자동으로 넘어가요.</p>
         <button className="primary-button" type="button" onClick={() => setReading(false)}>
           다 읽었어요

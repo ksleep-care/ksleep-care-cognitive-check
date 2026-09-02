@@ -88,7 +88,6 @@ main > * { flex-shrink: 0; }
   align-items: center;
   justify-content: space-between;
   padding: 12px 0;
-  border-bottom: 1px solid var(--g-border-dec);
   background: color-mix(in srgb, var(--g-void) 94%, transparent);
   backdrop-filter: blur(8px);
 }
@@ -411,7 +410,7 @@ main > * { flex-shrink: 0; }
 .game-card { animation: rise 160ms ease-out both; }
 .center-card { text-align: center; }
 .transition-card { text-align: center; animation: rise 160ms ease-out both; }
-.transition-card .progress-track { margin-top: 8px; }
+.transition-card .progress-track { margin-top: 4px; }
 .transition-card .transition-icon { margin: 16px auto 16px; }
 .transition-card .lead { margin-bottom: 8px; font-size: 17px; }
 .transition-card .game-note { margin-bottom: 24px; }
@@ -724,6 +723,43 @@ main > * { flex-shrink: 0; }
 .metric-body dt { color: var(--g-muted); font-size: 13px; font-weight: 600; }
 .metric-body dd { margin: 0; color: var(--g-body); font-size: 15px; line-height: 1.55; }
 
+/* 게임 결과 표: 아이콘 · 이름 · 값 한 줄. 한 화면에 7줄이 들어온다. */
+.metric-table { display: grid; gap: 0; margin: 16px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--g-border-dec); }
+
+.metric-tr {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  min-height: 52px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--g-border-dec);
+}
+
+.metric-td-title { color: var(--g-ink); font-size: 16px; font-weight: 600; }
+
+.metric-td-value {
+  display: grid;
+  gap: 4px;
+  justify-items: end;
+  min-width: 96px;
+  font-size: 16px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* 백분율 값 아래의 가는 선. 좋고 나쁨이 아니라 비율만 보여준다. */
+.metric-bar { display: block; width: 96px; height: 3px; border-radius: 2px; background: var(--g-border-dec); overflow: hidden; }
+.metric-bar-fill { display: block; height: 100%; border-radius: 2px; }
+
+.metric-glossary { margin-top: 4px; }
+.metric-glossary-body { display: grid; gap: 12px; margin: 4px 0 0; }
+.metric-glossary-body dt { color: var(--g-ink); font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.metric-glossary-body dd { margin: 0; color: var(--g-muted); font-size: 14px; line-height: 1.55; }
+
+.report-card .boundary-line { margin-top: 16px; }
+
 /* 접기 손잡이는 전부 같은 규칙을 쓴다. 누를 수 있으므로 44px 아래로 내려가지 않는다. */
 summary {
   display: flex;
@@ -955,6 +991,8 @@ details[open] > summary::after { content: " −"; }
 .read-countdown.is-hurrying { color: var(--g-warn); font-size: 19px; }
 
 .story-reading .story-copy { font-size: 18px; line-height: 1.7; }
+.story-copy p { margin: 0 0 12px; }
+.story-copy p:last-child { margin-bottom: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   .read-timer .progress-fill { transition: none; }

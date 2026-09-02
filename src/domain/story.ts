@@ -1,12 +1,8 @@
+import { makeRandom, shuffle } from './levels';
+import { 이라고라고 } from './particle';
+import { STORY_TEMPLATES, type StoryTemplate } from './storyTemplates';
+
 /** 가상의 이야기다. 실제 인물·환자 정보를 쓰지 않는다. */
-export const STORY_TITLE = '토요일 약속';
-
-export const STORY_TEXT =
-  '토요일 오후 3시, 민지는 한강공원 2번 출구에서 준호를 만났습니다. '
-  + '준호는 파란 우산을 들고 있었고, 두 사람은 따뜻한 유자차를 마셨습니다. '
-  + '헤어지기 전에 다음 주 목요일에 전시를 보러 가기로 했고, '
-  + '찻값 12,500원은 민지가 냈습니다.';
-
 export interface StoryQuestion {
   prompt: string;
   answer: string;
@@ -15,48 +11,68 @@ export interface StoryQuestion {
   hint: string;
 }
 
-/** 앞에서부터 레벨이 요구하는 개수만큼 사용한다. 즉시·지연 퀴즈가 같은 문항을 쓴다. */
-export const STORY_QUESTIONS: StoryQuestion[] = [
-  {
-    prompt: '두 사람이 만난 요일과 시각은?',
-    answer: '토요일 오후 3시',
-    options: ['금요일 오전 10시', '토요일 오후 3시', '일요일 오후 5시', '목요일 저녁 7시'],
-    hint: '첫 문장에 "토요일 오후 3시"가 나왔어요.',
-  },
-  {
-    prompt: '어디에서 만났나요?',
-    answer: '한강공원 2번 출구',
-    options: ['서울숲 정문', '한강공원 2번 출구', '도서관 앞', '미술관 로비'],
-    hint: '만난 곳은 한강공원 2번 출구였어요.',
-  },
-  {
-    prompt: '준호가 들고 있던 것은?',
-    answer: '파란 우산',
-    options: ['파란 우산', '검은 가방', '노란 모자', '빨간 자전거'],
-    hint: '준호는 파란 우산을 들고 있었어요.',
-  },
-  {
-    prompt: '두 사람이 마신 것은?',
-    answer: '유자차',
-    options: ['아메리카노', '유자차', '오렌지 주스', '녹차'],
-    hint: '따뜻한 유자차를 마셨어요.',
-  },
-  {
-    prompt: '다음 약속은 언제인가요?',
-    answer: '다음 주 목요일',
-    options: ['다음 주 화요일', '다음 주 목요일', '이번 주 일요일', '다음 달 첫째 주'],
-    hint: '다음 주 목요일에 전시를 보기로 했어요.',
-  },
-  {
-    prompt: '찻값은 얼마였나요?',
-    answer: '12,500원',
-    options: ['9,800원', '12,500원', '15,200원', '21,000원'],
-    hint: '찻값은 12,500원이었어요.',
-  },
-  {
-    prompt: '찻값은 누가 냈나요?',
-    answer: '민지',
-    options: ['민지', '준호', '나눠서 냈다', '이야기에 없다'],
-    hint: '민지가 찻값을 냈어요.',
-  },
-];
+export interface Story {
+  title: string;
+  /** 문단 단위. 화면에서는 문단마다 줄을 띄운다. */
+  paragraphs: string[];
+  questions: StoryQuestion[];
+}
+
+/**
+ * seed를 한 번 섞는다. 시각(ms)으로 만든 seed는 몇 초 차이면 앞자리가 거의 같아서
+ * 그대로 쓰면 연달아 같은 틀이 나오기 쉽다. (lowbias32 해시)
+ */
+function scramble(seed: number): number {
+  let x = seed >>> 0;
+  x ^= x >>> 16;
+  x = Math.imul(x, 0x7feb352d) >>> 0;
+  x ^= x >>> 15;
+  x = Math.imul(x, 0x846ca68b) >>> 0;
+  x ^= x >>> 16;
+  return x >>> 0;
+}
+
+/** 보기 수. 변수 값이 이보다 적은 틀(예: 터미널 2개)은 있는 만큼만 보여준다. */
+export const STORY_OPTION_COUNT = 4;
+
+function pickOptions(answer: string, pool: string[], random: () => number): string[] {
+  const others = shuffle(pool.filter((value) => value !== answer), random);
+  return shuffle([answer, ...others.slice(0, STORY_OPTION_COUNT - 1)], random);
+}
+
+/**
+ * 같은 seed면 같은 이야기·같은 질문·같은 보기 순서가 나온다.
+ * 바로 맞추기와 다시 퀴즈가 seed를 공유해야 같은 이야기를 묻는다.
+ * 틀 10가지 × 변수 조합이라 한 판마다 다른 이야기가 나온다.
+ */
+export function generateStory(seed: number, questionCount: number): Story {
+  const random = makeRandom(scramble(seed));
+  const template: StoryTemplate = STORY_TEMPLATES[Math.floor(random() * STORY_TEMPLATES.length)];
+
+  const values: Record<string, string> = {};
+  for (const [key, pool] of Object.entries(template.variables)) {
+    values[key] = pool[Math.floor(random() * pool.length)];
+  }
+
+  const generated = template.generate(values);
+  const picked = shuffle(generated.questions, random).slice(0, questionCount);
+
+  return {
+    title: template.title,
+    paragraphs: generated.content.split('\n\n').map((line) => line.trim()).filter((line) => line.length > 0),
+    questions: picked.map((question) => ({
+      prompt: question.q,
+      answer: question.answer,
+      options: pickOptions(question.answer, template.variables[question.pool], random),
+      hint: `이야기에 "${이라고라고(question.answer)} 나왔어요.`,
+    })),
+  };
+}
+
+/** 이 게임이 만들 수 있는 서로 다른 이야기 수. 안내 문구에 쓴다. */
+export function countStoryCombinations(): number {
+  return STORY_TEMPLATES.reduce(
+    (sum, template) => sum + Object.values(template.variables).reduce((product, pool) => product * pool.length, 1),
+    0,
+  );
+}

@@ -19,7 +19,7 @@ interface Icon3DProps {
 }
 
 /** 아이콘마다 밝은 면 / 어두운 면 두 색. */
-const SHADE: Record<IconName, [string, string]> = {
+export const ICON_SHADE: Record<IconName, [string, string]> = {
   play: ['#D9F78F', '#7FAF2A'],
   trend: ['#8FC1FF', '#2B5FD0'],
   guide: ['#C9B6FF', '#6A4DD6'],
@@ -105,7 +105,7 @@ function Glyph({ name, ink }: { name: IconName; ink: string }): JSX.Element {
 
 export default function Icon3D({ name, size = 28, className }: Icon3DProps) {
   const id = useId();
-  const [light, dark] = SHADE[name];
+  const [light, dark] = ICON_SHADE[name];
   const round = name === 'play' || name === 'guide' || name === 'reaction' || name === 'vigilance' || name === 'pvt';
   const ink = '#0F141D';
 
