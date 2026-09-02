@@ -23,8 +23,16 @@ export default function TrendTab({ store, onEnable, onClearAll, onStartPvt }: Tr
     return (
       <div className="tab-panel">
         <h1 className="panel-title">나의 변화</h1>
+        <section className="hero-card">
+          <p className="eyebrow">아직 기록이 없어요</p>
+          <h2>3분 측정을 {BASELINE_MIN_ENTRIES}번 하면 내 기준이 생겨요</h2>
+          <p className="lead">
+            측정이 끝나면 결과 화면에서 저장을 켤 수 있어요. 켜기 전까지는 아무것도 남기지 않아요.
+          </p>
+          <button className="primary-button" type="button" onClick={onStartPvt}>3분 측정 하기</button>
+        </section>
         <div className="consent-card">
-          <h2>아직 아무것도 저장하지 않았어요</h2>
+          <h2>먼저 저장을 켜 둘 수도 있어요</h2>
           <p>
             켜면 <strong>3분 측정의 요약값만</strong> 이 브라우저에 남겨요 —
             반응시간 중앙값, 놓친 순간 수, 너무 이른 누름 수, 수행 점수, 측정 시각, 측정 방식 버전.
@@ -36,7 +44,7 @@ export default function TrendTab({ store, onEnable, onClearAll, onStartPvt }: Tr
           <p className="warn-line">
             이 기기에만 저장돼요. 같은 기기를 쓰는 다른 사람도 이 기록을 볼 수 있어요.
           </p>
-          <button className="primary-button" type="button" onClick={onEnable}>
+          <button className="ghost-button" type="button" onClick={onEnable}>
             이 기기에 나의 변화 저장
           </button>
         </div>

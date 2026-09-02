@@ -40,7 +40,7 @@ export default function PlayTab({
     <div className="tab-panel play-panel">
       <p className="app-name">인지 컨디션 체크</p>
 
-      <p className="eyebrow">오늘 어느 정도로</p>
+      <p className="eyebrow">난이도 · 처음이면 루키</p>
 
       <div className="level-rows" role="radiogroup" aria-label="난이도">
         {LEVELS.map((value) => {

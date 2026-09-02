@@ -63,6 +63,7 @@ export type GameResult = SessionResults[GameKey];
 
 export interface CognitiveReport {
   immediateMemoryPercent: number;
+  delayedMemoryPercent: number;
   memoryRetentionPercent: number;
   reactionAverageMs: number;
   reactionEarlyPresses: number;

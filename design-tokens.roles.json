@@ -141,6 +141,11 @@
       "role": "surface",
       "on": null,
       "value": "rgba(95, 227, 236, 0.13)"
+    },
+    "--g-amber": {
+      "role": "text",
+      "on": "--g-surface",
+      "value": "#FFD35C"
     }
   }
 }

@@ -16,6 +16,7 @@ describe('결과 계산', () => {
   it('화면에 보여줄 수행값을 손실 없이 계산한다', () => {
     expect(calculateReport(completeResults)).toEqual({
       immediateMemoryPercent: 100,
+      delayedMemoryPercent: 75,
       memoryRetentionPercent: 75,
       reactionAverageMs: 320,
       reactionEarlyPresses: 1,

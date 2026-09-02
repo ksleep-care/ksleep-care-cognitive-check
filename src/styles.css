@@ -37,9 +37,9 @@ summary:focus-visible {
 
 h1, h2, h3, p, ul, ol, dl { margin-top: 0; }
 
-h1 { margin-bottom: 8px; color: var(--g-ink); font-size: 26px; font-weight: 700; line-height: 1.3; letter-spacing: -0.02em; }
-h2 { margin-bottom: 12px; color: var(--g-ink); font-size: 19px; font-weight: 650; line-height: 1.35; }
-h3 { margin-bottom: 6px; color: var(--g-ink); font-size: 16px; font-weight: 650; line-height: 1.4; }
+h1 { margin-bottom: 8px; color: var(--g-ink); font-size: 26px; font-weight: 600; line-height: 1.3; letter-spacing: -0.02em; }
+h2 { margin-bottom: 12px; color: var(--g-ink); font-size: 19px; font-weight: 600; line-height: 1.35; }
+h3 { margin-bottom: 8px; color: var(--g-ink); font-size: 16px; font-weight: 600; line-height: 1.4; }
 
 p, li, button, label, input, dd, dt, summary, a {
   word-break: keep-all;
@@ -126,16 +126,16 @@ main > * { flex-shrink: 0; }
   background: var(--g-brand);
   color: var(--g-on-brand);
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .app-hero h1 { margin: 0; font-size: 22px; }
 
 .eyebrow {
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   color: var(--g-muted);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.08em;
 }
 
@@ -143,7 +143,7 @@ main > * { flex-shrink: 0; }
 
 .panel-title { margin-bottom: 16px; }
 
-.section-title { margin: 24px 0 12px; font-size: 15px; color: var(--g-muted); font-weight: 700; }
+.section-title { margin: 24px 0 12px; font-size: 15px; color: var(--g-muted); font-weight: 600; }
 
 .section-note, .game-note, .layer-note {
   color: var(--g-muted);
@@ -205,12 +205,12 @@ main > * { flex-shrink: 0; }
   margin: 12px 0 0;
   color: var(--g-cyan);
   font-size: 14px;
-  font-weight: 650;
+  font-weight: 600;
 }
 
 .hero-cta { margin-top: 16px; }
 
-.side-card { margin-top: 14px; }
+.side-card { margin-top: 16px; }
 .side-card p { color: var(--g-muted); font-size: 14px; }
 
 
@@ -218,13 +218,13 @@ main > * { flex-shrink: 0; }
 .primary-button {
   display: block;
   width: 100%;
-  padding: 14px 18px;
+  padding: 14px 20px;
   border: none;
-  border-radius: 14px;
+  border-radius: 12px;
   background: var(--g-lime);
   color: var(--g-on-accent);
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 600;
   transition: transform 160ms ease;
 }
 
@@ -235,20 +235,20 @@ main > * { flex-shrink: 0; }
 .ghost-button {
   display: block;
   width: 100%;
-  margin-top: 10px;
-  padding: 13px 18px;
+  margin-top: 12px;
+  padding: 12px 20px;
   border: 1px solid var(--g-border-fn);
-  border-radius: 14px;
+  border-radius: 12px;
   background: transparent;
   color: var(--g-ink);
   font-size: 15px;
-  font-weight: 650;
+  font-weight: 600;
 }
 
 .quiet-button {
-  padding: 10px 14px;
+  padding: 12px 16px;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   background: transparent;
   color: var(--g-muted);
   font-size: 14px;
@@ -264,7 +264,7 @@ main > * { flex-shrink: 0; }
   background: transparent;
   color: var(--g-brand-lit);
   font-size: 14px;
-  font-weight: 650;
+  font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -273,18 +273,20 @@ main > * { flex-shrink: 0; }
   display: block;
   width: 100%;
   margin-top: 20px;
-  padding: 13px;
+  padding: 12px;
   border: 1px solid var(--g-coral);
-  border-radius: 14px;
+  border-radius: 12px;
   background: var(--g-wash-coral);
   color: var(--g-coral);
   font-size: 15px;
-  font-weight: 650;
+  font-weight: 600;
 }
 
 .report-actions { margin-top: 20px; }
+.next-step-note { margin-bottom: 12px; color: var(--g-body); font-size: 14px; line-height: 1.6; }
 .report-actions .lime-button { margin-top: 0; }
-.report-actions .quiet-button { width: 100%; margin-top: 14px; }
+.report-actions .ghost-button { margin-top: 0; }
+.report-actions .quiet-button { width: 100%; margin-top: 12px; }
 
 /* ── 3D 타일 ──────────────────────────────────────────── */
 .tilt {
@@ -304,7 +306,7 @@ main > * { flex-shrink: 0; }
   align-items: center;
   width: 100%;
   min-height: 44px;
-  padding: 10px 0;
+  padding: 12px 0;
   border: none;
   border-bottom: 1px solid var(--g-border-dec);
   background: transparent;
@@ -316,20 +318,20 @@ main > * { flex-shrink: 0; }
   width: 18px;
   color: var(--g-border-fn);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 600;
 }
 
-.level-name { color: var(--g-muted); font-size: 17px; font-weight: 700; }
+.level-name { color: var(--g-muted); font-size: 17px; font-weight: 600; }
 
 /* 선택은 색만으로 알리지 않는다. 글자 굵기와 점 모양이 함께 바뀐다. */
-.level-row.is-selected .level-name { color: var(--g-ink); font-weight: 800; }
+.level-row.is-selected .level-name { color: var(--g-ink); font-weight: 600; }
 
 .level-hint {
   margin-left: auto;
   padding-right: 12px;
   color: var(--g-muted);
-  font-size: 11.5px;
+  font-size: 12px;
   line-height: 1.4;
   text-align: right;
 }
@@ -344,15 +346,15 @@ main > * { flex-shrink: 0; }
 
 .level-row.is-selected .level-dot { border-color: var(--g-lime); background: var(--g-lime); }
 
-.level-warn { margin-top: 10px; color: var(--g-muted); font-size: 11.5px; line-height: 1.5; }
+.level-warn { margin-top: 12px; color: var(--g-muted); font-size: 12px; line-height: 1.5; }
 
 /* ── 코스 제목과 진행 트랙 ────────────────────────────── */
-.course-eyebrow { margin-top: 18px; }
+.course-eyebrow { margin-top: 20px; }
 
 .course-title {
-  margin: 5px 0 0;
+  margin: 4px 0 0;
   font-size: 27px;
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1.2;
   letter-spacing: -0.025em;
 }
@@ -365,7 +367,7 @@ main > * { flex-shrink: 0; }
 .track-step {
   display: grid;
   grid-template-columns: 22px 1fr;
-  gap: 14px;
+  gap: 16px;
   padding-bottom: 12px;
 }
 
@@ -402,7 +404,7 @@ main > * { flex-shrink: 0; }
 .track-step.is-now .track-node { border-color: var(--g-lime); }
 
 .track-name { color: var(--g-muted); font-size: 15px; font-weight: 600; line-height: 1.27; }
-.track-step.is-now .track-name { color: var(--g-ink); font-weight: 700; }
+.track-step.is-now .track-name { color: var(--g-ink); font-weight: 600; }
 
 /* 플레이 화면은 주 버튼을 화면 아래쪽에 붙인다. 트랙이 짧아도 빈 공간이 위가 아니라 트랙 뒤에 생긴다. */
 .play-panel { display: flex; flex-direction: column; }
@@ -410,16 +412,16 @@ main > * { flex-shrink: 0; }
 
 /* 홈 탭을 없앴으므로 앱 이름이 보이는 곳은 여기 하나다. */
 .app-name {
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   color: var(--g-muted);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .boundary-line {
-  margin-top: 10px;
+  margin-top: 12px;
   color: var(--g-muted);
-  font-size: 11.5px;
+  font-size: 12px;
   line-height: 1.5;
 }
 /* ── 코스 주 버튼과 3분 측정 줄 ──────────────────────── */
@@ -428,13 +430,13 @@ main > * { flex-shrink: 0; }
   width: 100%;
   min-height: 58px;
   margin-top: 16px;
-  padding: 14px 18px;
+  padding: 14px 20px;
   border: none;
   border-radius: 12px;
   background: var(--g-lime);
   color: var(--g-on-accent);
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 600;
   transition: transform 160ms ease;
 }
 
@@ -443,21 +445,21 @@ main > * { flex-shrink: 0; }
 /* 누를 수 있는 줄이므로 44px 아래로 내려가면 안 된다. */
 .pvt-row {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
   width: 100%;
-  min-height: 50px;
-  margin-top: 10px;
-  padding: 15px 0 5px;
+  min-height: 52px;
+  margin-top: 12px;
+  padding: 16px 0 4px;
   border: none;
   border-top: 1px solid var(--g-border-dec);
   background: transparent;
   text-align: left;
 }
 
-.pvt-row-title { color: var(--g-body); font-size: 14px; font-weight: 700; }
-.pvt-row-note { color: var(--g-muted); font-size: 11.5px; }
-.pvt-row-arrow { margin-left: auto; color: var(--g-muted); font-size: 13px; font-weight: 700; }
+.pvt-row-title { color: var(--g-body); font-size: 14px; font-weight: 600; }
+.pvt-row-note { color: var(--g-muted); font-size: 12px; }
+.pvt-row-arrow { margin-left: auto; color: var(--g-muted); font-size: 13px; font-weight: 600; }
 
 /* ── 진행 ─────────────────────────────────────────────── */
 .progress-track {
@@ -488,7 +490,7 @@ main > * { flex-shrink: 0; }
   transition: left 400ms cubic-bezier(0.2, 0.8, 0.3, 1);
 }
 
-.progress-text { color: var(--g-muted); font-size: 13px; font-weight: 650; }
+.progress-text { color: var(--g-muted); font-size: 13px; font-weight: 600; }
 
 /* ── 게임 화면 ────────────────────────────────────────── */
 .game-card { animation: rise 260ms ease-out both; }
@@ -506,12 +508,12 @@ main > * { flex-shrink: 0; }
   text-align: left;
 }
 
-.option-grid { display: grid; gap: 10px; margin-bottom: 4px; }
+.option-grid { display: grid; gap: 8px; margin-bottom: 4px; }
 
 .option-button, .pattern-button, .color-button {
-  padding: 15px 16px;
+  padding: 16px;
   border: 1px solid var(--g-border-fn);
-  border-radius: 14px;
+  border-radius: 12px;
   background: var(--g-surface-lift);
   color: var(--g-ink);
   font-size: 16px;
@@ -543,7 +545,7 @@ main > * { flex-shrink: 0; }
   margin: 20px 0;
   color: var(--g-ink);
   font-size: 52px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.16em;
   font-variant-numeric: tabular-nums;
   animation: pop 220ms ease-out both;
@@ -554,18 +556,18 @@ main > * { flex-shrink: 0; }
   to { opacity: 1; transform: none; }
 }
 
-.digit-label { display: block; margin-bottom: 8px; color: var(--g-muted); font-size: 13px; font-weight: 650; }
+.digit-label { display: block; margin-bottom: 8px; color: var(--g-muted); font-size: 13px; font-weight: 600; }
 
 .digit-input {
   width: 100%;
-  margin-bottom: 14px;
-  padding: 14px;
+  margin-bottom: 16px;
+  padding: 12px 16px;
   border: 1px solid var(--g-border-fn);
-  border-radius: 14px;
+  border-radius: 12px;
   background: var(--g-bg);
   color: var(--g-ink);
   font-size: 30px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.16em;
   text-align: center;
   font-variant-numeric: tabular-nums;
@@ -576,16 +578,16 @@ main > * { flex-shrink: 0; }
 .stroop-word {
   margin: 24px 0;
   font-size: 46px;
-  font-weight: 800;
+  font-weight: 600;
   animation: pop 220ms ease-out both;
 }
 
 .color-빨강 { color: var(--g-coral); }
 .color-파랑 { color: var(--g-brand-lit); }
 .color-초록 { color: var(--g-lime); }
-.color-노랑 { color: #FFD35C; }
+.color-노랑 { color: var(--g-amber); }
 
-.color-options, .pattern-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.color-options, .pattern-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
 
 .pattern-target {
   margin: 20px 0;
@@ -627,7 +629,7 @@ main > * { flex-shrink: 0; }
   height: 132px;
   border: none;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #FFFFFF 0%, var(--g-lime) 45%, #7FA82F 100%);
+  background: var(--g-lime);
   box-shadow: 0 0 44px var(--g-wash-lime);
   animation: pop 140ms ease-out both;
 }
@@ -638,10 +640,10 @@ main > * { flex-shrink: 0; }
   border: none;
   border-radius: 50%;
   background: transparent;
-  color: #FFD35C;
+  color: var(--g-amber);
   font-size: 62px;
   line-height: 1;
-  text-shadow: 0 0 26px rgba(255, 211, 92, 0.6);
+  text-shadow: 0 0 24px var(--g-wash-lime);
   animation: pop 140ms ease-out both;
 }
 
@@ -649,7 +651,7 @@ main > * { flex-shrink: 0; }
   margin: 0;
   color: var(--g-ink);
   font-size: 34px;
-  font-weight: 800;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
 
@@ -673,9 +675,9 @@ main > * { flex-shrink: 0; }
   display: flex;
   gap: 8px;
   align-items: center;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   font-size: 17px;
-  font-weight: 750;
+  font-weight: 600;
 }
 
 .feedback-correct .feedback-headline { color: var(--g-lime); }
@@ -685,6 +687,33 @@ main > * { flex-shrink: 0; }
 .feedback-answer { margin-bottom: 4px; color: var(--g-ink); font-size: 15px; }
 .feedback-hint { margin-bottom: 12px; color: var(--g-body); font-size: 14px; line-height: 1.6; }
 .feedback .primary-button { margin-top: 4px; }
+
+/* 맞았을 때는 손대지 않아도 넘어간다. 얼마나 남았는지 줄어드는 바로 알린다. */
+.feedback-timer {
+  height: 3px;
+  margin-top: 12px;
+  border-radius: 999px;
+  background: var(--g-border-dec);
+  overflow: hidden;
+}
+
+.feedback-timer-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--g-lime);
+  transform-origin: left;
+  animation: drain 900ms linear forwards;
+}
+
+.feedback-timer-long .feedback-timer-fill { animation-duration: 1200ms; }
+
+@keyframes drain {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+.reaction-stage .feedback-timer, .vigilance-stage .feedback-timer { width: 100%; margin-top: 0; }
 
 /* ── PVT 측정 화면: 장식 없음 ─────────────────────────── */
 .pvt-screen { animation: none; }
@@ -703,7 +732,7 @@ main > * { flex-shrink: 0; }
 .pvt-measure { display: flex; flex-direction: column; gap: 12px; }
 
 .pvt-topline { display: flex; align-items: center; justify-content: space-between; }
-.pvt-phase { color: var(--g-muted); font-size: 13px; font-weight: 700; }
+.pvt-phase { color: var(--g-muted); font-size: 13px; font-weight: 600; }
 
 .pvt-progress { height: 6px; border-radius: 999px; background: var(--g-surface); overflow: hidden; }
 .pvt-progress-fill { width: 0%; height: 100%; background: var(--g-cyan); }
@@ -729,7 +758,7 @@ main > * { flex-shrink: 0; }
   min-width: 5ch;
   color: var(--g-cyan);
   font-size: 56px;
-  font-weight: 800;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
   text-align: center;
 }
@@ -747,42 +776,42 @@ main > * { flex-shrink: 0; }
 }
 
 .summary-strip > div {
-  padding: 14px 10px;
+  padding: 16px 8px;
   border: 1px solid var(--g-border-dec);
   border-radius: 16px;
   background: var(--g-surface-lift);
   text-align: center;
 }
 
-.summary-strip span { display: block; margin-bottom: 4px; color: var(--g-muted); font-size: 11px; font-weight: 650; }
+.summary-strip span { display: block; margin-bottom: 4px; color: var(--g-muted); font-size: 12px; font-weight: 600; }
 .summary-strip strong { display: block; color: var(--g-ink); font-size: 20px; font-variant-numeric: tabular-nums; }
 
-.layer-title { margin: 26px 0 8px; font-size: 17px; }
+.layer-title { margin: 24px 0 8px; font-size: 17px; }
 
 .metric-list { display: grid; gap: 0; margin: 4px 0; padding: 0; list-style: none; }
 
 .metric-row {
-  padding: 14px 0;
+  padding: 16px 0;
   border-bottom: 1px solid var(--g-border-dec);
 }
 
 .metric-row:last-child { border-bottom: 0; }
 
 
-.metric-head { display: flex; gap: 10px; align-items: baseline; }
-.metric-head h3 { flex: 1; margin: 0; font-size: 15px; font-weight: 700; }
+.metric-head { display: flex; gap: 12px; align-items: baseline; }
+.metric-head h3 { flex: 1; margin: 0; font-size: 15px; font-weight: 600; }
 
 .metric-value {
   color: var(--g-cyan);
   font-size: 16px;
-  font-weight: 750;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
 
 .metric-body { display: grid; gap: 8px; margin: 0; }
 .metric-body > div { display: grid; gap: 2px; }
-.metric-body dt { color: var(--g-muted); font-size: 11px; font-weight: 700; letter-spacing: 0.04em; }
+.metric-body dt { color: var(--g-muted); font-size: 12px; font-weight: 600; letter-spacing: 0.04em; }
 .metric-body dd { margin: 0; color: var(--g-body); font-size: 13px; line-height: 1.6; }
 
 /* 접어 두는 설명. 값보다 작게, 눌러야 펴진다. */
@@ -802,7 +831,7 @@ summary::-webkit-details-marker { display: none; }
 summary::after { content: " +"; }
 details[open] > summary::after { content: " −"; }
 
-.metric-detail[open] .metric-body { margin-top: 10px; }
+.metric-detail[open] .metric-body { margin-top: 8px; }
 .guide-detail[open] p { margin-top: 8px; }
 
 .notice-box {
@@ -825,16 +854,16 @@ details[open] > summary::after { content: " −"; }
   background: var(--g-wash-coral);
 }
 
-.quality-headline { margin-bottom: 8px; color: var(--g-coral); font-size: 16px; font-weight: 750; }
+.quality-headline { margin-bottom: 8px; color: var(--g-coral); font-size: 16px; font-weight: 600; }
 .quality-warning ul { margin: 0 0 8px; padding-left: 18px; }
 .quality-warning li, .quality-warning p { color: var(--g-body); font-size: 14px; line-height: 1.6; }
 .quality-warning p { margin: 0; }
 
-.consent-card h2, .consent-card h3 { margin-bottom: 10px; }
-.consent-card p { margin-bottom: 10px; color: var(--g-body); font-size: 14px; line-height: 1.65; }
+.consent-card h2, .consent-card h3 { margin-bottom: 8px; }
+.consent-card p { margin-bottom: 8px; color: var(--g-body); font-size: 14px; line-height: 1.65; }
 .warn-line { color: var(--g-cyan) !important; font-weight: 600; }
-.consent-card .primary-button { margin-top: 6px; }
-.consent-card .layer-note { margin: 10px 0 0; }
+.consent-card .primary-button, .consent-card .ghost-button { margin-top: 8px; }
+.consent-card .layer-note { margin: 12px 0 0; }
 
 .baseline-building, .baseline-ready {
   padding: 16px;
@@ -843,7 +872,7 @@ details[open] > summary::after { content: " −"; }
   background: var(--g-surface);
 }
 
-.baseline-progress { margin-bottom: 10px; color: var(--g-ink); font-size: 17px; font-weight: 700; }
+.baseline-progress { margin-bottom: 8px; color: var(--g-ink); font-size: 17px; font-weight: 600; }
 
 .baseline-line {
   display: flex;
@@ -856,7 +885,7 @@ details[open] > summary::after { content: " −"; }
 }
 
 .baseline-line:last-of-type { border-bottom: none; }
-.baseline-label { color: var(--g-muted); font-size: 13px; font-weight: 650; }
+.baseline-label { color: var(--g-muted); font-size: 13px; font-weight: 600; }
 .baseline-line strong { color: var(--g-cyan); font-size: 15px; text-align: right; }
 
 .history-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
@@ -866,17 +895,17 @@ details[open] > summary::after { content: " −"; }
   flex-wrap: wrap;
   gap: 4px 12px;
   align-items: baseline;
-  padding: 12px 14px;
+  padding: 12px 16px;
   border: 1px solid var(--g-border-dec);
-  border-radius: 14px;
+  border-radius: 12px;
   background: var(--g-surface);
 }
 
-.history-date { flex: 1 1 100%; color: var(--g-muted); font-size: 12px; font-weight: 650; }
-.history-metric { color: var(--g-ink); font-size: 14px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.history-date { flex: 1 1 100%; color: var(--g-muted); font-size: 12px; font-weight: 600; }
+.history-metric { color: var(--g-ink); font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
 
-.sources { margin-top: 14px; }
-.sources summary { color: var(--g-muted); font-size: 13px; font-weight: 650; cursor: pointer; }
+.sources { margin-top: 16px; }
+.sources summary { color: var(--g-muted); font-size: 13px; font-weight: 600; cursor: pointer; }
 .sources ul { margin: 8px 0 0; padding-left: 18px; }
 .sources li { margin-bottom: 4px; font-size: 13px; line-height: 1.6; }
 
@@ -884,7 +913,7 @@ details[open] > summary::after { content: " −"; }
 .guide-list { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
 
 .guide-row {
-  padding: 14px 0;
+  padding: 16px 0;
   border-bottom: 1px solid var(--g-border-dec);
 }
 
@@ -901,17 +930,7 @@ details[open] > summary::after { content: " −"; }
   background: linear-gradient(160deg, var(--g-wash-cyan), transparent 55%), var(--g-surface);
 }
 
-.guide-chip {
-  padding: 4px 9px;
-  border-radius: 999px;
-  background: var(--g-wash-violet);
-  color: var(--g-violet);
-  font-size: 11px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.guide-chip.is-fixed { background: var(--g-wash-cyan); color: var(--g-cyan); }
+.guide-meta { color: var(--g-muted); font-size: 12px; font-weight: 500; white-space: nowrap; }
 
 /* ── 하단 탭 ──────────────────────────────────────────── */
 .tab-bar {
@@ -940,14 +959,14 @@ details[open] > summary::after { content: " −"; }
   border-radius: 14px;
   background: transparent;
   color: var(--g-muted);
-  font-size: 11px;
-  font-weight: 650;
+  font-size: 12px;
+  font-weight: 600;
   transition: color 160ms ease;
 }
 
 .tab-button.is-active { color: var(--g-lime); }
 .tab-icon { display: block; }
-.tab-label { font-size: 11px; }
+.tab-label { font-size: 12px; }
 
 .tab-dot {
   width: 5px;
@@ -991,6 +1010,7 @@ details[open] > summary::after { content: " −"; }
   /* 색 대신 테두리 굵기로도 선택 상태가 보이게 한다. */
   .level-tile.is-selected { border-width: 3px; }
   .sky-layer-2 { animation: none; }
+  .feedback-timer-fill { animation: none; transform: scaleX(0); }
 }
 
 /* ── 앱 안에서 한 번 더 묻기 (브라우저 confirm 창을 쓰지 않는다) ── */
@@ -1005,7 +1025,7 @@ details[open] > summary::after { content: " −"; }
 }
 
 .confirm-card h2 { margin-bottom: 8px; font-size: 17px; }
-.confirm-card p { margin-bottom: 14px; color: var(--g-body); font-size: 14px; line-height: 1.6; }
+.confirm-card p { margin-bottom: 16px; color: var(--g-body); font-size: 14px; line-height: 1.6; }
 .confirm-card .danger-button { margin-top: 0; }
 .confirm-card .quiet-button { width: 100%; margin-top: 8px; }
 
@@ -1021,14 +1041,14 @@ details[open] > summary::after { content: " −"; }
 
 /* 남은 시간은 200ms마다 갱신되므로 폭 전환을 그 주기에 맞춘다. */
 .read-timer .progress-fill { transition: width 200ms linear; }
-.read-timer .progress-fill.is-hurrying { background: linear-gradient(90deg, var(--g-coral), #FFD35C); }
+.read-timer .progress-fill.is-hurrying { background: linear-gradient(90deg, var(--g-coral), var(--g-amber)); }
 
 .read-countdown {
   min-width: 4ch;
   margin: 0;
   color: var(--g-cyan);
   font-size: 16px;
-  font-weight: 750;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
   text-align: right;
 }

@@ -104,7 +104,7 @@ describe('저장에 동의한 뒤에도 경계를 지킨다', () => {
 
     expect(window.localStorage.getItem(BASELINE_STORAGE_KEY)).toBeNull();
     expect(screen.queryByText('260ms')).not.toBeInTheDocument();
-    expect(screen.getByText(/아직 아무것도 저장하지 않았어요/)).toBeInTheDocument();
+    expect(screen.getByText(/아직 기록이 없어요/)).toBeInTheDocument();
   });
 
   it('삭제를 취소하면 기록이 그대로 남는다', async () => {
@@ -137,7 +137,7 @@ describe('저장에 동의한 뒤에도 경계를 지킨다', () => {
     render(<App />);
     await user.click(tab(/나의 변화/));
 
-    expect(screen.getByText(/아직 아무것도 저장하지 않았어요/)).toBeInTheDocument();
+    expect(screen.getByText(/아직 기록이 없어요/)).toBeInTheDocument();
     expect(window.localStorage.getItem(BASELINE_STORAGE_KEY)).toBeNull();
   });
 });

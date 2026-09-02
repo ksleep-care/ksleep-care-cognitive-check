@@ -34,13 +34,14 @@ export default function Report({ results, level, onRestart, onGoPvt, onClose }: 
       </div>
 
       <div className="report-actions">
-        <button className="lime-button" type="button" onClick={onRestart}>
-          {levelName}로 한 판 더 · 5분
+        <p className="next-step-note">워밍업이 끝났어요. 내 기준선은 3분 집중 측정으로만 만들어져요.</p>
+        <button className="lime-button" type="button" onClick={onGoPvt}>
+          3분 집중 측정 시작
         </button>
 
-        <button className="pvt-row" type="button" onClick={onGoPvt}>
-          <span className="pvt-row-title">3분 집중 측정</span>
-          <span className="pvt-row-note">내 기준선 만들기</span>
+        <button className="pvt-row" type="button" onClick={onRestart}>
+          <span className="pvt-row-title">{levelName}로 한 판 더</span>
+          <span className="pvt-row-note">게임 7개 · 5분</span>
           <span className="pvt-row-arrow" aria-hidden="true">→</span>
         </button>
 

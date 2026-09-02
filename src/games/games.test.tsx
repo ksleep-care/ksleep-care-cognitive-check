@@ -243,7 +243,6 @@ describe('반응속도와 별똥별 (게임 기록)', () => {
     vi.useFakeTimers();
     render(<ReactionGame onComplete={vi.fn()} getDelay={() => 10} />);
 
-    fireEvent.click(screen.getByRole('button', { name: '반응 시작' }));
     await act(() => vi.advanceTimersByTimeAsync(10));
     await act(() => vi.advanceTimersByTimeAsync(150));
     fireEvent.click(screen.getByRole('button', { name: '지금 누르기' }));
@@ -256,7 +255,6 @@ describe('반응속도와 별똥별 (게임 기록)', () => {
     const onComplete = vi.fn();
     render(<ReactionGame onComplete={onComplete} getDelay={() => 5000} />);
 
-    fireEvent.click(screen.getByRole('button', { name: '반응 시작' }));
     fireEvent.click(screen.getByRole('button', { name: '아직 기다리세요' }));
 
     expect(screen.getByText('너무 일찍 눌렀어요')).toBeInTheDocument();
@@ -267,7 +265,6 @@ describe('반응속도와 별똥별 (게임 기록)', () => {
     const onComplete = vi.fn();
     render(<ReactionGame onComplete={onComplete} getDelay={() => 10} />);
 
-    fireEvent.click(screen.getByRole('button', { name: '반응 시작' }));
     for (let i = 0; i < 6; i += 1) {
       await act(() => vi.advanceTimersByTimeAsync(10));
       await act(() => vi.advanceTimersByTimeAsync(200));
@@ -286,7 +283,6 @@ describe('반응속도와 별똥별 (게임 기록)', () => {
     const onComplete = vi.fn();
     render(<VigilanceGame onComplete={onComplete} getDelay={() => 10} />);
 
-    fireEvent.click(screen.getByRole('button', { name: '시작' }));
     for (let i = 0; i < 6; i += 1) {
       await act(() => vi.advanceTimersByTimeAsync(10));
       fireEvent.click(screen.getByRole('button', { name: '별똥별 잡기' }));
@@ -301,7 +297,6 @@ describe('반응속도와 별똥별 (게임 기록)', () => {
     vi.useFakeTimers();
     render(<VigilanceGame onComplete={vi.fn()} getDelay={() => 10} missAfterMs={3000} />);
 
-    fireEvent.click(screen.getByRole('button', { name: '시작' }));
     await act(() => vi.advanceTimersByTimeAsync(10));
     expect(screen.getByRole('button', { name: '별똥별 잡기' })).toBeInTheDocument();
 

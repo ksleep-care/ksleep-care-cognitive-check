@@ -45,7 +45,7 @@ export const GAME_META: Record<
   reaction: {
     icon: '⚡',
     title: '반응속도',
-    description: '원이 나타나는 순간 빠르게 눌러요.',
+    description: '원이 나타나는 순간 빠르게 눌러요. 6번이고, 너무 일찍 누른 판은 기록되지 않아요.',
     looksAt: '몸이 얼마나 빨리 반응하는지 감을 잡는 워밍업이에요.',
     limit: '6번뿐이라 기록용이에요. 연구 기준과 비교하지 않아요.',
     scalesWithLevel: false,
@@ -85,7 +85,7 @@ export const GAME_META: Record<
   vigilance: {
     icon: '🌙',
     title: '별똥별 잡기',
-    description: '기다리다가 별이 나타나면 바로 눌러요.',
+    description: '기다리다가 별이 나타나면 바로 눌러요. 6번이고, 3분 집중 측정과는 다른 짧은 게임이에요.',
     looksAt: '기다리는 동안 주의를 붙잡아 두는 감을 보는 짧은 게임이에요.',
     limit: '6번짜리 게임 기록이에요. 3분 집중 측정과 다른 과제라 서로 비교하지 않아요.',
     scalesWithLevel: false,

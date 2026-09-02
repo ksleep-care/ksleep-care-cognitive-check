@@ -11,13 +11,14 @@ const TOTAL_TRIALS = 6;
 /** 이 시간 안에 눌리면 보고 누른 것이 아니라고 본다. */
 const MIN_VALID_MS = 100;
 
-type Phase = 'ready' | 'waiting' | 'visible' | 'feedback';
+type Phase = 'waiting' | 'visible' | 'feedback';
 
 export default function ReactionGame({
   onComplete,
   getDelay = () => 700 + Math.round(Math.random() * 1500),
 }: ReactionGameProps) {
-  const [phase, setPhase] = useState<Phase>('ready');
+  /** 준비 화면은 앞의 안내 화면이 대신한다. 바로 기다리기부터 시작해 클릭 하나를 줄인다. */
+  const [phase, setPhase] = useState<Phase>('waiting');
   const [trial, setTrial] = useState(0);
   const [lastMs, setLastMs] = useState<number | null>(null);
   const [early, setEarly] = useState(false);
@@ -77,18 +78,6 @@ export default function ReactionGame({
   /** 결과를 1200ms 보여준 뒤 알아서 다음 문제로 간다. 손으로 눌러도 한 번만 넘어간다. */
   const advance = useAutoAdvance(phase === 'feedback', 1200, advanceNow);
 
-  if (phase === 'ready') {
-    return (
-      <section className="game-card center-card">
-        <h2>원이 나타나면 바로 누르세요</h2>
-        <p className="game-note">너무 일찍 누르면 그 판은 기록되지 않아요.</p>
-        <button className="primary-button" type="button" onClick={() => setPhase('waiting')}>
-          반응 시작
-        </button>
-      </section>
-    );
-  }
-
   return (
     <section className="game-card center-card" aria-live="polite">
       <p className="eyebrow">{trial + 1} / {TOTAL_TRIALS}</p>
@@ -113,6 +102,9 @@ export default function ReactionGame({
           <button className="primary-button" type="button" autoFocus onClick={advance}>
             {trial + 1 >= TOTAL_TRIALS ? '결과 보기' : '다음'}
           </button>
+          <div className="feedback-timer feedback-timer-long" aria-hidden="true">
+            <span className="feedback-timer-fill" />
+          </div>
         </div>
       )}
     </section>

@@ -109,7 +109,7 @@ export default function PvtReport({
   return (
     <section className="report-card" aria-labelledby="pvt-report-title">
       <p className="eyebrow">3분 집중 측정 완료</p>
-      <h1 id="pvt-report-title">오늘 한눈에 보기</h1>
+      <h1 id="pvt-report-title">3분 집중 측정 결과</h1>
 
       {!quality.ok && (
         <div className="quality-warning" role="alert">
@@ -146,12 +146,22 @@ export default function PvtReport({
         onEnableBaseline={onEnableBaseline}
       />
 
-      <h2 className="layer-title">연구 참고</h2>
-      <p className="layer-note">
-        아래 설명은 같은 방식의 3분 과제에서 지표가 어떻게 움직이는지에 대한 <strong>연구 참고</strong>예요.
-        <strong> 의료 기준이 아니에요.</strong>
-      </p>
-      <MetricList cards={buildPvtCards(metrics)} />
+      {quality.ok ? (
+        <>
+          <h2 className="layer-title">연구 참고</h2>
+          <p className="layer-note">
+            아래 설명은 같은 방식의 3분 과제에서 지표가 어떻게 움직이는지에 대한 <strong>연구 참고</strong>예요.
+            <strong> 의료 기준이 아니에요.</strong>
+          </p>
+          <MetricList cards={buildPvtCards(metrics)} />
+        </>
+      ) : (
+        /* 못 쓰는 측정의 세부 지표를 펼쳐 두면 실제보다 믿을 만해 보인다. 접어 둔다. */
+        <details className="sources">
+          <summary>이번 측정의 세부 지표 (참고만)</summary>
+          <MetricList cards={buildPvtCards(metrics)} />
+        </details>
+      )}
 
       <div className="notice-box">
         {PVT_LIMITS.map((limit) => <p key={limit}>{limit}</p>)}
@@ -169,8 +179,9 @@ export default function PvtReport({
       </details>
 
       <div className="report-actions">
-        <button className="primary-button" type="button" onClick={onRetry}>다시 측정</button>
-        <button className="quiet-button" type="button" onClick={onClose}>홈으로</button>
+        {/* 화면의 주 버튼은 저장 동의 하나다. 다시 재기는 드문 행동이라 아웃라인으로 둔다. */}
+        <button className="ghost-button" type="button" onClick={onRetry}>다시 측정</button>
+        <button className="quiet-button" type="button" onClick={onClose}>플레이로 돌아가기</button>
       </div>
     </section>
   );

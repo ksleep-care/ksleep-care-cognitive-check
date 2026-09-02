@@ -19,8 +19,7 @@ export default function Transition({ index, level, onReady }: TransitionProps) {
         <span className="progress-orb" style={{ left: `${percent}%` }} aria-hidden="true" />
       </div>
       <p className="progress-text">
-        {index + 1} / {GAME_ORDER.length}
-        {meta.scalesWithLevel && ` · ${LEVEL_META[level].name}`}
+        {meta.scalesWithLevel ? `${LEVEL_META[level].name} 난이도` : '난이도와 무관'}
       </p>
 
       <h1 id="transition-title">{meta.title}</h1>

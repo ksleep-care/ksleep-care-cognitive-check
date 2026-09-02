@@ -10,7 +10,7 @@ interface VigilanceGameProps {
 
 const TOTAL_TRIALS = 6;
 
-type Phase = 'ready' | 'waiting' | 'visible' | 'feedback';
+type Phase = 'waiting' | 'visible' | 'feedback';
 
 /**
  * 짧고 재미있는 별똥별 게임이다. 3분 PVT와 다른 과제이며,
@@ -21,7 +21,8 @@ export default function VigilanceGame({
   getDelay = () => 900 + Math.round(Math.random() * 2200),
   missAfterMs = 3000,
 }: VigilanceGameProps) {
-  const [phase, setPhase] = useState<Phase>('ready');
+  /** 준비 화면은 앞의 안내 화면이 대신한다. 바로 기다리기부터 시작해 클릭 하나를 줄인다. */
+  const [phase, setPhase] = useState<Phase>('waiting');
   const [trial, setTrial] = useState(0);
   const [lastMs, setLastMs] = useState<number | null>(null);
   const times = useRef<number[]>([]);
@@ -75,18 +76,6 @@ export default function VigilanceGame({
   /** 결과를 1200ms 보여준 뒤 알아서 다음 문제로 간다. 손으로 눌러도 한 번만 넘어간다. */
   const advance = useAutoAdvance(phase === 'feedback', 1200, advanceNow);
 
-  if (phase === 'ready') {
-    return (
-      <section className="game-card center-card">
-        <h2>별이 나타나면 바로 누르세요</h2>
-        <p className="game-note">6번이에요. 3분 집중 측정과는 다른 짧은 게임이에요.</p>
-        <button className="primary-button" type="button" onClick={() => setPhase('waiting')}>
-          시작
-        </button>
-      </section>
-    );
-  }
-
   return (
     <section className="game-card center-card night-stage" aria-live="polite">
       <p className="eyebrow">{trial + 1} / {TOTAL_TRIALS}</p>
@@ -109,6 +98,9 @@ export default function VigilanceGame({
           <button className="primary-button" type="button" autoFocus onClick={advance}>
             {trial + 1 >= TOTAL_TRIALS ? '결과 보기' : '다음'}
           </button>
+          <div className="feedback-timer feedback-timer-long" aria-hidden="true">
+            <span className="feedback-timer-fill" />
+          </div>
         </div>
       )}
     </section>

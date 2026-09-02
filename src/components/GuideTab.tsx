@@ -46,7 +46,7 @@ export default function GuideTab() {
             <li className="guide-row" key={key}>
               <div className="guide-head">
                 <h3>{meta.title}</h3>
-                <span className={`guide-chip${meta.scalesWithLevel ? '' : ' is-fixed'}`}>
+                <span className="guide-meta">
                   {meta.scalesWithLevel ? '난이도 적용' : '난이도 고정'}
                 </span>
               </div>

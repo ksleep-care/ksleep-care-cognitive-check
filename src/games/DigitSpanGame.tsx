@@ -68,7 +68,7 @@ export default function DigitSpanGame({ level, onComplete, revealMsOverride }: D
       ) : (
         <>
           <h2 id="digit-title">거꾸로 입력하세요</h2>
-          <label className="digit-label" htmlFor="digit-answer">거꾸로 입력</label>
+          <label className="sr-only" htmlFor="digit-answer">거꾸로 입력</label>
           <input
             id="digit-answer"
             ref={inputRef}

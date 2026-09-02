@@ -31,6 +31,7 @@ export function calculateReport(results: SessionDraft): CognitiveReport {
 
   return {
     immediateMemoryPercent: percent(complete.story.correct, complete.story.total),
+    delayedMemoryPercent: percent(complete.storyDelayed.correct, complete.storyDelayed.total),
     memoryRetentionPercent: immediateRatio > 0
       ? Math.min(100, Math.round((delayedRatio / immediateRatio) * 100))
       : 0,
@@ -67,8 +68,8 @@ export function buildGameCards(report: CognitiveReport, levelName: string): Metr
       icon: GAME_META.storyDelayed.icon,
       title: GAME_META.storyDelayed.title,
       looksAt: GAME_META.storyDelayed.looksAt,
-      value: `처음의 ${report.memoryRetentionPercent}% 유지`,
-      direction: '100%에 가까울수록 중간 게임들 뒤에도 그대로 남았다는 뜻이에요.',
+      value: `${report.delayedMemoryPercent}% 맞음`,
+      direction: `처음 맞춘 것의 ${report.memoryRetentionPercent}%가 남았어요. 100%에 가까울수록 중간 게임들 뒤에도 그대로 남았다는 뜻이에요.`,
       comparable: sameLevelOnly,
       limit: GAME_META.storyDelayed.limit,
     },
