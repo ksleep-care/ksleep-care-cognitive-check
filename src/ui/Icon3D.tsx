@@ -90,7 +90,12 @@ function Glyph({ name, ink }: { name: IconName; ink: string }): JSX.Element {
         </>
       );
     case 'vigilance':
-      return <path d="M16 8.5l2.3 4.9 5.3.7-3.9 3.7.9 5.3-4.6-2.5-4.6 2.5.9-5.3-3.9-3.7 5.3-.7z" fill={ink} />;
+      return (
+        <>
+          <path d="M6.5 8.5 L18 17.5 L16.5 19.5 Z" fill={ink} opacity="0.55" />
+          <path d="M19.5 13.5l1.7 3.6 3.9.5-2.9 2.7.7 3.9-3.4-1.9-3.4 1.9.7-3.9-2.9-2.7 3.9-.5z" fill={ink} />
+        </>
+      );
     case 'pvt':
       return (
         <>
