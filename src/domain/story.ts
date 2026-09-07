@@ -128,6 +128,7 @@ function pickOptions(answer: string, pool: string[], random: () => number): stri
 }
 
 export interface StoryShape {
+  phase?: 'immediate' | 'delayed';
   /** 낼 질문 수. */
   questions: number;
   /** 보여줄 문단 수. 질문에 필요한 사실이 모자라면 문단을 더 보여준다. */
@@ -137,8 +138,8 @@ export interface StoryShape {
 }
 
 /**
- * 같은 번호면 같은 이야기·같은 질문·같은 보기 순서가 나온다.
- * 바로 맞추기와 다시 퀴즈가 번호를 공유해야 같은 이야기를 묻는다.
+ * 같은 번호와 단계면 같은 질문·보기 순서가 나온다.
+ * 앞뒤 퀴즈는 본문을 공유하되 서로 다른 질문 묶음을 쓴다.
  *
  * 레벨은 문단 수(기억할 사실의 양)·질문 수·헷갈림 문장으로 난이도를 만든다.
  * 질문은 보여준 문단 안에 답이 있는 것만 낸다.
@@ -153,18 +154,20 @@ export function generateStory(index: number, shape: number | StoryShape): Story 
 
   // 보여줄 문단을 정한다. 답이 들어 있는 문단만 세어, 질문 수를 채울 때까지 늘린다.
   let shown = Math.min(allParagraphs.length, Math.max(1, wanted.paragraphs ?? allParagraphs.length));
-  const eligible = (count: number) => {
+  const eligible = (count: number, questions = generated.questions) => {
     const text = allParagraphs.slice(0, count).join(' ');
-    return generated.questions.filter((question) => text.includes(question.answer));
+    return questions.filter((question) => text.includes(question.answer));
   };
-  while (eligible(shown).length < wanted.questions && shown < allParagraphs.length) shown += 1;
+  while (shown < allParagraphs.length && (
+    eligible(shown).length < wanted.questions || eligible(shown, generated.delayedQuestions).length < wanted.questions
+  )) shown += 1;
 
   const paragraphs = allParagraphs.slice(0, shown);
-  const picked = shuffle(eligible(shown).slice(0, wanted.questions), random);
+  const immediate = shuffle(eligible(shown).slice(0, wanted.questions), random);
 
-  if (wanted.distractor && picked.length > 0) {
+  if (wanted.distractor && immediate.length > 0) {
     // 물어볼 사실 하나를 골라, 같은 종류의 다른 값을 "지난번" 이야기로 덧붙인다.
-    const target = picked[Math.floor(random() * picked.length)];
+    const target = immediate[Math.floor(random() * immediate.length)];
     const pool = template.variables[target.pool].filter((value) => value !== target.answer);
     if (pool.length > 0) {
       const other = pool[Math.floor(random() * pool.length)];
@@ -172,13 +175,18 @@ export function generateStory(index: number, shape: number | StoryShape): Story 
     }
   }
 
+  const questionRandom = wanted.phase === 'delayed' ? makeRandom(scramble(index ^ 0x5a17)) : random;
+  const picked = wanted.phase === 'delayed'
+    ? shuffle(eligible(shown, generated.delayedQuestions).slice(0, wanted.questions), questionRandom)
+    : immediate;
+
   return {
     title: template.title,
     paragraphs,
     questions: picked.map((question) => ({
       prompt: question.q,
       answer: question.answer,
-      options: pickOptions(question.answer, template.variables[question.pool], random),
+      options: pickOptions(question.answer, question.alternatives ?? template.variables[question.pool], questionRandom),
       hint: `이야기에 "${이라고라고(question.answer)} 나왔어요.`,
     })),
   };

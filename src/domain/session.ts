@@ -15,7 +15,7 @@ export const GAME_META: Record<GameKey, {
   scalesWithLevel: boolean; source: string;
 }> = {
   story: { icon: '📖', title: '이야기 기억하기',
-    description: '이야기를 한 번 읽고 답을 골라요. 정답은 나중에 공개해요.',
+    description: '이야기를 한 번 읽고 답을 골라요. 뒤에는 같은 이야기의 다른 질문이 나와요.',
     looksAt: '읽은 사건과 세부 정보를 기억하는 게임이에요.',
     basis: '이야기 기억 과제의 부호화 → 즉시 응답 → 방해 활동 → 지연 응답 순서를 따릅니다. 직접 쓴 가상 이야기를 화면으로 읽고 객관식으로 답하므로 구술 자유 회상 검사의 복제는 아닙니다.',
     limit: '24개 사건 틀의 내용을 조합해요. 같은 방문에서는 본문이 반복되지 않지만, 재방문 중복과 틀에 익숙해지는 효과는 남아요.',
@@ -41,8 +41,8 @@ export const GAME_META: Record<GameKey, {
   storyDelayed: { icon: '💭', title: '이야기 다시 퀴즈',
     description: '처음 읽은 이야기, 아직 기억나나요? 글을 다시 보지 않고 답해요.',
     looksAt: '다른 게임을 한 뒤에 남아 있는 내용을 떠올려요.',
-    basis: '중간 게임 세 개 뒤에 같은 이야기의 같은 사실을 다시 묻습니다. 첫 퀴즈에서 정답을 가르쳐 주지 않습니다. 객관식 재인 방식이며 정해진 분 단위 지연 검사는 아닙니다.',
-    limit: '객관식 보기가 단서가 되고 중간 소요 시간이 달라져요. 두 정답률의 비율을 기억 유지율로 해석하지 않아요.',
+    basis: '중간 게임 세 개 뒤에 같은 이야기의 장소·사건·처리 행동·물건을 다른 질문으로 묻습니다. 상위 난이도에서는 마무리 행동·기록한 곳·소식을 전한 대상도 묻습니다. 첫 퀴즈에서 정답을 가르쳐 주지 않습니다. 객관식 재인 방식이며 정해진 분 단위 지연 검사는 아닙니다.',
+    limit: '앞뒤 문항의 내용과 난이도가 달라 정답률을 직접 비교하지 않아요. 보기가 단서가 되고 중간 소요 시간도 달라요. 표준화된 기억 검사가 아니에요.',
     scalesWithLevel: true, source: 'https://agingresearchbiobank.nia.nih.gov/studies/swan/documents/download/Codebooks_and_Forms/NIA152019_cdbk.pdf/' },
   pattern: { icon: '🎯', title: '패턴 매칭',
     description: '기준과 모양도 순서도 같은 패턴을 찾아요.',

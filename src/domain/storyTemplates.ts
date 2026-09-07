@@ -1,10 +1,10 @@
-import { 을를, 이가, 과와 } from './particle';
+import { 이가, 과와 } from './particle';
 
 /** 직접 작성한 가상 사건. 검사 원문과 실제 인물 정보를 사용하지 않는다. */
-export interface StoryTemplateQuestion { q: string; answer: string; pool: string }
+export interface StoryTemplateQuestion { q: string; answer: string; pool: string; alternatives?: string[] }
 export interface StoryTemplate {
   title: string; variables: Record<string, string[]>;
-  generate: (v: Record<string, string>) => { content: string; questions: StoryTemplateQuestion[] };
+  generate: (v: Record<string, string>) => { content: string; questions: StoryTemplateQuestion[]; delayedQuestions: StoryTemplateQuestion[] };
 }
 
 /** 장소뿐 아니라 사건·문제·해결 행동을 함께 바꾸는 24개 장면. */
@@ -35,7 +35,15 @@ const scenes = [
   ['벼룩시장의 보물', '벼룩시장', '물건에 붙인 가격표가 바뀌었습니다', '주인에게 확인하고 가격표를 바로 붙였습니다', '가격표'],
 ];
 
-export const STORY_TEMPLATES: StoryTemplate[] = scenes.map(([title, place, problem, resolution, item]) => ({
+const closingActions = ['기념사진을 찍었습니다', '주변을 정리했습니다', '손을 씻었습니다', '다음 일정을 확인했습니다'];
+const recordPlaces = ['수첩', '휴대폰', '태블릿', '메모지'];
+const recipients = ['담당자', '이웃', '가족', '친구'];
+
+export const STORY_TEMPLATES: StoryTemplate[] = scenes.map(([title, place, problem, resolution, item], sceneIndex) => {
+  const closing = closingActions[sceneIndex % closingActions.length];
+  const record = recordPlaces[Math.floor(sceneIndex / 4) % recordPlaces.length];
+  const recipient = recipients[Math.floor(sceneIndex / 6) % recipients.length];
+  return {
   title,
   variables: {
     person: ['서윤', '지후', '다온', '하린', '유진', '서우', '도윤', '수현'],
@@ -48,7 +56,7 @@ export const STORY_TEMPLATES: StoryTemplate[] = scenes.map(([title, place, probl
   },
   generate: v => ({
     // 모든 조합 변수를 두 문단 안에 둔다. 루키에서 뒤 문단을 감춰도 본문 ID가 충돌하지 않는다.
-    content: `${v.day} ${v.time}, ${이가(v.person)} ${place}에 도착했습니다. ${problem}. 가져온 ${item}에는 ${v.color} 표시가 있었습니다.\n\n${과함께(v.companion)} ${resolution}. 함께한 사람은 모두 ${v.count}이었고, 일을 마친 뒤 ${v.destination}에서 모이기로 했습니다.\n\n돌아가기 전에 ${을를(item)} 제자리에 두었는지 한 번 더 확인했습니다.`,
+    content: `${v.day} ${v.time}, ${이가(v.person)} ${place}에 도착했습니다. ${problem}. 가져온 ${item}에는 ${v.color} 표시가 있었습니다.\n\n${과함께(v.companion)} ${resolution}. 함께한 사람은 모두 ${v.count}이었고, 일을 마친 뒤 ${v.destination}에서 모이기로 했습니다.\n\n마지막에는 ${closing}. 오늘 일은 ${record}에 기록하고 ${recipient}에게 소식을 전했습니다.`,
     questions: [
       { q: '처음 도착한 사람은 누구였나요?', answer: v.person, pool: 'person' },
       { q: '어느 날의 일이었나요?', answer: v.day, pool: 'day' },
@@ -58,6 +66,18 @@ export const STORY_TEMPLATES: StoryTemplate[] = scenes.map(([title, place, probl
       { q: '함께한 사람은 모두 몇 명이었나요?', answer: v.count, pool: 'count' },
       { q: '일을 마친 뒤 어디에서 모이기로 했나요?', answer: v.destination, pool: 'destination' },
     ],
+    // 첫 퀴즈와 별도의 사실을 묻는다. 상위 레벨의 추가 사실은 세 번째 문단에 있다.
+    // 조합 변수에 보기 풀을 넣으면 본문 번호의 일대일 대응이 깨지므로 별도로 둔다.
+    delayedQuestions: [
+      { q: '이야기의 일이 시작된 장소는 어디였나요?', answer: place, pool: '', alternatives: scenes.map(s => s[1]) },
+      { q: '도착한 뒤 어떤 일이 있었나요?', answer: problem, pool: '', alternatives: scenes.map(s => s[2]) },
+      { q: '그 일을 어떻게 해결하거나 처리했나요?', answer: resolution, pool: '', alternatives: scenes.map(s => s[3]) },
+      { q: '색깔 표시가 있던 물건은 무엇이었나요?', answer: item, pool: '', alternatives: scenes.map(s => s[4]) },
+      { q: '마지막에 한 일은 무엇이었나요?', answer: closing, pool: '', alternatives: closingActions },
+      { q: '오늘 일을 어디에 기록했나요?', answer: record, pool: '', alternatives: recordPlaces },
+      { q: '누구에게 소식을 전했나요?', answer: recipient, pool: '', alternatives: recipients },
+    ],
   }),
-}));
+  };
+});
 function 과함께(name: string): string { return `${과와(name)} 함께`; }

@@ -30,25 +30,29 @@ describe('이야기 기억하기', () => {
     await user.click(screen.getByRole('button', { name: '다 읽었어요' }));
     await user.click(screen.getByRole('button', { name: LEVEL1_ANSWERS[0] }));
 
-    expect(screen.getByRole('status')).toHaveTextContent('정답은 다시 퀴즈를 마친 뒤');
+    expect(screen.getByRole('status')).toHaveTextContent('지금은 정답을 보여주지 않아요');
     expect(screen.queryByText('맞았어요')).not.toBeInTheDocument();
     expect(document.querySelector('.is-answer')).toBeNull();
+    expect(screen.getByRole('button', { pressed: true })).toHaveTextContent(LEVEL1_ANSWERS[0]);
+    expect(screen.getByRole('button', { pressed: true })).toHaveTextContent('선택한 답');
     expect(onComplete).not.toHaveBeenCalled();
 
     await user.click(screen.getByRole('button', { name: '다음 문제' }));
+    expect(screen.queryByRole('button', { pressed: true })).not.toBeInTheDocument();
     expect(screen.queryByText('맞았어요')).not.toBeInTheDocument();
   });
 
   it('틀리면 정답과 한 줄 설명을 알려준다', async () => {
     const user = userEvent.setup();
     render(<StoryGame mode="delayed" level={1} seed={SEED} onComplete={vi.fn()} />);
-    const wrong = STORY_QUESTIONS[0].options.find((o) => o !== STORY_QUESTIONS[0].answer)!;
+    const delayed = generateStory(SEED, { questions: 4, phase: 'delayed' }).questions;
+    const wrong = delayed[0].options.find((o) => o !== delayed[0].answer)!;
     await user.click(screen.getByRole('button', { name: wrong }));
 
     const feedback = screen.getByRole('status');
     expect(within(feedback).getByText('아쉬워요')).toBeInTheDocument();
-    expect(within(feedback).getByText(STORY_QUESTIONS[0].answer)).toBeInTheDocument();
-    expect(within(feedback).getByText(STORY_QUESTIONS[0].hint)).toBeInTheDocument();
+    expect(within(feedback).getByText(delayed[0].answer)).toBeInTheDocument();
+    expect(within(feedback).getByText(delayed[0].hint)).toBeInTheDocument();
   });
 
   it('정답을 본 뒤 다시 눌러도 점수가 바뀌지 않는다', async () => {

@@ -52,7 +52,35 @@
 .tab-dot { display: none; }
 .tab-button.is-active { background: var(--g-bg); }
 .tab-label { font-size: 14px; }
-.app-shell.is-immersive { max-width: 720px; }
+.app-shell.is-immersive { max-width: 960px; padding-bottom: calc(32px + env(safe-area-inset-bottom)); }
+.app-shell { padding-left: max(24px, env(safe-area-inset-left)); padding-right: max(24px, env(safe-area-inset-right)); }
+.app-header { flex-wrap: wrap; }
+.header-actions { flex-shrink: 0; margin-left: auto; }
+.game-card, .transition-card, .confirm-card { width: 100%; margin-inline: auto; }
+.story-reading, .center-card, .signal-game, .transition-card, .confirm-card { max-width: 768px; }
+.story-reading .story-copy { font-size: clamp(16px, 2.2vw, 18px); }
+.story-quiz .option-grid { grid-template-columns: minmax(0, 1fr); }
+.story-quiz .option-button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; overflow-wrap: anywhere; }
+.story-quiz .option-button.is-selected { opacity: 1; border-color: var(--g-accent); background: var(--g-wash-accent); color: var(--g-ink); }
+.choice-label { display: block; font-size: 12px; font-weight: 600; }
+.story-quiz .feedback { padding-bottom: 8px; }
+.color-options, .pattern-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.guide-detail a { display: inline-flex; align-items: center; min-height: 44px; }
+.report-card > .lead { max-width: 60ch; }
+.report-actions { max-width: 480px; margin-left: auto; margin-right: auto; }
+@media (min-width: 640px) {
+  .story-quiz .option-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .story-quiz .option-button { min-height: 80px; padding: 20px; }
+  .story-quiz h2 { font-size: clamp(22px, 2.4vw, 28px); margin-bottom: 24px; }
+  .story-quiz .feedback { display: grid; grid-template-columns: minmax(0, 1fr) minmax(200px, 280px); column-gap: 24px; align-items: center; }
+  .story-quiz .feedback > p { grid-column: 1; }
+  .story-quiz .feedback .primary-button { grid-column: 2; grid-row: 1 / span 4; margin-top: 0; }
+}
+@media (min-width: 900px) {
+  .guide-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 32px; }
+  .guide-row { align-content: start; }
+  .metric-tr { min-height: 64px; }
+}
 .transition-card { padding: 24px 0; }
 .transition-icon { margin: 32px auto 24px; }
 .challenge-label { padding: 12px 16px; border-radius: 8px; background: var(--g-bg); color: var(--g-accent); }
@@ -110,7 +138,7 @@
   .game-library { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 600px) {
-  .app-shell { padding-right: 20px; padding-left: 20px; }
+  .app-shell { padding-right: max(20px, env(safe-area-inset-right)); padding-left: max(20px, env(safe-area-inset-left)); }
   .app-shell main { padding-top: 16px; }
   .app-name-row { margin-bottom: 8px; }
   .play-intro { padding: 20px 0 24px; gap: 4px; }
@@ -134,4 +162,13 @@
 @media (prefers-reduced-motion: reduce) {
   .arcade-object, .comet-3d, .launch-craft, .capture-orbit, .game-art .icon-3d { animation: none !important; transition: none !important; }
   .burst { display: none; }
+}
+@media (max-height: 500px) and (min-width: 640px) {
+  .app-header { position: relative; padding-block: 8px; }
+  .app-shell main { padding-top: 8px; }
+  .transition-card { padding-block: 8px; }
+  .transition-card .transition-icon { margin-block: 8px; width: 48px; height: 48px; }
+  .digit-sequence { min-height: 88px; margin-block: 8px; }
+  .stroop-word { margin-block: 8px; }
+  .launch-stage, .cosmos-stage { min-height: 280px; }
 }

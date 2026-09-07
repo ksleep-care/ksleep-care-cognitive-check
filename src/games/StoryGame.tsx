@@ -19,8 +19,9 @@ export default function StoryGame({ mode, level, seed, onComplete }: StoryGamePr
       questions: config.storyQuestions,
       paragraphs: config.storyParagraphs,
       distractor: config.storyDistractor,
+      phase: mode,
     });
-  }, [level, seed]);
+  }, [level, seed, mode]);
   const questions = story.questions;
 
   const readMs = LEVEL_CONFIG[level].storyReadMs;
@@ -76,7 +77,7 @@ export default function StoryGame({ mode, level, seed, onComplete }: StoryGamePr
 
         <p className="eyebrow">시간 안에 한 번 읽어보세요</p>
         <h2 id="story-reading-title">{story.title}</h2>
-        <p className="game-note">기억할 것: {['사람', '요일', '시각', '표시 색', '동행', '인원', '모일 곳'].slice(0, questions.length).join(' · ')}</p>
+        <p className="game-note">사람·시간·물건뿐 아니라 어디서 무슨 일이 있었고 어떻게 해결했는지도 기억해 주세요. 뒤에서는 다른 질문이 나와요.</p>
         <div className="story-copy">
           {story.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
         </div>
@@ -108,7 +109,7 @@ export default function StoryGame({ mode, level, seed, onComplete }: StoryGamePr
   };
 
   return (
-    <section className="game-card" aria-labelledby="story-question-title">
+    <section className="game-card story-quiz" aria-labelledby="story-question-title">
       <p className="eyebrow">
         {mode === 'immediate' ? '바로 맞추기' : '다시 떠올리기'} · 질문 {index + 1} / {questions.length}
       </p>
@@ -116,9 +117,11 @@ export default function StoryGame({ mode, level, seed, onComplete }: StoryGamePr
 
       <div className="option-grid">
         {question.options.map((option) => {
-          const state = picked === null || mode === 'immediate'
+          const state = picked === null
             ? ''
-            : option === question.answer
+            : mode === 'immediate'
+              ? option === picked ? ' is-selected' : ' is-dim'
+              : option === question.answer
               ? ' is-answer'
               : option === picked
                 ? ' is-wrong'
@@ -129,9 +132,11 @@ export default function StoryGame({ mode, level, seed, onComplete }: StoryGamePr
               type="button"
               key={option}
               disabled={picked !== null}
+              aria-pressed={picked === option}
               onClick={() => choose(option)}
             >
               {option}
+              {picked === option && <span className="choice-label">✓ 선택한 답</span>}
             </button>
           );
         })}
@@ -139,7 +144,7 @@ export default function StoryGame({ mode, level, seed, onComplete }: StoryGamePr
 
       {picked !== null && mode === 'immediate' && (
         <div className="feedback" role="status">
-          <p>답을 골랐어요. 정답은 다시 퀴즈를 마친 뒤 확인해요.</p>
+          <p>선택했어요. 뒤 퀴즈에 힌트가 되지 않도록 지금은 정답을 보여주지 않아요.</p>
           <button className="primary-button" type="button" autoFocus onClick={advance}>
             {isLast ? '결과 보기' : '다음 문제'}
           </button>

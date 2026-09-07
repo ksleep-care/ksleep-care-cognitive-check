@@ -12,6 +12,33 @@ import {
 import { STORY_TEMPLATES } from './storyTemplates';
 
 describe('이야기 생성', () => {
+  it('앞뒤 퀴즈는 같은 본문에서 다른 질문과 답을 내며 각 정답은 본문에 있다', () => {
+    for (let seed = 0; seed < 96; seed++) {
+      for (const questions of [4, 5, 6, 7]) {
+        const immediate = generateStory(seed * 100_003, { questions, paragraphs: 2 });
+        const delayed = generateStory(seed * 100_003, { questions, paragraphs: 2, phase: 'delayed' });
+        expect(delayed.paragraphs).toEqual(immediate.paragraphs);
+        expect(delayed.questions).toHaveLength(questions);
+        for (const q of delayed.questions) {
+          expect(immediate.questions.some(first => first.prompt === q.prompt || first.answer === q.answer)).toBe(false);
+          expect(immediate.paragraphs.join(' ')).toContain(q.answer);
+          expect(q.options).toHaveLength(4);
+          expect(new Set(q.options).size).toBe(4);
+          expect(q.options.filter(option => option === q.answer)).toHaveLength(1);
+        }
+      }
+    }
+  });
+
+  it('상위 난이도의 추가 문항은 이미 물은 장소·행동의 재포장이 아닌 별도 사실을 묻는다', () => {
+    const story = generateStory(0, { questions: 7, paragraphs: 3, phase: 'delayed' });
+    expect(story.questions).toEqual(expect.arrayContaining([
+      expect.objectContaining({ prompt: '마지막에 한 일은 무엇이었나요?', answer: '기념사진을 찍었습니다' }),
+      expect.objectContaining({ prompt: '오늘 일을 어디에 기록했나요?', answer: '수첩' }),
+      expect.objectContaining({ prompt: '누구에게 소식을 전했나요?', answer: '담당자' }),
+    ]));
+  });
+
   it('같은 번호면 같은 이야기와 같은 질문 순서가 나온다 (바로 맞추기와 다시 퀴즈가 공유)', () => {
     expect(generateStory(42, 7)).toEqual(generateStory(42, 7));
   });
