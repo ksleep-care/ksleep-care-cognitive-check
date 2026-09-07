@@ -1,0 +1,1351 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>한글 인지 컨디션 체크 · 제품 기획서</title>
+    <meta name="document-path" content="public/prd/index.html" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230059b8'/%3E%3Cpath d='M18 20v24M18 32l12-12M18 32l12 12M37 20h9a7 7 0 0 1 0 14h-9m0 0h10a5 5 0 0 1 0 10H37z' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+    <meta name="document-status" content="draft" />
+    <meta name="stage" content="planned" />
+    <meta
+      name="description"
+      content="수면 부족과 피로에 따른 오늘의 집중·기억 컨디션을 게임으로 확인하는 웹 서비스 제품 기획서"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --page-bg: #faf8f2;
+        --surface: #ffffff;
+        --surface-alt: #faf8f5;
+        --ink: #0f1923;
+        --body: #2d3142;
+        --secondary: #4f556b;
+        --dim: #727270;
+        --brand: #0059b8;
+        --brand-deep: #00478f;
+        --brand-wash: #e8f2fc;
+        --ok: #4e7c59;
+        --ok-wash: #eaf4ec;
+        --warn: #906a2d;
+        --warn-wash: #f8eedb;
+        --urgent: #b83b50;
+        --urgent-wash: #fae9ed;
+        --border: #e8e3db;
+        --boundary: #8b7355;
+        --on-brand: #ffffff;
+        --shadow-card: 0 1px 2px rgba(15, 25, 35, 0.06);
+        --shadow-phone: 0 12px 24px rgba(15, 25, 35, 0.14);
+        --content-width: 1120px;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--page-bg);
+        color: var(--body);
+        font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 1.65;
+        word-break: keep-all;
+        overflow-wrap: break-word;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      a:focus-visible {
+        outline: 2px solid var(--brand);
+        outline-offset: 2px;
+        border-radius: 8px;
+      }
+
+      .skip-link {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        z-index: 100;
+        padding: 8px 12px;
+        border-radius: 8px;
+        background: var(--ink);
+        color: var(--surface);
+        transform: translateY(-160%);
+      }
+
+      .skip-link:focus {
+        transform: translateY(0);
+      }
+
+      .topbar {
+        border-bottom: 1px solid var(--border);
+        background: var(--surface);
+      }
+
+      .topbar-inner,
+      .page-shell {
+        width: min(calc(100% - 48px), var(--content-width));
+        margin: 0 auto;
+      }
+
+      .topbar-inner {
+        min-height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      .brand-lockup {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--ink);
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .brand-mark {
+        width: 32px;
+        height: 32px;
+        display: grid;
+        place-items: center;
+        border-radius: 8px;
+        background: var(--brand);
+        color: var(--on-brand);
+        font-size: 13px;
+        letter-spacing: -0.02em;
+      }
+
+      .document-state {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 12px;
+        border: 1px solid var(--boundary);
+        border-radius: 999px;
+        color: var(--secondary);
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .state-icon {
+        color: var(--warn);
+        font-size: 13px;
+      }
+
+      .toc-wrap {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface);
+      }
+
+      .toc {
+        width: min(calc(100% - 48px), var(--content-width));
+        margin: 0 auto;
+        display: flex;
+        gap: 4px;
+        padding: 8px 0;
+        overflow-x: auto;
+        scrollbar-width: thin;
+      }
+
+      .toc a {
+        min-height: 32px;
+        display: inline-flex;
+        align-items: center;
+        flex: 0 0 auto;
+        padding: 4px 12px;
+        border-radius: 8px;
+        color: var(--secondary);
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+      }
+
+      .toc a:hover {
+        background: var(--surface-alt);
+        color: var(--brand);
+      }
+
+      .page-shell {
+        padding: 64px 0 80px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+        gap: 48px;
+        align-items: center;
+        padding-bottom: 64px;
+      }
+
+      .eyebrow {
+        margin: 0 0 8px;
+        color: var(--brand);
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        max-width: 720px;
+        margin-bottom: 16px;
+        color: var(--ink);
+        font-size: 24px;
+        font-weight: 600;
+        line-height: 1.35;
+      }
+
+      h2 {
+        margin-bottom: 8px;
+        color: var(--ink);
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 1.4;
+      }
+
+      h3 {
+        margin-bottom: 8px;
+        color: var(--ink);
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.4;
+      }
+
+      .hero-copy {
+        max-width: 680px;
+        margin-bottom: 24px;
+        color: var(--secondary);
+      }
+
+      .hero-line {
+        display: inline-block;
+        margin-top: 8px;
+        padding: 8px 12px;
+        border-left: 3px solid var(--brand);
+        background: var(--brand-wash);
+        color: var(--ink);
+        font-weight: 500;
+      }
+
+      .meta-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin: 0;
+      }
+
+      .meta-grid > div {
+        padding: 12px;
+        border-top: 1px solid var(--border);
+      }
+
+      .meta-grid dt {
+        margin-bottom: 4px;
+        color: var(--dim);
+        font-size: 13px;
+      }
+
+      .meta-grid dd {
+        margin: 0;
+        color: var(--ink);
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .phone {
+        width: min(100%, 328px);
+        margin: 0 auto;
+        padding: 12px;
+        border: 1px solid var(--boundary);
+        border-radius: 16px;
+        background: var(--ink);
+        box-shadow: var(--shadow-phone);
+      }
+
+      .phone-screen {
+        min-height: 480px;
+        padding: 24px 20px;
+        border-radius: 12px;
+        background: var(--surface);
+      }
+
+      .phone-caption {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 32px;
+        color: var(--dim);
+        font-size: 13px;
+      }
+
+      .phone-caption strong {
+        color: var(--brand);
+        font-weight: 600;
+      }
+
+      .phone-orbit {
+        width: 136px;
+        height: 136px;
+        margin: 16px auto 32px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--border);
+        border-radius: 50%;
+        background: var(--surface-alt);
+      }
+
+      .phone-orbit svg {
+        width: 88px;
+        height: 88px;
+      }
+
+      .phone-screen h2 {
+        text-align: center;
+      }
+
+      .phone-screen p {
+        color: var(--secondary);
+        text-align: center;
+      }
+
+      .mock-primary {
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 24px;
+        border-radius: 8px;
+        background: var(--brand);
+        color: var(--on-brand);
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .mock-note {
+        margin: 12px 0 0;
+        color: var(--dim);
+        font-size: 13px;
+        text-align: center;
+      }
+
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 64px;
+      }
+
+      .summary-card,
+      .content-card {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--surface);
+        box-shadow: var(--shadow-card);
+      }
+
+      .summary-card {
+        padding: 20px;
+      }
+
+      .summary-card .label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--brand);
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .summary-card p {
+        margin: 0;
+      }
+
+      section {
+        scroll-margin-top: 88px;
+        padding: 64px 0;
+        border-top: 1px solid var(--border);
+      }
+
+      .section-head {
+        display: grid;
+        grid-template-columns: 160px minmax(0, 1fr);
+        gap: 24px;
+        margin-bottom: 32px;
+      }
+
+      .section-number {
+        color: var(--brand);
+        font-size: 13px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .section-head p {
+        max-width: 720px;
+        margin: 0;
+        color: var(--secondary);
+      }
+
+      .problem-map {
+        display: grid;
+        grid-template-columns: 1fr 64px 1fr;
+        align-items: stretch;
+      }
+
+      .content-card {
+        padding: 24px;
+      }
+
+      .problem-list,
+      .check-list,
+      .decision-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .problem-list li,
+      .check-list li,
+      .decision-list li {
+        position: relative;
+        padding-left: 24px;
+      }
+
+      .problem-list li + li,
+      .check-list li + li,
+      .decision-list li + li {
+        margin-top: 12px;
+      }
+
+      .problem-list li::before {
+        content: "!";
+        position: absolute;
+        left: 0;
+        color: var(--urgent);
+        font-weight: 600;
+      }
+
+      .check-list li::before,
+      .decision-list li::before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: var(--ok);
+        font-weight: 600;
+      }
+
+      .map-arrow {
+        display: grid;
+        place-items: center;
+        color: var(--brand);
+        font-size: 24px;
+        font-weight: 600;
+      }
+
+      .target-layout {
+        display: grid;
+        grid-template-columns: 0.85fr 1.15fr;
+        gap: 24px;
+      }
+
+      .target-card {
+        padding: 24px;
+        border: 1px solid var(--brand);
+        border-radius: 12px;
+        background: var(--brand-wash);
+      }
+
+      .target-tag {
+        display: inline-flex;
+        align-items: center;
+        min-height: 32px;
+        margin-bottom: 16px;
+        padding: 4px 12px;
+        border-radius: 999px;
+        background: var(--brand);
+        color: var(--on-brand);
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .quote-card {
+        display: flex;
+        align-items: center;
+        padding: 32px;
+        border-left: 3px solid var(--brand);
+        background: var(--surface);
+        color: var(--ink);
+        font-size: 18px;
+        font-weight: 500;
+      }
+
+      .journey {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 8px;
+        padding: 24px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--surface);
+      }
+
+      .journey-step {
+        position: relative;
+        min-height: 132px;
+        padding: 16px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--surface-alt);
+      }
+
+      .journey-step:not(:last-child)::after {
+        content: "→";
+        position: absolute;
+        top: 50%;
+        right: -13px;
+        z-index: 2;
+        width: 18px;
+        color: var(--brand);
+        background: var(--surface);
+        text-align: center;
+        transform: translateY(-50%);
+      }
+
+      .step-number {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--brand);
+        font-size: 13px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .journey-step p {
+        margin: 0;
+        color: var(--secondary);
+        font-size: 13px;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--surface);
+        box-shadow: var(--shadow-card);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 720px;
+      }
+
+      th,
+      td {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+        text-align: left;
+        vertical-align: top;
+      }
+
+      th {
+        background: var(--surface-alt);
+        color: var(--ink);
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      td {
+        color: var(--body);
+      }
+
+      tbody tr:last-child td {
+        border-bottom: 0;
+      }
+
+      .game-name {
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      .scope-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: var(--ok-wash);
+        color: var(--ok);
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .screen-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .screen-card {
+        min-height: 280px;
+        padding: 20px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--surface);
+        box-shadow: var(--shadow-card);
+      }
+
+      .screen-top {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 32px;
+        color: var(--dim);
+        font-size: 13px;
+      }
+
+      .screen-visual {
+        min-height: 104px;
+        display: grid;
+        place-items: center;
+        margin: 20px 0;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--surface-alt);
+        color: var(--brand);
+        font-size: 18px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .screen-card p {
+        margin-bottom: 0;
+        color: var(--secondary);
+        font-size: 13px;
+      }
+
+      .safety-grid,
+      .decision-grid,
+      .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .safety-card {
+        padding: 20px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--surface);
+      }
+
+      .safety-card strong {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      .safety-card p {
+        margin: 0;
+      }
+
+      .safety-symbol {
+        width: 24px;
+        height: 24px;
+        display: inline-grid;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--urgent-wash);
+        color: var(--urgent);
+        font-size: 13px;
+      }
+
+      .decision-card {
+        padding: 24px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--surface);
+      }
+
+      .decision-card .why {
+        margin: 0;
+        color: var(--secondary);
+      }
+
+      .metric-card {
+        padding: 20px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--surface);
+      }
+
+      .metric-card .metric-label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--brand);
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .metric-card strong {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--ink);
+        font-size: 18px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .metric-card p {
+        margin: 0;
+        color: var(--secondary);
+      }
+
+      .plan-line {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--surface);
+      }
+
+      .plan-phase {
+        padding: 24px;
+      }
+
+      .plan-phase + .plan-phase {
+        border-left: 1px solid var(--border);
+      }
+
+      .plan-phase .period {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--brand);
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .closing {
+        padding: 48px;
+        border-radius: 12px;
+        background: var(--ink);
+        color: var(--surface);
+        text-align: center;
+      }
+
+      .closing h2 {
+        color: var(--surface);
+      }
+
+      .closing p {
+        max-width: 680px;
+        margin: 0 auto;
+        color: var(--border);
+      }
+
+      footer {
+        border-top: 1px solid var(--border);
+        background: var(--surface);
+      }
+
+      .footer-inner {
+        width: min(calc(100% - 48px), var(--content-width));
+        margin: 0 auto;
+        padding: 32px 0;
+        display: flex;
+        justify-content: space-between;
+        gap: 24px;
+        color: var(--dim);
+        font-size: 13px;
+      }
+
+      @media (max-width: 860px) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+
+        .summary-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .section-head {
+          grid-template-columns: 1fr;
+          gap: 8px;
+        }
+
+        .journey {
+          grid-template-columns: 1fr;
+        }
+
+        .journey-step {
+          min-height: auto;
+        }
+
+        .journey-step:not(:last-child)::after {
+          content: "↓";
+          top: auto;
+          right: 50%;
+          bottom: -17px;
+          transform: translateX(50%);
+        }
+
+        .screen-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 620px) {
+        .topbar-inner,
+        .page-shell,
+        .toc,
+        .footer-inner {
+          width: min(calc(100% - 32px), var(--content-width));
+        }
+
+        .topbar-inner {
+          min-height: 56px;
+        }
+
+        .brand-lockup span:last-child {
+          display: none;
+        }
+
+        .page-shell {
+          padding-top: 40px;
+        }
+
+        .hero {
+          gap: 32px;
+          padding-bottom: 48px;
+        }
+
+        .meta-grid,
+        .summary-grid,
+        .target-layout,
+        .safety-grid,
+        .decision-grid,
+        .metric-grid,
+        .plan-line {
+          grid-template-columns: 1fr;
+        }
+
+        .problem-map {
+          grid-template-columns: 1fr;
+          gap: 8px;
+        }
+
+        .map-arrow {
+          min-height: 40px;
+          transform: rotate(90deg);
+        }
+
+        section {
+          padding: 48px 0;
+        }
+
+        .quote-card {
+          padding: 24px;
+        }
+
+        .plan-phase + .plan-phase {
+          border-top: 1px solid var(--border);
+          border-left: 0;
+        }
+
+        .closing {
+          padding: 32px 24px;
+        }
+
+        .footer-inner {
+          flex-direction: column;
+          gap: 8px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+      }
+
+      @media print {
+        .toc-wrap,
+        .skip-link {
+          display: none;
+        }
+
+        body {
+          background: var(--surface);
+        }
+
+        .page-shell {
+          width: 100%;
+          padding: 24px;
+        }
+
+        section {
+          break-inside: avoid;
+        }
+
+        .summary-card,
+        .content-card,
+        .table-wrap,
+        .screen-card {
+          box-shadow: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">본문으로 건너뛰기</a>
+
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand-lockup" aria-label="K-Sleep Care">
+          <span class="brand-mark" aria-hidden="true">KS</span>
+          <span>K-Sleep Care · Product Requirements Document</span>
+        </div>
+        <span class="document-state"><span class="state-icon" aria-hidden="true">◆</span> 신규 기획 · 검증 전</span>
+      </div>
+    </header>
+
+    <div class="toc-wrap">
+      <nav class="toc" aria-label="문서 목차">
+        <a href="#background">기획 배경</a>
+        <a href="#target">핵심 대상</a>
+        <a href="#journey">사용자 여정</a>
+        <a href="#mvp">MVP 기능</a>
+        <a href="#screens">화면 구조</a>
+        <a href="#safety">안전 원칙</a>
+        <a href="#technology">기술 선택</a>
+        <a href="#success">성공 기준</a>
+        <a href="#plan">실행 계획</a>
+      </nav>
+    </div>
+
+    <main id="main-content" class="page-shell">
+      <div class="hero">
+        <div>
+          <p class="eyebrow">한글 인지 컨디션 체크 · 제품 기획서</p>
+          <h1>오늘의 집중·기억 컨디션을 게임으로 가볍게 확인한다</h1>
+          <p class="hero-copy">
+            수면 부족이나 피로로 “오늘 유난히 멍하다”고 느낄 때, 로그인 없이 짧은 게임과
+            3분 집중 측정을 수행하고 내 이전 기록과 비교해 보는 독립 웹 서비스입니다.
+            <span class="hero-line">진단이나 정상·비정상 판정이 아니라, 오늘의 자기 상태를 이해하는 참고 도구입니다.</span>
+          </p>
+
+          <dl class="meta-grid">
+            <div>
+              <dt>문서 유형</dt>
+              <dd>외부 발표용 PRD</dd>
+            </div>
+            <div>
+              <dt>제품 단계</dt>
+              <dd>MVP 신규 기획</dd>
+            </div>
+            <div>
+              <dt>작성일</dt>
+              <dd>2026. 09. 07.</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="phone" aria-label="제품 첫 화면 예시">
+          <div class="phone-screen">
+            <div class="phone-caption">
+              <span>인지 컨디션 체크</span>
+              <strong>화면 예시</strong>
+            </div>
+            <div class="phone-orbit" aria-hidden="true">
+              <svg viewBox="0 0 88 88" role="img">
+                <title>집중 측정을 나타내는 원형 표적</title>
+                <circle cx="44" cy="44" r="34" fill="var(--brand-wash)" stroke="var(--brand)" stroke-width="2" />
+                <circle cx="44" cy="44" r="20" fill="var(--surface)" stroke="var(--brand)" stroke-width="2" />
+                <circle cx="44" cy="44" r="7" fill="var(--brand)" />
+              </svg>
+            </div>
+            <h2>3분 집중 측정</h2>
+            <p>숫자가 나타나면 화면을 눌러요. 조용한 곳에서 이 창만 열어 두세요.</p>
+            <div class="mock-primary">측정 시작</div>
+            <p class="mock-note">가입 없음 · 동의 전 저장 없음</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-grid" aria-label="기획 핵심 요약">
+        <article class="summary-card">
+          <span class="label">문제</span>
+          <p>주관적인 피로감만으로는 오늘의 집중 상태를 구체적으로 설명하기 어렵습니다.</p>
+        </article>
+        <article class="summary-card">
+          <span class="label">대상</span>
+          <p>수면과 피로에 따라 업무 집중력이 달라진다고 느끼는 성인입니다.</p>
+        </article>
+        <article class="summary-card">
+          <span class="label">해결</span>
+          <p>7개 게임형 워밍업과 별도의 3분 집중 측정을 한 링크에 제공합니다.</p>
+        </article>
+        <article class="summary-card">
+          <span class="label">가치</span>
+          <p>남과 비교하지 않고 같은 방식으로 측정한 내 기록의 변화만 확인합니다.</p>
+        </article>
+      </div>
+
+      <section id="background" aria-labelledby="background-title">
+        <div class="section-head">
+          <span class="section-number">01 · 기획 배경</span>
+          <div>
+            <h2 id="background-title">“오늘 왜 이렇게 멍하지?”를 확인할 간단한 방법이 부족하다</h2>
+            <p>막연한 느낌을 기록 가능한 경험으로 바꾸되, 온라인 검사가 진단처럼 보이는 문제는 피합니다.</p>
+          </div>
+        </div>
+
+        <div class="problem-map">
+          <article class="content-card">
+            <h3>현재의 불편</h3>
+            <ul class="problem-list">
+              <li>피곤하다는 느낌 외에는 오늘 상태를 설명할 근거가 없습니다.</li>
+              <li>한 번의 점수는 기기·환경·연습 효과 때문에 해석하기 어렵습니다.</li>
+              <li>정상·비정상처럼 단정하는 온라인 테스트는 불필요한 불안을 만들 수 있습니다.</li>
+            </ul>
+          </article>
+          <div class="map-arrow" aria-hidden="true">→</div>
+          <article class="content-card">
+            <h3>우리가 만드는 변화</h3>
+            <ul class="check-list">
+              <li>게임으로 진입 장벽을 낮추고 짧게 반복합니다.</li>
+              <li>측정 방식과 한계를 결과 옆에서 함께 설명합니다.</li>
+              <li>또래 평균이 아니라 같은 방식으로 쌓은 내 기록과 비교합니다.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section id="target" aria-labelledby="target-title">
+        <div class="section-head">
+          <span class="section-number">02 · 핵심 대상</span>
+          <div>
+            <h2 id="target-title">첫 MVP는 한 사람의 한 장면에 집중한다</h2>
+            <p>학생·환자·전문가를 한꺼번에 잡지 않고, 스스로 오늘 업무 준비 상태를 확인하려는 성인부터 시작합니다.</p>
+          </div>
+        </div>
+
+        <div class="target-layout">
+          <article class="target-card">
+            <span class="target-tag">첫 번째 사용자</span>
+            <h3>수면 부족이나 피로를 느낀 직장인·성인 학습자</h3>
+            <p>중요한 업무나 학습을 시작하기 전, 오늘의 집중·기억 컨디션을 빠르게 확인하고 싶은 사람</p>
+          </article>
+          <blockquote class="quote-card">
+            “어제 잠을 설쳤는데 지금 바로 중요한 일을 시작해도 될까? 느낌 말고 내 최근 기록과 비교해 보고 싶다.”
+          </blockquote>
+        </div>
+      </section>
+
+      <section id="journey" aria-labelledby="journey-title">
+        <div class="section-head">
+          <span class="section-number">03 · 사용자 여정</span>
+          <div>
+            <h2 id="journey-title">한 링크에서 이해하고, 해보고, 내 변화까지 확인한다</h2>
+            <p>가입과 설문을 앞에 두지 않습니다. 설명은 필요한 순간에 짧게 보여 주고, 결과 뒤에 다음 행동을 연결합니다.</p>
+          </div>
+        </div>
+
+        <div class="journey" aria-label="사용자 이용 흐름">
+          <article class="journey-step">
+            <span class="step-number">1</span>
+            <h3>링크 열기</h3>
+            <p>로그인 없이 목적과 비진단 원칙을 확인합니다.</p>
+          </article>
+          <article class="journey-step">
+            <span class="step-number">2</span>
+            <h3>게임 워밍업</h3>
+            <p>7개 짧은 과제로 여러 인지 활동을 경험합니다.</p>
+          </article>
+          <article class="journey-step">
+            <span class="step-number">3</span>
+            <h3>3분 집중 측정</h3>
+            <p>언제 나타날지 모르는 자극에 반응합니다.</p>
+          </article>
+          <article class="journey-step">
+            <span class="step-number">4</span>
+            <h3>결과 이해</h3>
+            <p>이번 값, 읽는 방향, 비교 범위, 한계를 함께 봅니다.</p>
+          </article>
+          <article class="journey-step">
+            <span class="step-number">5</span>
+            <h3>내 변화 비교</h3>
+            <p>저장에 동의한 경우에만 같은 기기의 기록과 비교합니다.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="mvp" aria-labelledby="mvp-title">
+        <div class="section-head">
+          <span class="section-number">04 · MVP 기능</span>
+          <div>
+            <h2 id="mvp-title">7개 게임은 워밍업, 기준선은 별도의 3분 측정으로 분리한다</h2>
+            <p>각 게임이 무엇을 사용하는지 설명하지만, 특정 인지 능력이 정상인지 판단하는 점수로 바꾸지 않습니다.</p>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">순서</th>
+                <th scope="col">게임</th>
+                <th scope="col">사용하는 활동</th>
+                <th scope="col">MVP에서 보여 줄 결과</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td class="game-name">이야기 기억하기</td>
+                <td>읽은 내용을 잠깐 붙잡아 두기</td>
+                <td>최초 제출 기준 정답 수</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td class="game-name">반응속도</td>
+                <td>신호를 보고 빠르게 반응하기</td>
+                <td>평균 반응시간·이른 누름</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td class="game-name">숫자 뒤집기</td>
+                <td>숫자를 기억해 역순으로 바꾸기</td>
+                <td>완료한 최대 자릿수</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td class="game-name">색깔 단어</td>
+                <td>자동으로 떠오르는 답을 억제하기</td>
+                <td>정확도·평균 반응시간</td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td class="game-name">이야기 다시 퀴즈</td>
+                <td>시간이 지난 뒤 내용 떠올리기</td>
+                <td>지연 정답 수·유지율</td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td class="game-name">패턴 매칭</td>
+                <td>모양을 보고 빠르게 비교하기</td>
+                <td>정확도·평균 반응시간</td>
+              </tr>
+              <tr>
+                <td>7</td>
+                <td class="game-name">별똥별 잡기</td>
+                <td>기다리며 신호에 주의하기</td>
+                <td>평균 반응시간·놓침 수</td>
+              </tr>
+              <tr>
+                <td>별도</td>
+                <td class="game-name">3분 집중 측정</td>
+                <td>일정 시간 동안 반응 유지하기</td>
+                <td><span class="scope-badge"><span aria-hidden="true">✓</span> 내 기준선에 사용</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="screens" aria-labelledby="screens-title">
+        <div class="section-head">
+          <span class="section-number">05 · 화면 구조</span>
+          <div>
+            <h2 id="screens-title">화면은 플레이·나의 변화·게임 안내 세 갈래로 단순화한다</h2>
+            <p>진행 중에는 탭을 숨겨 집중을 돕고, 한 화면에는 다음 행동 하나만 강조합니다.</p>
+          </div>
+        </div>
+
+        <div class="screen-grid">
+          <article class="screen-card">
+            <div class="screen-top"><span>화면 1</span><span>플레이</span></div>
+            <h3>오늘 바로 시작</h3>
+            <div class="screen-visual" aria-label="게임 7개 진행 표시">2 / 7</div>
+            <p>난이도를 고르고 게임을 시작하거나, 별도의 3분 집중 측정으로 바로 이동합니다.</p>
+          </article>
+          <article class="screen-card">
+            <div class="screen-top"><span>화면 2</span><span>나의 변화</span></div>
+            <h3>내 기준과 비교</h3>
+            <div class="screen-visual" aria-label="기준선 생성 진행 표시">2 / 3회</div>
+            <p>같은 방식의 유효한 측정이 쌓였을 때만 내 기준선과의 차이를 설명합니다.</p>
+          </article>
+          <article class="screen-card">
+            <div class="screen-top"><span>화면 3</span><span>게임 안내</span></div>
+            <h3>무엇을 보고, 무엇은 모르는지</h3>
+            <div class="screen-visual" aria-label="설명과 한계를 함께 표시">근거 + 한계</div>
+            <p>과제의 형식, 확인하는 활동, 결과에 영향을 줄 수 있는 조건을 함께 제공합니다.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="safety" aria-labelledby="safety-title">
+        <div class="section-head">
+          <span class="section-number">06 · 안전·개인정보</span>
+          <div>
+            <h2 id="safety-title">의료 판단과 개인정보 수집을 제품 가치로 착각하지 않는다</h2>
+            <p>이 제품은 참고용 자기 점검 도구입니다. 결과의 불확실성과 측정 실패를 숨기지 않습니다.</p>
+          </div>
+        </div>
+
+        <div class="safety-grid">
+          <article class="safety-card">
+            <strong><span class="safety-symbol" aria-hidden="true">!</span> 진단하지 않음</strong>
+            <p>정상·비정상, 질환 위험, 연령 백분위, 치료 권고를 제공하지 않습니다.</p>
+          </article>
+          <article class="safety-card">
+            <strong><span class="safety-symbol" aria-hidden="true">!</span> 임상기기와 직접 비교하지 않음</strong>
+            <p>브라우저와 기기마다 지연이 달라 절대 반응시간을 연구 장비 수치와 직접 비교하지 않습니다.</p>
+          </article>
+          <article class="safety-card">
+            <strong><span class="safety-symbol" aria-hidden="true">!</span> 동의 전 저장하지 않음</strong>
+            <p>이름·연락처·생년월일·환자번호를 받지 않고, 서버로 측정값을 전송하지 않습니다.</p>
+          </article>
+          <article class="safety-card">
+            <strong><span class="safety-symbol" aria-hidden="true">!</span> 품질이 낮으면 비교하지 않음</strong>
+            <p>탭 이탈, 자극 부족, 이른 누름 과다, 기기 지연이 있으면 재측정을 안내하고 기준선에서 제외합니다.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="technology" aria-labelledby="technology-title">
+        <div class="section-head">
+          <span class="section-number">07 · 기술 선택</span>
+          <div>
+            <h2 id="technology-title">기술 이름보다 선택 이유를 먼저 설명한다</h2>
+            <p>첫 MVP는 계정·서버·데이터베이스 없이도 핵심 가설을 검증할 수 있는 가장 작은 구조를 택합니다.</p>
+          </div>
+        </div>
+
+        <div class="decision-grid">
+          <article class="decision-card">
+            <h3>React + TypeScript</h3>
+            <p class="why">7개 게임의 순서·난이도·결과 상태를 명확히 나누고, 잘못된 데이터 조합을 개발 단계에서 줄이기 위해 사용합니다.</p>
+          </article>
+          <article class="decision-card">
+            <h3>브라우저 안에서 실행</h3>
+            <p class="why">첫 MVP는 서버 호출 없이 게임과 결과 계산을 끝내 개인정보 노출 경로와 운영비를 함께 줄입니다.</p>
+          </article>
+          <article class="decision-card">
+            <h3>동의 후 로컬 저장</h3>
+            <p class="why">회원가입 없이 내 기준선을 만들되, 사용자가 원할 때 이 기기에서 즉시 모두 지울 수 있게 합니다.</p>
+          </article>
+          <article class="decision-card">
+            <h3>Vercel 정적 배포</h3>
+            <p class="why">별도 서버를 운영하지 않고도 모바일·PC에서 같은 URL을 열어 MVP를 빠르게 테스트하기 위해 사용합니다.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="success" aria-labelledby="success-title">
+        <div class="section-head">
+          <span class="section-number">08 · 성공 기준</span>
+          <div>
+            <h2 id="success-title">완성도보다 “사용자가 이해하고 끝까지 해보는가”를 먼저 검증한다</h2>
+            <p>아래 수치는 현재 성과가 아니라 MVP 사용자 테스트에서 확인할 목표입니다.</p>
+          </div>
+        </div>
+
+        <div class="metric-grid">
+          <article class="metric-card">
+            <span class="metric-label">첫 사용 성공</span>
+            <strong>10명 중 8명 이상</strong>
+            <p>별도 설명 없이 게임 또는 3분 측정을 시작하고 결과 화면까지 도달합니다.</p>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">결과 이해</span>
+            <strong>10명 중 8명 이상</strong>
+            <p>“진단이 아니라 내 기록과 비교하는 참고값”이라고 자신의 말로 설명합니다.</p>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">개인정보 경계</span>
+            <strong>금지 정보 수집 0건</strong>
+            <p>이름·연락처·생년월일·환자번호 입력과 측정값 서버 전송이 없습니다.</p>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">기술 품질</span>
+            <strong>핵심 오류 0건</strong>
+            <p>390px·768px·1440px에서 가로 잘림이 없고, 키보드 사용과 측정 품질 차단이 작동합니다.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="plan" aria-labelledby="plan-title">
+        <div class="section-head">
+          <span class="section-number">09 · 실행 계획</span>
+          <div>
+            <h2 id="plan-title">2주 안에 작동하는 MVP와 사용자 피드백을 남긴다</h2>
+            <p>첫 주에는 핵심 경험을 만들고, 둘째 주에는 반복 비교와 안전·접근성을 검증합니다.</p>
+          </div>
+        </div>
+
+        <div class="plan-line">
+          <article class="plan-phase">
+            <span class="period">1주차 · 핵심 경험</span>
+            <h3>게임을 시작해 결과까지 도달</h3>
+            <ul class="decision-list">
+              <li>7개 워밍업 게임과 난이도</li>
+              <li>문제별 즉시 피드백</li>
+              <li>결과의 의미와 한계 설명</li>
+              <li>모바일·PC 기본 화면 검증</li>
+            </ul>
+          </article>
+          <article class="plan-phase">
+            <span class="period">2주차 · 반복 비교</span>
+            <h3>3분 측정과 내 기준선 연결</h3>
+            <ul class="decision-list">
+              <li>연습과 본 측정 분리</li>
+              <li>측정 품질 실패 차단</li>
+              <li>동의 후 요약값 로컬 저장</li>
+              <li>10명 사용성 테스트와 수정</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section aria-labelledby="closing-title">
+        <div class="closing">
+          <h2 id="closing-title">한 문장으로 정리하면</h2>
+          <p>
+            인지 컨디션 체크는 피곤한 날의 막연한 느낌을 게임과 반복 기록으로 이해하도록 돕되,
+            의료 진단·타인 비교·불필요한 개인정보 수집은 하지 않는 웹 서비스입니다.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-inner">
+        <span>K-Sleep Care · 한글 인지 컨디션 체크</span>
+        <span>기획안 v1.0 · 신규 기획 · 검증 전</span>
+      </div>
+    </footer>
+  </body>
+</html>
