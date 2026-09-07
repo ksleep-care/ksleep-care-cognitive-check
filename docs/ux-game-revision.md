@@ -118,3 +118,12 @@ Next actor: 이번 배포 요청의 필수 후속 작업 없음. 향후 GitHub m
 - 운영 화면 증거: `output/playwright/live-mobile.png`, `output/playwright/live-report.png` (로컬 전용, 미커밋).
 - 별도 GitHub 원격 작업은 없음. 당시 origin/main은 `b2195a3`, 운영 게임 소스는 `e6fc0b8`로 다름. 다음 배포에 오래된 main을 그대로 사용하면 개선안이 되돌아갈 수 있으므로 승인된 소스 확인이 필요함.
 - 실기기 Safari·VoiceOver·현장 성능과 임상 타당성은 이 배포 검증의 범위가 아님.
+
+### 링크 소개 문구 수정 — 2026-09-07 21:05 KST
+
+- Sylvie가 승인한 문구로 description·og:description·twitter:description을 통일. 제목과 게임 JS·CSS는 변경 없음.
+- 문구: "기억력부터 반응속도까지, 7가지 두뇌 게임에 도전해 보세요. 루키부터 마스터까지 나에게 맞는 난이도로 즐겨요."
+- 코드 커밋 `feb28d4`. 타입 검사·테스트 146개·빌드 통과. PRD·내부 문서·로그를 폴더까지 제외한 47개 파일만 배포.
+- 배포 `dpl_H9meLrzXs7owW8Zbq6vizJSumjbC`, production READY. 기존 공개 URL HTTP 200, 공개 HTML이 검증 빌드와 정확히 일치하며 이전 문구는 없음.
+- Playwright 공개 브라우저에서 세 설명 태그·기존 제목·게임 시작 버튼 확인, 콘솔 오류·경고 0. 이미 게시된 Discord 메시지의 카드 갱신 여부는 미확인이며 메시지 수정·재게시하지 않음.
+- GitHub push·PR·병합은 실행하지 않음. 운영 앱 코드의 기준은 기존 게임 개선에 링크 설명만 더한 `feb28d4`로 갱신.
