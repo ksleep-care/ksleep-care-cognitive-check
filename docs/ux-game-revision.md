@@ -2,7 +2,7 @@
 title: 게임 UX와 과제 원리 개선
 path: docs/ux-game-revision.md
 status: canonical
-stage: waiting-for-production-approval
+stage: deployed-and-verified
 date: 2026-09-07
 ---
 # 게임 UX와 과제 원리 개선
@@ -82,9 +82,9 @@ date: 2026-09-07
 ## 검증과 다음 실행 주체
 
 실행 결과는 이 문서 하단 Verification Log에만 기록한다. 화면 변경과 실제 운영 배포는 별도다.
-Current Cursor: 로컬 구현·검증 종료. 선별 커밋 후 운영 배포 승인 대기.
-Risk Gate: production 배포와 원격 반영은 Sylvie의 명시 승인 필요.
-Next actor: Sylvie가 운영 배포를 명시 승인하면 Codex가 원격 상태와 배포 경로를 확인한 뒤 반영하고 공개 URL을 검증한다.
+Current Cursor: 승인된 게임 개선 커밋의 운영 배포와 공개 URL 검증 종료.
+Risk Gate: 2026-09-07 Sylvie의 "검증한 개선안을 운영 앱에 배포해줘" 승인으로 기존 Vercel production에 반영. GitHub push·PR·main 병합·rollback·Vercel 프로젝트 설정 변경은 실행하지 않음.
+Next actor: 이번 배포 요청의 필수 후속 작업 없음. 향후 GitHub main 정렬은 별도 승인 범위이며 다음 배포 때 현재 운영 커밋을 확인해야 한다.
 
 ### Verification Log
 
@@ -100,4 +100,21 @@ Next actor: Sylvie가 운영 배포를 명시 승인하면 Codex가 원격 상�
 - 배포용 빌드를 로컬 preview에서 열어 320/390/768/1440px의 가로 넘침 없음 확인. 390×844px에서 시작 버튼은 첫 화면 안에 위치. 홈·3분 측정 진입점 0개, 안내 출처 링크 7개, 새 저장 기록 0개, pageerror 0개.
 - 로컬 Pretendard 분할 폰트 로딩 확인. 브라우저 실제 전송량과 현장 기기의 성능·VoiceOver는 미검증.
 - 화면 증거는 로컬 `output/playwright/production-mobile.png`, `cosmos-visible.png`, `master-report.png`에 보관하며 커밋하지 않는다.
-- production: 변경 전 공개 홈만 확인. 개선안 미배포.
+- production: 아래 2026-09-07 배포 검증으로 갱신.
+
+### Production Verification Log — 2026-09-07
+
+- 앱 소스: `e6fc0b8`. 이후 writer의 `c07c745` PRD 변경과 미커밋 작업은 포함하지 않음. 기존 `/prd/`는 배포 전후 모두 404.
+- 승인 커밋을 `/private/tmp/cognitive-release-lcalJnYQ`로 분리해 타입 검사·테스트 143개·빌드를 재실행, 모두 통과.
+- `.vercelignore` 추가: PRD·내부 문서·테스트·스크린샷·로그·환경 파일을 업로드에서 제외. 기존 파일을 삭제한 것이 아니며 저장소 원본을 보존함.
+- 업로드 전 dry-run: 51항목, 284736바이트. 제외 경로 이름 4개는 mode 16877 / size 0 / 파일 해시 없음인 빈 디렉터리. 실제 제외 대상 파일 0개를 확인한 후 안전 재검사를 통과해 배포함.
+- 기존 프로젝트 `prj_XcHe2gl96UchEHVoF6o3KVrTY2NQ`, scope `urmypride-2856s-projects` 유지. 보안 헤더·Node 설정·환경값 변경 없음.
+- 이전 배포: `dpl_4G5jtdBm6RQUhLEBbzDFsw13iJVc`. 새 배포: `dpl_8N35YGoJTKarx4czJFB9kK4agCMS`, target production, READY.
+- 공개 URL: https://ksleep-care-cognitive-check.vercel.app/ — HTTP 200, 기존 도메인이 새 배포를 가리킴 (2026-09-07 20:35 KST 확인).
+- 공개 JS `index-gNgVLT_a.js`와 CSS `index-CHjgEcj0.css`가 로컬 승인 빌드와 바이트 단위로 일치. 내부 `/prd/`, `/docs/ux-game-revision.md`, `/src/App.tsx`는 404.
+- Playwright Chromium 공개 화면: 홈·3분 측정 진입점 0, 출처 링크 7, 320/390/768/1440px 가로 넘침 없음, 콘솔 오류·pageerror·실패 요청 0. 로컬 폰트 14개 구간 로딩 확인.
+- 공개 URL에서 가상 시계·합성 입력으로 루키 7개 게임을 진행해 결과 7개와 '오늘 한눈에 보기' 도달 확인. 지연 퀴즈 다시 읽기 0, localStorage 기록 0. 테스트 입력의 불완전한 숫자 답안은 제출되지 않음을 확인 후 완전한 오답으로 정리해 코스를 완료함.
+- 별도 공개 URL 재검증에서 숫자를 한 자리씩 읽어 역순 답안을 2회 입력한 뒤 '도전 3 / 최대 8회 · 4자리'를 확인. 순차 제시와 성공에 따른 길이 증가가 운영에서도 동작함.
+- 운영 화면 증거: `output/playwright/live-mobile.png`, `output/playwright/live-report.png` (로컬 전용, 미커밋).
+- 별도 GitHub 원격 작업은 없음. 당시 origin/main은 `b2195a3`, 운영 게임 소스는 `e6fc0b8`로 다름. 다음 배포에 오래된 main을 그대로 사용하면 개선안이 되돌아갈 수 있으므로 승인된 소스 확인이 필요함.
+- 실기기 Safari·VoiceOver·현장 성능과 임상 타당성은 이 배포 검증의 범위가 아님.
