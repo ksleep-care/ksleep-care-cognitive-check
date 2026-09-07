@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import Feedback from '../ui/Feedback';
-import { LEVEL_CONFIG, digitRevealMs } from '../domain/levels';
+import { LEVEL_CONFIG, DIGIT_ON_MS, DIGIT_GAP_MS, createDigitSequence, nextDigitSpan } from '../domain/levels';
 import type { DigitResult, Level } from '../domain/types';
 
 interface DigitSpanGameProps {
@@ -8,10 +8,15 @@ interface DigitSpanGameProps {
   onComplete: (result: DigitResult) => void;
   /** 테스트에서 노출 시간을 짧게 만들기 위한 주입점. */
   revealMsOverride?: number;
+  random?: () => number;
 }
 
-export default function DigitSpanGame({ level, onComplete, revealMsOverride }: DigitSpanGameProps) {
-  const sequences = LEVEL_CONFIG[level].digitSequences;
+export default function DigitSpanGame({ level, onComplete, revealMsOverride, random = Math.random }: DigitSpanGameProps) {
+  const config = LEVEL_CONFIG[level];
+  const [spanState, setSpanState] = useState({ span: config.digitStart, successes: 0, failures: 0 });
+  const [sequence, setSequence] = useState(() => createDigitSequence(config.digitStart, random));
+  const [position, setPosition] = useState(0);
+  const [digitOn, setDigitOn] = useState(true);
 
   const [index, setIndex] = useState(0);
   const [revealing, setRevealing] = useState(true);
@@ -21,24 +26,31 @@ export default function DigitSpanGame({ level, onComplete, revealMsOverride }: D
   const [maxSpan, setMaxSpan] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const sequence = sequences[index];
   const expected = [...sequence].reverse().join('');
-  const isLast = index === sequences.length - 1;
+  const nextState = nextDigitSpan(spanState, submitted === expected, config.digitMax);
+  const isLast = nextState.done || index + 1 >= config.digitMaxTrials;
   const isCorrect = submitted === expected;
 
   useEffect(() => {
     setRevealing(true);
-    const ms = revealMsOverride ?? digitRevealMs(sequences[index]);
-    const timer = window.setTimeout(() => setRevealing(false), ms);
-    return () => window.clearTimeout(timer);
-  }, [index, revealMsOverride, sequences]);
+    setPosition(0);
+    setDigitOn(true);
+    const timers: number[] = [];
+    const cycle = revealMsOverride !== undefined ? revealMsOverride / sequence.length : DIGIT_ON_MS + DIGIT_GAP_MS;
+    for (let i = 0; i < sequence.length; i++) {
+      timers.push(window.setTimeout(() => { setPosition(i); setDigitOn(true); }, i * cycle));
+      timers.push(window.setTimeout(() => setDigitOn(false), i * cycle + cycle * 0.7));
+    }
+    timers.push(window.setTimeout(() => setRevealing(false), sequence.length * cycle));
+    return () => timers.forEach(window.clearTimeout);
+  }, [index, revealMsOverride, sequence]);
 
   useEffect(() => {
     if (!revealing && submitted === null) inputRef.current?.focus();
   }, [revealing, submitted]);
 
   const submit = () => {
-    if (answer.length === 0 || submitted !== null) return;
+    if (answer.length !== sequence.length || submitted !== null) return;
     setSubmitted(answer);
     if (answer === expected) {
       setCorrect((current) => current + 1);
@@ -48,22 +60,26 @@ export default function DigitSpanGame({ level, onComplete, revealMsOverride }: D
 
   const advance = () => {
     if (isLast) {
-      onComplete({ maxSpan, correct, total: sequences.length });
+      onComplete({ maxSpan, correct, total: index + 1 });
       return;
     }
     setSubmitted(null);
+    setRevealing(true);
     setAnswer('');
+    setSpanState(nextState);
+    setSequence(createDigitSequence(nextState.span, random));
     setIndex((current) => current + 1);
   };
 
   return (
     <section className="game-card center-card" aria-labelledby="digit-title">
-      <p className="eyebrow">문제 {index + 1} / {sequences.length} · {sequence.length}자리</p>
+      <p className="eyebrow">도전 {index + 1} / 최대 {config.digitMaxTrials}회 · {sequence.length}자리</p>
 
       {revealing ? (
         <>
-          <h2 id="digit-title">숫자를 기억하세요</h2>
-          <div className="digit-sequence" aria-live="polite">{sequence}</div>
+          <h2 id="digit-title">하나씩, 순서대로 기억하세요</h2>
+          <div className="digit-sequence" data-testid="digit-stimulus" aria-live="off">{digitOn ? sequence[position] : '·'}</div>
+          <p className="game-note">{position + 1}번째 / {sequence.length}개 · 끝나면 거꾸로 입력해요</p>
         </>
       ) : (
         <>
@@ -93,7 +109,7 @@ export default function DigitSpanGame({ level, onComplete, revealMsOverride }: D
             }}
           />
           {submitted === null ? (
-            <button className="primary-button" type="button" disabled={answer.length === 0} onClick={submit}>
+            <button className="primary-button" type="button" disabled={answer.length !== sequence.length} onClick={submit}>
               답 제출
             </button>
           ) : (

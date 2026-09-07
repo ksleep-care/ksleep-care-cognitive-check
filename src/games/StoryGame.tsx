@@ -76,6 +76,7 @@ export default function StoryGame({ mode, level, seed, onComplete }: StoryGamePr
 
         <p className="eyebrow">시간 안에 한 번 읽어보세요</p>
         <h2 id="story-reading-title">{story.title}</h2>
+        <p className="game-note">기억할 것: {['사람', '요일', '시각', '표시 색', '동행', '인원', '모일 곳'].slice(0, questions.length).join(' · ')}</p>
         <div className="story-copy">
           {story.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
         </div>
@@ -115,7 +116,7 @@ export default function StoryGame({ mode, level, seed, onComplete }: StoryGamePr
 
       <div className="option-grid">
         {question.options.map((option) => {
-          const state = picked === null
+          const state = picked === null || mode === 'immediate'
             ? ''
             : option === question.answer
               ? ' is-answer'
@@ -136,7 +137,15 @@ export default function StoryGame({ mode, level, seed, onComplete }: StoryGamePr
         })}
       </div>
 
-      {picked !== null && (
+      {picked !== null && mode === 'immediate' && (
+        <div className="feedback" role="status">
+          <p>답을 골랐어요. 정답은 다시 퀴즈를 마친 뒤 확인해요.</p>
+          <button className="primary-button" type="button" autoFocus onClick={advance}>
+            {isLast ? '결과 보기' : '다음 문제'}
+          </button>
+        </div>
+      )}
+      {picked !== null && mode === 'delayed' && (
         <Feedback
           correct={isCorrect}
           answer={question.answer}

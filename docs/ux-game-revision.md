@@ -1,0 +1,103 @@
+---
+title: 게임 UX와 과제 원리 개선
+path: docs/ux-game-revision.md
+status: canonical
+stage: waiting-for-production-approval
+date: 2026-09-07
+---
+# 게임 UX와 과제 원리 개선
+
+목적: 홈 우회와 별도 측정을 없애고, 원형 과제의 핵심을 유지하는 7개 게임에 난이도와 재미를 부여한다.
+근거 확인일은 2026-09-07이다. 이 문서는 구현 계약이며 임상 검증 보고서가 아니다.
+
+## 공개 앱과 코드에서 확인한 문제
+
+- 공개 URL의 첫 화면은 홈이고 3분 집중 측정이 주 행동이었다. 작업 폴더는 이미 플레이가 첫 화면이었지만 PVT 진입점과 기록 저장 유도가 남아 있었다.
+- 숫자 뒤집기는 레벨마다 고정된 숫자열 3개를 한 번에 표시했다. 순차 기억보다 덩어리 읽기와 익숙한 답 암기가 쉬워졌다.
+- 반응속도·별똥별은 레벨을 받지 않아 난이도가 고정됐다.
+- Stroop은 불일치 조건만 존재했고 레벨은 시행 수만 변경했다.
+- 첫 이야기 퀴즈에서 정오답과 정답을 공개해 지연 퀴즈 전에 재학습이 일어났다.
+- 이야기 번호 선택은 64회 시도 후 중복 번호를 반환했다. 루키의 일부 문단을 감추면서 서로 다른 번호의 본문이 같아지는 충돌도 확인했다.
+- 별똥별은 화면 밖에서 투명하게 시작했다. 반응시간 시작과 실제 자극을 볼 수 있는 시점이 달랐다.
+- 지연 정답률/즉시 정답률을 '기억 유지율'로 표현했다. 같은 문항을 유지했는지 추적하지 않으므로 이 해석은 제거했다.
+
+## 모바일 UX 원칙 조사와 적용
+
+| 확인한 원칙 | 기존 앱의 문제 | 적용 |
+|---|---|---|
+| [Apple Onboarding](https://developer.apple.com/design/human-interface-guidelines/onboarding): 빠르게 경험하고 필요한 맥락에서 배움 | 홈, 측정, 게임 진입이 나뉨 | 플레이 기본 진입, 하나의 시작 버튼, 게임 직전 짧은 규칙 |
+| [Google Material 3 Expressive 연구](https://design.google/library/expressive-material-design-google-research): 색·크기·형태·움직임으로 행동의 우선순위를 도움 | 유사한 색과 장식, 텍스트 나열 | 차콜 바탕과 라임 CTA, 난이도 세그먼트와 실제 조건 표시 |
+| [Apple Motion](https://developer.apple.com/design/human-interface-guidelines/motion): 동작에 의미 부여, 과도한 움직임 회피 | 별 시작 가시성 지연, 밋밋한 피드백 | 신호는 즉시 표시, 출발·포획은 응답 뒤 움직임 |
+| [W3C Target Size](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html): 충분한 터치 크기와 간격 | 작은 타깃 탐색 부담 | 일반 버튼 44px 이상, 주 버튼 56px, 반응 게임은 판 전체 입력 |
+| [Apple Reduced Motion](https://developer.apple.com/help/app-store-connect/manage-app-accessibility/reduced-motion-evaluation-criteria): 움직임 줄여도 기능 유지 | 애니메이션 의존 가능성 | 별을 정지해도 같은 시간 제한·입력·점수 유지 |
+
+이는 조사한 공식 원칙을 이 앱에 적용한 설계 판단이다. Google/Apple 공식 컴포넌트 구현이나 사용성 개선의 실험적 증명은 아니다.
+3D는 추가 엔진 없이 CSS 원근·입체 음영·transform으로 구현한다. 원형 신호의 가시성과 터치 면적을 바꾸는 장식은 금지한다.
+
+## 7개 게임의 유지 원칙과 커스터마이징 경계
+
+| 게임 | 유지할 원칙 | 이 앱에서 바꾼 것 / 한계 | 확인 자료 |
+|---|---|---|---|
+| 이야기 기억하기 | 한 번 부호화한 내용에 즉시 응답 | 자체 가상 이야기, 시각 읽기, 객관식 재인. 구술 자유 회상과 다름 | [NIA SWAN codebook](https://agingresearchbiobank.nia.nih.gov/studies/swan/documents/download/Codebooks_and_Forms/NIA62018_cdbk.pdf/) |
+| 반응속도 | 예측 불가능한 대기, 한 신호와 한 응답 | 짧은 시행, 레벨별 제한, 브라우저 지연 포함 | [Deary–Liewald](https://www.psytoolkit.org/experiment-library/deary_liewald.html) |
+| 숫자 뒤집기 | 순차 제시, 역순 응답, 성공에 따른 길이 증가 | 시각 제시·숫자 입력, 시작 길이·최대 8회 제한 | [Reverse digit span](https://www.psytoolkit.org/experiment-library/rdigitspan.html), [span progression](https://www.psytoolkit.org/experiment-library/digitspan.html) |
+| 색깔 단어 | 뜻을 억제하고 색으로 반응, 일치·불일치 조건 | 한국어, 각 조건 절반, 8~20문제와 제한시간. 조건별 임상 지표는 제공하지 않음 | [PsyToolkit Stroop](https://www.psytoolkit.org/experiment-library/stroop.html) |
+| 이야기 다시 퀴즈 | 다른 활동 후 동일 사건 응답, 다시 읽기 없음 | 고정 분 단위 지연 아님. 첫 객관식 보기의 단서 영향이 남음 | [NIA delayed story](https://agingresearchbiobank.nia.nih.gov/studies/swan/documents/download/Codebooks_and_Forms/NIA152019_cdbk.pdf/) |
+| 패턴 매칭 | 기준과 유사 보기의 정확한 일치 판별 | 자체 도형 문자열의 동시 매칭. DMS의 지연 조건·검사 자산 복제 없음 | [Cambridge DMS](https://cambridgecognition.com/delayed-matching-to-sample-dms/) |
+| 별똥별 잡기 | 불규칙한 신호 대기, 놓침과 잘못 누름 분리 | 짧은 움직이는 별 게임. Mackworth·CPT·PVT 검사와 동등하지 않음 | [Mackworth 원형](https://www.psytoolkit.org/experiment-library/mackworth.html) |
+
+'글로벌 공인 게임 7종'이라는 인증 근거는 확인하지 못했다. 위 과제들은 연구 원리의 참고 출처이며 이 앱의 인증·ADHD 선별·진단 정확도를 뜻하지 않는다.
+표준 검사 원문, 상업용 문항, 개인 자료를 복제하지 않았다.
+
+## 난이도 계약
+
+숫자의 정본은 `src/domain/levels.ts`, 화면 설명은 `gameChallenge`로 같은 값을 참조한다.
+
+- 이야기: 읽기 시간은 모든 레벨 25초. 기억할 대상은 사람·요일·시각·색의 4가지부터 동행·인원·장소까지 최대 7가지. 첫 읽기 화면에서 범위를 안내한다.
+- 숫자: 루키 3~6 / 챌린저 4~7 / 프로 5~8 / 마스터 6~9자리. 700ms 표시 + 300ms 빈 간격. 같은 길이 2회 성공 시 증가, 2회 실패 시 종료, 최대 8회.
+- Stroop: 8/12/16/20문제, 5/3.5/2.4/1.6초 제한. 일치·불일치는 모든 레벨 50:50.
+- 패턴: 3/4/5/6개 도형, 6.5/5/3.5/2.4초 제한.
+- 반응: 6/8/10/12회, 응답 2.5/1.8/1.2/0.85초. 대기 최대 2.5/3.5/4.5/5.5초.
+- 별똥별: 8/10/12/14회, 응답 2.2/1.6/1.1/0.75초. 대기 최대 3.5/4.5/5.5/6.5초.
+- 100ms 미만 응답은 게임의 예상 누름 분리 규칙이다. 임상 규준이나 정상/비정상 경계가 아니다.
+
+## 이야기 반복 방지와 저장
+
+사건이 다른 자체 장면 24개 × 7개 변수(각 8개 값)의 본문 조합이다.
+모든 변수는 루키에서도 보이는 두 문단 안에 존재하므로 번호만 다르고 보이는 본문은 같은 문제를 막는다.
+한 방문의 `seen` 목록은 메모리에만 두고, 모두 소진하기 전에는 같은 본문을 다시 고르지 않는다.
+재방문은 암호학적 난수로 시작점을 고른다. 영구 이력을 저장하지 않으므로 새로고침·다른 기기까지의 절대 중복 방지는 보장하지 않는다.
+사건 틀 자체는 반복될 수 있으며 새 이야기들의 심리측정상 난이도 동등성은 검증하지 않았다.
+
+## 운영 변경
+
+- 첫 화면과 하단 탭: 플레이 / 게임 안내. 홈·별도 측정·신규 저장 동의·기준선 생성 제거.
+- 이전 측정 데이터는 자동 삭제하지 않는다. 안내 → 이전 버전의 저장 기록 관리 → 내 기록 모두 삭제에서 본인이 확인 후 삭제한다.
+- PVT 도메인과 과거 저장 schema는 회귀 검증용으로 보존하지만 App에서 import하거나 실행하지 않는다.
+- 전체 코스 순서는 유지한다. 진행 중 화면을 숨기면 코스를 재시작하도록 안내한다.
+- 새로고침하면 진행과 게임 결과는 사라진다. 로그인·서버·분석 수집·외부 API 없음.
+- 사전 고정된 '5분이면 끝' 문구 제거. 레벨과 적응형 숫자 진행에 따라 시간이 달라진다.
+- 기존 결과와 변경 후 결과는 같은 프로토콜이 아니며 직접 비교하지 않는다.
+
+## 검증과 다음 실행 주체
+
+실행 결과는 이 문서 하단 Verification Log에만 기록한다. 화면 변경과 실제 운영 배포는 별도다.
+Current Cursor: 로컬 구현·검증 종료. 선별 커밋 후 운영 배포 승인 대기.
+Risk Gate: production 배포와 원격 반영은 Sylvie의 명시 승인 필요.
+Next actor: Sylvie가 운영 배포를 명시 승인하면 Codex가 원격 상태와 배포 경로를 확인한 뒤 반영하고 공개 URL을 검증한다.
+
+### Verification Log
+
+- 변경 전: 앱 테스트 통과, 다른 작업의 PRD 페이지 파일 부재로 테스트 2건 실패.
+- 진행 중: 다른 writer의 PRD 파일·테스트가 `5583d44`로 커밋됨. 앱 소스와 겹치지 않아 보존.
+- 도메인 실패 재현: 기존 번호 선택 1만 회에서 64개만 반환. 번호 수정 후 일부 문단 본문 충돌 49개 추가 확인. 새 템플릿에서 1만 본문 중복 0개.
+- 타입 검사, 전체 테스트 143개(16파일), production build 통과 (2026-09-07).
+- 토큰 검증: 위반 0 / 미검토 0. 상세 수치는 `docs/design/token-report.md`에만 둠.
+- Chromium 브라우저에서 루키 7개 게임 전체 코스와 결과 7개 표시 확인. 숫자 성공 시 실제 길이 3→3→4→4→5→5→6→6 확인.
+- 마스터 전체 코스에서 반응 12회 놓침, 숫자 같은 길이 2회 실패, Stroop·패턴 시간 초과가 막힘 없이 종료됨. 유효 반응이 없으면 0ms 대신 '측정 없음' 표시.
+- 별똥별은 화면 내부에서 opacity 1로 시작. 일반 설정의 comet-flight가 움직임 줄이기에서 none으로 바뀌어도 입력 가능. 14회 중 유효 응답 1 / 놓침 12 / 너무 이른 누름 1로 분리 확인.
+- 시간 관련 브라우저 시나리오는 가상 시계로 가속한 기능 검증이다. 사람의 반응속도·인지능력 측정값이나 임상 검증이 아니다.
+- 배포용 빌드를 로컬 preview에서 열어 320/390/768/1440px의 가로 넘침 없음 확인. 390×844px에서 시작 버튼은 첫 화면 안에 위치. 홈·3분 측정 진입점 0개, 안내 출처 링크 7개, 새 저장 기록 0개, pageerror 0개.
+- 로컬 Pretendard 분할 폰트 로딩 확인. 브라우저 실제 전송량과 현장 기기의 성능·VoiceOver는 미검증.
+- 화면 증거는 로컬 `output/playwright/production-mobile.png`, `cosmos-visible.png`, `master-report.png`에 보관하며 커밋하지 않는다.
+- production: 변경 전 공개 홈만 확인. 개선안 미배포.

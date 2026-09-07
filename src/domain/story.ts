@@ -22,8 +22,8 @@ export interface Story {
 export const STORY_OPTION_COUNT = 4;
 
 /* ── 조합 번호 ───────────────────────────────────────────
-   이야기에 0부터 차례로 번호를 매긴다. 번호 % 10 = 틀, 번호 / 10 = 그 틀 안의 변수 조합.
-   틀 10개가 똑같이 자주 나오도록, 틀마다 가장 작은 틀의 조합 수만큼만 쓴다.
+   이야기에 0부터 차례로 번호를 매긴다. 나머지 = 틀, 몫 = 그 틀 안의 변수 조합.
+   틀이 똑같이 자주 나오도록, 틀마다 가장 작은 틀의 조합 수만큼만 쓴다.
    번호 하나가 이야기 하나이므로, 번호가 다르면 이야기가 다르다는 것이 보장된다. */
 
 const TEMPLATE_COUNT = STORY_TEMPLATES.length;
@@ -62,11 +62,8 @@ function decode(index: number): { template: StoryTemplate; values: Record<string
   return { template, values };
 }
 
-/* ── 시간 칸 → 조합 번호 ──────────────────────────────────
-   저장소를 쓰지 않고도 같은 이야기가 다시 나오지 않게 한다.
-   1분짜리 시간 칸마다 번호를 하나씩 배정하되, 칸 번호를 일대일로 뒤섞어
-   이웃한 칸이든 5분 간격이든 전혀 다른 이야기를 받게 한다. 한 바퀴 도는 데 32만 칸 ≈ 222일이 걸리므로
-   같은 기기에서 몇백 번을 해도 같은 이야기를 두 번 받지 않는다. 한 판은 1분보다 길어서 칸이 겹치지 않는다. */
+/* 입력 값 → 조합 번호. 범위 안에서 일대일로 섞고 이번 방문의 중복은 seen으로 피한다.
+   App은 임의 시작점을 주며 재방문 이력을 저장하지 않으므로 방문 간 무중복은 보장하지 않는다. */
 
 export const STORY_SLOT_MS = 60_000;
 /** 한 방문 안에서 번호가 겹치거나 방금 한 틀과 같으면 이만큼 건너뛴다. 실제 시각으로는 69일쯤 떨어진 칸이다. */
@@ -95,7 +92,7 @@ function permute(x: number): number {
 }
 
 /**
- * 지금 시각에 해당하는 이야기 번호.
+ * 입력 값에 해당하는 이야기 번호.
  * `seen`은 이번 방문에서 이미 쓴 번호, `lastTemplate`은 방금 한 틀이다.
  * 새로고침 없이 연달아 시작해도 번호가 겹치지 않고, 같은 틀이 두 번 연달아 나오지 않는다.
  */
@@ -105,13 +102,13 @@ export function pickStoryIndex(
   lastTemplate: number | null = null,
 ): number {
   const slot = Math.floor(now / STORY_SLOT_MS);
-  for (let attempt = 0; attempt < 64; attempt += 1) {
+  for (let attempt = seen.size; attempt < seen.size + STORY_CYCLE; attempt += 1) {
     const index = permute((slot + attempt * RETRY_STRIDE) % STORY_CYCLE);
     if (seen.has(index)) continue;
     if (lastTemplate !== null && templateOf(index) === lastTemplate) continue;
     return index;
   }
-  return permute(slot % STORY_CYCLE);
+  throw new Error('이번 방문에서 모든 이야기를 읽었어요.');
 }
 
 /** 질문 순서와 보기 순서를 섞을 난수의 씨앗. 번호를 한 번 더 섞어 이웃 번호끼리 닮지 않게 한다. */
@@ -163,7 +160,7 @@ export function generateStory(index: number, shape: number | StoryShape): Story 
   while (eligible(shown).length < wanted.questions && shown < allParagraphs.length) shown += 1;
 
   const paragraphs = allParagraphs.slice(0, shown);
-  const picked = shuffle(eligible(shown), random).slice(0, wanted.questions);
+  const picked = shuffle(eligible(shown).slice(0, wanted.questions), random);
 
   if (wanted.distractor && picked.length > 0) {
     // 물어볼 사실 하나를 골라, 같은 종류의 다른 값을 "지난번" 이야기로 덧붙인다.

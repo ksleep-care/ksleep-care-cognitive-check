@@ -15,7 +15,7 @@ const allMissed: SessionResults = {
 
 describe('결과 표시', () => {
   it('주의력 반응을 모두 놓치면 평균을 0ms로 오해시키지 않는다', () => {
-    render(<Report results={allMissed} level={1} onRestart={vi.fn()} onGoPvt={vi.fn()} onClose={vi.fn()} />);
+    render(<Report results={allMissed} level={1} onRestart={vi.fn()} onClose={vi.fn()} />);
 
     expect(screen.getByText(/측정 없음 · 놓침 6회/)).toBeInTheDocument();
     expect(screen.queryByText(/평균 0ms/)).not.toBeInTheDocument();

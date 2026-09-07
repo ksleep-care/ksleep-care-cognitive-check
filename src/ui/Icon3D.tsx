@@ -22,13 +22,13 @@ interface Icon3DProps {
 export const ICON_SHADE: Record<IconName, [string, string]> = {
   play: ['#D9F78F', '#7FAF2A'],
   trend: ['#8FC1FF', '#2B5FD0'],
-  guide: ['#C9B6FF', '#6A4DD6'],
+  guide: ['#E0E0D9', '#83857F'],
   story: ['#FFB27A', '#D9622A'],
   reaction: ['#D9F78F', '#7FAF2A'],
   digit: ['#8FC1FF', '#2B5FD0'],
   stroop: ['#FF9DB0', '#C43A5A'],
-  storyDelayed: ['#C9B6FF', '#6A4DD6'],
-  pattern: ['#7DE8E2', '#1E9C97'],
+  storyDelayed: ['#F4C464', '#A5782F'],
+  pattern: ['#E0E0D9', '#83857F'],
   vigilance: ['#FFE08A', '#D9A21B'],
   pvt: ['#7DE8E2', '#1E9C97'],
 };

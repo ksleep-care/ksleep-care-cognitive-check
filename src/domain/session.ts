@@ -1,134 +1,76 @@
+import { LEVEL_CONFIG } from './levels';
 import type { GameKey, Level, SessionStep, TabKey } from './types';
 
-export const GAME_ORDER: GameKey[] = [
-  'story',
-  'reaction',
-  'digit',
-  'stroop',
-  'storyDelayed',
-  'pattern',
-  'vigilance',
-];
-
+export const GAME_ORDER: GameKey[] = ['story', 'reaction', 'digit', 'stroop', 'storyDelayed', 'pattern', 'vigilance'];
 export const LEVELS: Level[] = [1, 2, 3, 4];
 export const DEFAULT_LEVEL: Level = 1;
-
 export const LEVEL_META: Record<Level, { icon: string; name: string; blurb: string }> = {
-  1: { icon: '🌱', name: '루키', blurb: '처음이라면 여기부터' },
-  2: { icon: '⚡', name: '챌린저', blurb: '이야기가 길어지고 질문이 늘어요' },
-  3: { icon: '🔥', name: '프로', blurb: '읽는 시간은 줄고 문제는 늘어요' },
-  4: { icon: '👑', name: '마스터', blurb: '헷갈리는 문장까지 섞여요' },
+  1: { icon: '1', name: '루키', blurb: '규칙에 익숙해지는 첫 도전' },
+  2: { icon: '2', name: '챌린저', blurb: '더 길게 기억하고 빠르게 반응' },
+  3: { icon: '3', name: '프로', blurb: '복잡한 패턴과 짧은 응답 시간' },
+  4: { icon: '4', name: '마스터', blurb: '긴 숫자열과 촘촘한 시간 제한' },
 };
-
-export const GAME_META: Record<
-  GameKey,
-  {
-    icon: string;
-    title: string;
-    description: string;
-    /** 무엇을 보는 과제인지. 검사 점수처럼 읽히는 표현을 쓰지 않는다. */
-    looksAt: string;
-    /**
-     * 어떤 연구 과제 형식에서 왔고 여기서 무엇을 바꿨는지.
-     * 형식의 출처는 밝히되, 그 검사와 점수를 비교할 수 있다고 말하지 않는다.
-     */
-    basis: string;
-    /** 이 게임으로 말할 수 없는 것. */
-    limit: string;
-    /** 레벨이 난이도를 바꾸는 게임인가. */
-    scalesWithLevel: boolean;
-  }
-> = {
-  story: {
-    icon: '📖',
-    title: '이야기 기억하기',
-    description: '제한 시간 안에 짧은 이야기를 읽고 바로 질문에 답해요.',
-    looksAt: '방금 들은 내용을 붙잡아 두는 힘을 쓰는 게임이에요.',
-    basis: '심리학의 이야기 회상(story recall) 과제 형식이에요. 짧은 글을 듣고 바로 떠올리는 방식은 기억 연구에서 오랫동안 써 왔어요. 여기서는 읽는 시간을 정해 두고 객관식으로 바꿨어요.',
-    limit: '기억력 검사가 아니에요. 이야기 틀은 10가지고 이름·장소·금액이 매번 바뀌지만, 틀 자체는 몇 번 하면 익숙해져요. 읽기 시간은 레벨마다 달라서 레벨이 다르면 비교할 수 없어요.',
-    scalesWithLevel: true,
-  },
-  reaction: {
-    icon: '⚡',
-    title: '반응속도',
-    description: '원이 나타나는 순간 빠르게 눌러요. 6번이고, 너무 일찍 누른 판은 기록되지 않아요.',
-    looksAt: '몸이 얼마나 빨리 반응하는지 감을 잡는 워밍업이에요.',
-    basis: '단순 반응시간(simple reaction time) 과제 형식이에요. 신호가 보이면 바로 누르는 가장 기본적인 반응 측정 방식으로, 수면·피로 연구에서 널리 써요. 여기서는 6번만 하는 워밍업이에요.',
-    limit: '6번뿐이라 기록용이에요. 연구 기준과 비교하지 않아요.',
-    scalesWithLevel: false,
-  },
-  digit: {
-    icon: '🔢',
-    title: '숫자 뒤집기',
-    description: '본 숫자를 거꾸로 입력해요.',
-    looksAt: '머릿속에 잠깐 담아두고 순서를 뒤집는 힘을 쓰는 게임이에요.',
-    basis: '숫자 거꾸로 따라 하기(digit span backward) 형식이에요. 작업기억을 보는 대표적인 방식으로 여러 인지 검사에 들어 있어요. 여기서는 말하기 대신 입력으로 바꿨어요.',
-    limit: '작업기억을 활용하는 게임일 뿐, 작업기억이 정상인지 알려주지 않아요.',
-    scalesWithLevel: true,
-  },
-  stroop: {
-    icon: '🎨',
-    title: '색깔 단어',
-    description: '단어의 뜻이 아니라 글자색을 골라요.',
-    looksAt: '자동으로 튀어나오는 답을 눌러 참는 힘을 쓰는 게임이에요.',
-    basis: '스트룹(Stroop, 1935) 과제 형식이에요. 글자의 뜻을 누르고 글자색을 고르는 방식으로, 억제 조절 연구에서 가장 오래 쓰인 과제 중 하나예요. 여기서는 색을 넷으로 줄이고 문제 수를 줄였어요.',
-    limit: '집중력 점수가 아니에요. 화면 밝기와 색 구분 능력에 영향을 받아요.',
-    scalesWithLevel: true,
-  },
-  storyDelayed: {
-    icon: '💭',
-    title: '이야기 다시 퀴즈',
-    description: '맨 처음 읽은 이야기를 다시 떠올려요.',
-    looksAt: '시간이 지난 뒤에도 남아 있는지를 보는 게임이에요.',
-    basis: '지연 회상(delayed recall) 형식이에요. 같은 이야기를 시간이 지난 뒤 다시 묻는 방식은 기억이 남아 있는지를 볼 때 표준처럼 쓰여요. 여기서는 게임 3개를 사이에 두었어요.',
-    limit: '중간 게임들이 얼마나 방해했는지에 따라 값이 달라져요.',
-    scalesWithLevel: true,
-  },
-  pattern: {
-    icon: '🎯',
-    title: '패턴 매칭',
-    description: '기준과 똑같은 모양을 빠르게 찾아요.',
-    looksAt: '보고 비교해서 고르는 속도를 쓰는 게임이에요.',
-    basis: '시각 짝 맞추기(visual matching) 형식이에요. 기준과 같은 것을 빨리 찾는 방식은 처리 속도를 볼 때 자주 써요. 여기서는 도형 기호로 바꿨어요.',
-    limit: '판단력 점수가 아니에요. 화면 크기와 손가락 위치에 영향을 받아요.',
-    scalesWithLevel: true,
-  },
-  vigilance: {
-    icon: '🌙',
-    title: '별똥별 잡기',
-    description: '별똥별이 밤하늘을 가로지르는 3초 안에 판을 눌러 잡아요. 6번이고, 3분 집중 측정과는 다른 짧은 게임이에요.',
-    looksAt: '기다리는 동안 주의를 붙잡아 두는 감을 보는 짧은 게임이에요.',
-    basis: '지속 주의(sustained attention) 과제 형식이에요. 언제 올지 모르는 신호를 기다렸다 반응하는 방식으로, 3분 집중 측정과 뿌리가 같아요. 여기서는 6번짜리 짧은 게임으로 만들었어요.',
-    limit: '6번짜리 게임 기록이에요. 3분 집중 측정과 다른 과제라 서로 비교하지 않아요.',
-    scalesWithLevel: false,
-  },
+export const GAME_META: Record<GameKey, {
+  icon: string; title: string; description: string; looksAt: string; basis: string; limit: string;
+  scalesWithLevel: boolean; source: string;
+}> = {
+  story: { icon: '📖', title: '이야기 기억하기',
+    description: '이야기를 한 번 읽고 답을 골라요. 정답은 나중에 공개해요.',
+    looksAt: '읽은 사건과 세부 정보를 기억하는 게임이에요.',
+    basis: '이야기 기억 과제의 부호화 → 즉시 응답 → 방해 활동 → 지연 응답 순서를 따릅니다. 직접 쓴 가상 이야기를 화면으로 읽고 객관식으로 답하므로 구술 자유 회상 검사의 복제는 아닙니다.',
+    limit: '24개 사건 틀의 내용을 조합해요. 같은 방문에서는 본문이 반복되지 않지만, 재방문 중복과 틀에 익숙해지는 효과는 남아요.',
+    scalesWithLevel: true, source: 'https://agingresearchbiobank.nia.nih.gov/studies/swan/documents/download/Codebooks_and_Forms/NIA62018_cdbk.pdf/' },
+  reaction: { icon: '⚡', title: '반응속도',
+    description: '신호등이 켜지면 화면을 눌러 출발해요. 신호가 오기 전에는 기다려요.',
+    looksAt: '한 가지 신호를 보고 반응하는 속도를 쓰는 게임이에요.',
+    basis: '단순 반응시간 과제처럼 예측하기 어려운 간격, 한 가지 신호, 한 가지 응답을 유지합니다. 신호 전 누름과 100ms 미만 응답은 너무 이른 누름으로 분리합니다.',
+    limit: '짧은 게임이며 화면·브라우저·입력 지연이 포함돼요. 레벨별 시간 제한이 달라 서로 비교하지 않아요.',
+    scalesWithLevel: true, source: 'https://www.psytoolkit.org/experiment-library/deary_liewald.html' },
+  digit: { icon: '🔢', title: '숫자 뒤집기',
+    description: '숫자가 하나씩 지나가요. 모두 사라지면 거꾸로 입력하세요.',
+    looksAt: '숫자의 순서를 잠깐 기억하고 뒤집는 게임이에요.',
+    basis: '숫자 거꾸로 따라 하기 형식입니다. 1초에 한 자리씩 제시하고, 같은 길이에서 두 번 성공하면 길어집니다. 같은 길이에서 두 번 실패하거나 최대 도전에 도달하면 끝납니다.',
+    limit: '임상 검사처럼 음성으로 제시하지 않아요. 시작 길이·최대 길이·최대 8회 제한이 있는 게임이므로 검사 점수로 읽지 않아요.',
+    scalesWithLevel: true, source: 'https://www.psytoolkit.org/experiment-library/rdigitspan.html' },
+  stroop: { icon: '🎨', title: '색깔 단어',
+    description: '단어를 읽지 말고 글자색을 골라요. 뜻과 색이 같을 때도 있어요.',
+    looksAt: '단어를 읽으려는 반응을 억제하고 색을 고르는 게임이에요.',
+    basis: 'Stroop 과제의 뜻과 색이 같은 조건, 다른 조건을 절반씩 섞습니다. 색 버튼의 위치는 고정하고 레벨에 따라 응답 제한을 줄입니다.',
+    limit: '표준 Stroop 검사나 ADHD 선별 점수가 아니에요. 색 구분·읽기·기기 성능의 영향을 받아요.',
+    scalesWithLevel: true, source: 'https://www.psytoolkit.org/experiment-library/stroop.html' },
+  storyDelayed: { icon: '💭', title: '이야기 다시 퀴즈',
+    description: '처음 읽은 이야기, 아직 기억나나요? 글을 다시 보지 않고 답해요.',
+    looksAt: '다른 게임을 한 뒤에 남아 있는 내용을 떠올려요.',
+    basis: '중간 게임 세 개 뒤에 같은 이야기의 같은 사실을 다시 묻습니다. 첫 퀴즈에서 정답을 가르쳐 주지 않습니다. 객관식 재인 방식이며 정해진 분 단위 지연 검사는 아닙니다.',
+    limit: '객관식 보기가 단서가 되고 중간 소요 시간이 달라져요. 두 정답률의 비율을 기억 유지율로 해석하지 않아요.',
+    scalesWithLevel: true, source: 'https://agingresearchbiobank.nia.nih.gov/studies/swan/documents/download/Codebooks_and_Forms/NIA152019_cdbk.pdf/' },
+  pattern: { icon: '🎯', title: '패턴 매칭',
+    description: '기준과 모양도 순서도 같은 패턴을 찾아요.',
+    looksAt: '눈으로 비교하고 구별하는 게임이에요.',
+    basis: '동시 시각 매칭 형식으로 기준을 계속 보여주고 유사한 보기 중 정확한 일치를 고릅니다. CANTAB DMS의 동시 제시 원칙을 참고했으며 자체 도형을 사용합니다.',
+    limit: 'CANTAB 검사 복제나 표준 점수가 아니에요. 도형 수와 응답 시간이 레벨별로 달라요.',
+    scalesWithLevel: true, source: 'https://cambridgecognition.com/delayed-matching-to-sample-dms/' },
+  vigilance: { icon: '🌙', title: '별똥별 잡기',
+    description: '예고 없이 나타나는 별을 기다려요. 별이 보일 때 화면 어디든 누르면 잡혀요.',
+    looksAt: '기다리는 동안 신호에 주의를 두는 짧은 게임이에요.',
+    basis: '지속 주의 과제의 불규칙한 신호 대기와 놓침 기록 원칙을 참고했습니다. 움직이는 별과 짧은 시행을 쓰는 자체 게임이며 Mackworth나 CPT 검사를 재현하지 않습니다.',
+    limit: '표준 지속 주의 측정이 아니에요. 놓침·너무 이른 누름을 구분하며 같은 레벨·기기에서도 참고용이에요.',
+    scalesWithLevel: true, source: 'https://www.psytoolkit.org/experiment-library/mackworth.html' },
 };
-
-/** 아이콘은 이모지가 아니라 TabBar의 도형 SVG를 쓴다. 여기에는 라벨만 둔다. */
-export const TAB_META: Record<TabKey, { label: string }> = {
-  play: { label: '플레이' },
-  trend: { label: '나의 변화' },
-  guide: { label: '게임 안내' },
-};
-
-/**
- * 홈 탭은 없앴다. 홈에 있던 것이 전부 다른 탭에 이미 있었고,
- * 한 번 더 눌러야 게임에 닿는 화면을 남길 이유가 없었다.
- */
-export const TAB_ORDER: TabKey[] = ['play', 'trend', 'guide'];
-
+export function gameChallenge(key: GameKey, level: Level): string {
+  const c = LEVEL_CONFIG[level];
+  if (key === 'story' || key === 'storyDelayed') return `${c.storyQuestions}가지 사실 기억`;
+  if (key === 'digit') return `${c.digitStart}자리 시작 · 최대 ${c.digitMax}자리`;
+  if (key === 'stroop') return `${c.stroopTrials}문제 · ${c.stroopDeadlineMs / 1000}초 안에`;
+  if (key === 'pattern') return `${c.patternSymbols}개 도형 · ${c.patternDeadlineMs / 1000}초 안에`;
+  if (key === 'reaction') return `${c.reactionTrials}회 · ${c.reactionDeadlineMs / 1000}초 안에`;
+  return `${c.vigilanceTrials}개의 별 · ${c.vigilanceDeadlineMs / 1000}초 안에`;
+}
+export const TAB_META: Record<TabKey, { label: string }> = { play: { label: '플레이' }, guide: { label: '게임 안내' } };
+export const TAB_ORDER: TabKey[] = ['play', 'guide'];
 export function nextStep(step: SessionStep): SessionStep {
-  if (step.type === 'transition') {
-    return { type: 'game', index: step.index };
-  }
-
-  if (step.type === 'game') {
-    return step.index >= GAME_ORDER.length - 1
-      ? { type: 'report' }
-      : { type: 'transition', index: step.index + 1 };
-  }
-
+  if (step.type === 'transition') return { type: 'game', index: step.index };
+  if (step.type === 'game') return step.index >= GAME_ORDER.length - 1 ? { type: 'report' } : { type: 'transition', index: step.index + 1 };
   return step;
 }
-
 export const FIRST_STEP: SessionStep = { type: 'transition', index: 0 };

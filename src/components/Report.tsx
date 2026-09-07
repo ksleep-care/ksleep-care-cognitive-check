@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import Burst from '../ui/Burst';
-import Icon3D from '../ui/Icon3D';
 import { play } from '../ui/sound';
 import MetricTable, { MetricGlossary } from './MetricTable';
 import { buildGameCards, calculateReport } from '../domain/scoring';
@@ -11,11 +10,10 @@ interface ReportProps {
   results: SessionResults;
   level: Level;
   onRestart: () => void;
-  onGoPvt: () => void;
   onClose: () => void;
 }
 
-export default function Report({ results, level, onRestart, onGoPvt, onClose }: ReportProps) {
+export default function Report({ results, level, onRestart, onClose }: ReportProps) {
   const report = calculateReport(results);
   const levelName = LEVEL_META[level].name;
   const cards = buildGameCards(report, levelName);
@@ -42,16 +40,8 @@ export default function Report({ results, level, onRestart, onGoPvt, onClose }: 
       </p>
 
       <div className="report-actions">
-        <p className="next-step-note">워밍업이 끝났어요. 내 기준선은 3분 집중 측정으로만 만들어져요.</p>
-        <button className="lime-button" type="button" onClick={onGoPvt}>
-          3분 집중 측정 시작
-        </button>
-
-        <button className="pvt-row" type="button" onClick={onRestart}>
-          <Icon3D name="play" size={28} />
-          <span className="pvt-row-title">{levelName}로 한 판 더</span>
-          <span className="pvt-row-note">게임 7개 · 5분</span>
-          <span className="pvt-row-arrow" aria-hidden="true">→</span>
+        <button className="lime-button" type="button" onClick={onRestart}>
+          {levelName}로 한 판 더
         </button>
 
         <button className="quiet-button" type="button" onClick={onClose}>

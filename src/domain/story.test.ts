@@ -37,8 +37,8 @@ describe('이야기 생성', () => {
     }
   });
 
-  it('틀은 10가지, 실제로 쓰는 서로 다른 이야기는 30만 개가 넘는다', () => {
-    expect(STORY_TEMPLATES).toHaveLength(10);
+  it('사건 틀은 24가지이고 수천 판을 넘는 본문 조합이 있다', () => {
+    expect(STORY_TEMPLATES).toHaveLength(24);
     expect(countStoryCombinations()).toBe(STORY_COMBINATIONS);
     expect(STORY_COMBINATIONS).toBeGreaterThan(1_000_000);
     expect(STORY_CYCLE).toBeGreaterThan(150_000);
@@ -90,8 +90,8 @@ describe('같은 이야기가 다시 나오지 않는다', () => {
       titles.set(title, (titles.get(title) ?? 0) + 1);
     }
     // 틀 10개가 고루 나온다.
-    expect(titles.size).toBe(10);
-    for (const count of titles.values()) expect(count).toBeGreaterThan(20);
+    expect(titles.size).toBe(24);
+    for (const count of titles.values()) expect(count).toBeGreaterThan(5);
   });
 
   it('방금 한 틀을 알려주면 같은 틀이 연달아 나오지 않는다', () => {

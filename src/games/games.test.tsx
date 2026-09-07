@@ -7,7 +7,7 @@ import DigitSpanGame from './DigitSpanGame';
 import StroopGame from './StroopGame';
 import PatternGame from './PatternGame';
 import VigilanceGame from './VigilanceGame';
-import { LEVEL_CONFIG } from '../domain/levels';
+import { LEVEL_CONFIG, createDigitSequence, makeRandom } from '../domain/levels';
 import { generateStory } from '../domain/story';
 
 afterEach(() => {
@@ -22,7 +22,7 @@ const LEVEL1_ANSWERS = STORY_QUESTIONS.map((q) => q.answer);
 const FIRST_LINE = new RegExp(STORY.paragraphs[0].slice(0, 12).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
 
 describe('이야기 기억하기', () => {
-  it('문제마다 정오답을 먼저 보여준 뒤 사용자가 다음으로 넘어간다', async () => {
+  it('첫 퀴즈는 정답을 가르치지 않고 선택 확인만 보여준다', async () => {
     const user = userEvent.setup();
     const onComplete = vi.fn();
     render(<StoryGame mode="immediate" level={1} seed={SEED} onComplete={onComplete} />);
@@ -30,7 +30,9 @@ describe('이야기 기억하기', () => {
     await user.click(screen.getByRole('button', { name: '다 읽었어요' }));
     await user.click(screen.getByRole('button', { name: LEVEL1_ANSWERS[0] }));
 
-    expect(screen.getByText('맞았어요')).toBeInTheDocument();
+    expect(screen.getByRole('status')).toHaveTextContent('정답은 다시 퀴즈를 마친 뒤');
+    expect(screen.queryByText('맞았어요')).not.toBeInTheDocument();
+    expect(document.querySelector('.is-answer')).toBeNull();
     expect(onComplete).not.toHaveBeenCalled();
 
     await user.click(screen.getByRole('button', { name: '다음 문제' }));
@@ -39,9 +41,7 @@ describe('이야기 기억하기', () => {
 
   it('틀리면 정답과 한 줄 설명을 알려준다', async () => {
     const user = userEvent.setup();
-    render(<StoryGame mode="immediate" level={1} seed={SEED} onComplete={vi.fn()} />);
-
-    await user.click(screen.getByRole('button', { name: '다 읽었어요' }));
+    render(<StoryGame mode="delayed" level={1} seed={SEED} onComplete={vi.fn()} />);
     const wrong = STORY_QUESTIONS[0].options.find((o) => o !== STORY_QUESTIONS[0].answer)!;
     await user.click(screen.getByRole('button', { name: wrong }));
 
@@ -93,7 +93,7 @@ describe('이야기 읽기 시간 제한', () => {
     expect(screen.getByRole('timer')).toHaveTextContent('24초');
   });
 
-  it('레벨이 오를수록 읽는 시간이 줄어든다', () => {
+  it('레벨마다 정해진 읽기 시간이 적용된다', () => {
     vi.useFakeTimers();
     const { unmount } = render(<StoryGame mode="immediate" level={1} seed={SEED} onComplete={vi.fn()} />);
     expect(screen.getByRole('timer')).toHaveTextContent(`${LEVEL_CONFIG[1].storyReadMs / 1000}초`);
@@ -101,7 +101,7 @@ describe('이야기 읽기 시간 제한', () => {
 
     render(<StoryGame mode="immediate" level={4} seed={SEED} onComplete={vi.fn()} />);
     expect(screen.getByRole('timer')).toHaveTextContent(`${LEVEL_CONFIG[4].storyReadMs / 1000}초`);
-    expect(LEVEL_CONFIG[4].storyReadMs).toBeLessThan(LEVEL_CONFIG[1].storyReadMs);
+    expect(LEVEL_CONFIG[4].storyReadMs).toBe(LEVEL_CONFIG[1].storyReadMs);
   });
 
   it('시간이 다 되면 이야기를 감추고 첫 질문으로 자동으로 넘어간다', async () => {
@@ -156,16 +156,42 @@ describe('이야기 읽기 시간 제한', () => {
 });
 
 describe('숫자 뒤집기', () => {
+  it('숫자를 한 자리씩만 보여주고 빈 간격 뒤 다음 숫자로 바꾼다', async () => {
+    vi.useFakeTimers();
+    const sequence = createDigitSequence(3, makeRandom(71));
+    render(<DigitSpanGame level={1} onComplete={vi.fn()} random={makeRandom(71)} />);
+    expect(screen.getByTestId('digit-stimulus')).toHaveTextContent(sequence[0]);
+    expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+    await act(() => vi.advanceTimersByTimeAsync(700));
+    expect(screen.getByTestId('digit-stimulus')).toHaveTextContent('·');
+    await act(() => vi.advanceTimersByTimeAsync(300));
+    expect(screen.getByTestId('digit-stimulus')).toHaveTextContent(sequence[1]);
+    await act(() => vi.advanceTimersByTimeAsync(2000));
+    expect(screen.queryByTestId('digit-stimulus')).not.toBeInTheDocument();
+    expect(screen.getByRole('textbox')).toBeInTheDocument();
+  });
+  it('같은 길이에서 두 번 실패하면 무한히 어려워지지 않고 끝난다', async () => {
+    vi.useFakeTimers();
+    const onComplete = vi.fn();
+    render(<DigitSpanGame level={4} onComplete={onComplete} revealMsOverride={10} />);
+    for (let i = 0; i < 2; i++) {
+      await act(() => vi.advanceTimersByTimeAsync(10));
+      fireEvent.change(screen.getByLabelText('거꾸로 입력'), { target: { value: '000000' } });
+      fireEvent.click(screen.getByRole('button', { name: '답 제출' }));
+      fireEvent.click(screen.getByRole('button', { name: i === 1 ? '결과 보기' : '다음 문제' }));
+    }
+    expect(onComplete).toHaveBeenCalledWith({ maxSpan: 0, correct: 0, total: 2 });
+  });
   it('Enter로 제출할 수 있고 모바일 숫자 키패드를 쓴다', async () => {
     vi.useFakeTimers();
-    render(<DigitSpanGame level={1} onComplete={vi.fn()} revealMsOverride={10} />);
+    render(<DigitSpanGame level={1} onComplete={vi.fn()} revealMsOverride={10} random={makeRandom(71)} />);
     await act(() => vi.advanceTimersByTimeAsync(10));
 
     const input = screen.getByLabelText('거꾸로 입력');
     expect(input).toHaveAttribute('inputmode', 'numeric');
     expect(input).toHaveAttribute('autocomplete', 'off');
 
-    fireEvent.change(input, { target: { value: '729' } });
+    fireEvent.change(input, { target: { value: [...createDigitSequence(3, makeRandom(71))].reverse().join('') } });
     fireEvent.keyDown(input, { key: 'Enter' });
     expect(screen.getByText('맞았어요')).toBeInTheDocument();
   });
@@ -180,21 +206,20 @@ describe('숫자 뒤집기', () => {
     expect(input).toHaveValue('729');
   });
 
-  it('세 문제 후 최대 정답 자릿수를 전달한다', async () => {
+  it('두 번 성공하면 자릿수가 늘어나고 최대 도전 후 실제 최고 길이를 전달한다', async () => {
     vi.useFakeTimers();
     const onComplete = vi.fn();
-    render(<DigitSpanGame level={1} onComplete={onComplete} revealMsOverride={10} />);
-
-    const sequences = LEVEL_CONFIG[1].digitSequences;
-    for (let i = 0; i < sequences.length; i += 1) {
+    render(<DigitSpanGame level={1} onComplete={onComplete} revealMsOverride={10} random={makeRandom(33)} />);
+    const random = makeRandom(33);
+    for (let i = 0; i < 8; i += 1) {
       await act(() => vi.advanceTimersByTimeAsync(10));
-      const reversed = [...sequences[i]].reverse().join('');
+      const reversed = [...createDigitSequence(3 + Math.floor(i / 2), random)].reverse().join('');
       fireEvent.change(screen.getByLabelText('거꾸로 입력'), { target: { value: reversed } });
       fireEvent.click(screen.getByRole('button', { name: '답 제출' }));
-      fireEvent.click(screen.getByRole('button', { name: i === sequences.length - 1 ? '결과 보기' : '다음 문제' }));
+      fireEvent.click(screen.getByRole('button', { name: i === 7 ? '결과 보기' : '다음 문제' }));
     }
 
-    expect(onComplete).toHaveBeenCalledWith({ maxSpan: 4, correct: 3, total: 3 });
+    expect(onComplete).toHaveBeenCalledWith({ maxSpan: 6, correct: 8, total: 8 });
   });
 });
 
@@ -243,6 +268,36 @@ describe('색깔 단어와 패턴 매칭', () => {
 });
 
 describe('반응속도와 별똥별 (게임 기록)', () => {
+  it('반응하지 않은 시행은 자동 종료하고 0ms 성공으로 기록하지 않는다', async () => {
+    vi.useFakeTimers(); const done = vi.fn();
+    render(<ReactionGame level={1} onComplete={done} getDelay={() => 10} />);
+    for (let i = 0; i < 6; i++) {
+      await act(() => vi.advanceTimersByTimeAsync(10));
+      await act(() => vi.advanceTimersByTimeAsync(2500));
+      expect(screen.getByText('놓침')).toBeInTheDocument();
+      await act(() => vi.advanceTimersByTimeAsync(1000));
+    }
+    expect(done).toHaveBeenCalledWith({ averageMs: 0, hits: 0, total: 6, misses: 6, earlyPresses: 0 });
+  });
+  it('별똥별도 예상 누름을 분리하고 키 반복 입력을 무시한다', async () => {
+    vi.useFakeTimers();
+    render(<VigilanceGame onComplete={vi.fn()} getDelay={() => 1000} />);
+    const button = screen.getByRole('button', { name: '별을 기다리는 중' });
+    fireEvent.keyDown(button, { key: ' ', repeat: true });
+    expect(screen.queryByText('너무 이른 누름')).not.toBeInTheDocument();
+    fireEvent.keyDown(button, { key: ' ', repeat: false });
+    expect(screen.getByText('너무 이른 누름')).toBeInTheDocument();
+  });
+  it('같은 시행에 겹친 입력은 한 번만 반영한다', async () => {
+    vi.useFakeTimers();
+    render(<ReactionGame onComplete={vi.fn()} getDelay={() => 10} />);
+    await act(() => vi.advanceTimersByTimeAsync(10));
+    await act(() => vi.advanceTimersByTimeAsync(200));
+    const button = screen.getByRole('button', { name: '지금 누르기' });
+    fireEvent.click(button); fireEvent.click(button);
+    expect(screen.getByText('200ms')).toBeInTheDocument();
+    expect(screen.queryByText('너무 이른 누름')).not.toBeInTheDocument();
+  });
   it('반응속도는 매 시행 ms를 즉시 알려준다', async () => {
     vi.useFakeTimers();
     render(<ReactionGame onComplete={vi.fn()} getDelay={() => 10} />);
@@ -261,7 +316,7 @@ describe('반응속도와 별똥별 (게임 기록)', () => {
 
     fireEvent.click(screen.getByRole('button', { name: '아직 기다리세요' }));
 
-    expect(screen.getByText('너무 일찍 눌렀어요')).toBeInTheDocument();
+    expect(screen.getByText('너무 이른 누름')).toBeInTheDocument();
   });
 
   it('반응속도는 여섯 시행 뒤 평균과 이른 누름 수를 전달한다', async () => {
@@ -273,7 +328,7 @@ describe('반응속도와 별똥별 (게임 기록)', () => {
       await act(() => vi.advanceTimersByTimeAsync(10));
       await act(() => vi.advanceTimersByTimeAsync(200));
       fireEvent.click(screen.getByRole('button', { name: '지금 누르기' }));
-      await act(() => vi.advanceTimersByTimeAsync(1200));
+      await act(() => vi.advanceTimersByTimeAsync(1000));
     }
 
     expect(onComplete).toHaveBeenCalledOnce();
@@ -282,19 +337,20 @@ describe('반응속도와 별똥별 (게임 기록)', () => {
     });
   });
 
-  it('별똥별은 여섯 번 뒤 평균과 놓침 수를 전달한다', async () => {
+  it('별똥별은 레벨에 지정된 시행 뒤 평균과 놓침 수를 전달한다', async () => {
     vi.useFakeTimers();
     const onComplete = vi.fn();
     render(<VigilanceGame onComplete={onComplete} getDelay={() => 10} />);
 
-    for (let i = 0; i < 6; i += 1) {
+    for (let i = 0; i < LEVEL_CONFIG[1].vigilanceTrials; i += 1) {
       await act(() => vi.advanceTimersByTimeAsync(10));
+      await act(() => vi.advanceTimersByTimeAsync(200));
       fireEvent.click(screen.getByRole('button', { name: '별똥별 잡기' }));
-      await act(() => vi.advanceTimersByTimeAsync(1200));
+      await act(() => vi.advanceTimersByTimeAsync(1000));
     }
 
     expect(onComplete).toHaveBeenCalledOnce();
-    expect(onComplete.mock.calls[0][0]).toMatchObject({ hits: 6, total: 6, misses: 0 });
+    expect(onComplete.mock.calls[0][0]).toMatchObject({ hits: 8, total: 8, misses: 0, averageMs: 200 });
   });
 
   it('별똥별을 놓치면 놓침으로 알려준다', async () => {
@@ -305,6 +361,6 @@ describe('반응속도와 별똥별 (게임 기록)', () => {
     expect(screen.getByRole('button', { name: '별똥별 잡기' })).toBeInTheDocument();
 
     await act(() => vi.advanceTimersByTimeAsync(3000));
-    expect(screen.getByText('놓쳤어요')).toBeInTheDocument();
+    expect(screen.getByText('놓침')).toBeInTheDocument();
   });
 });

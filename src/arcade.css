@@ -1,0 +1,137 @@
+/* 2026-09-07: 독립 게임 화면. UI는 차콜/라임, 입체 장면은 게임 피드백 전용. */
+.app-shell { max-width: 1080px; padding: 0 24px calc(96px + env(safe-area-inset-bottom)); }
+.app-shell main { padding-top: 24px; }
+.app-name-row { margin-bottom: 24px; }
+.app-name { font-size: 16px; }
+.accent { color: var(--g-accent); }
+.play-intro { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 24px 0 32px; }
+.play-intro h1 { font-size: clamp(32px, 4vw, 48px); letter-spacing: -.045em; line-height: 1.16; }
+.play-intro .lead { margin: 16px 0 0; color: var(--g-muted); }
+.arcade-object { position: relative; flex: none; width: 160px; height: 160px; perspective: 600px; overflow: clip; }
+.arcade-sphere { position: absolute; inset: 36px; border-radius: 50%; background: radial-gradient(circle at 30% 24%, var(--g-ink), var(--g-accent) 30%, var(--g-wash-accent) 82%); box-shadow: 12px 16px 24px var(--g-shadow); }
+.orbit-ring { position: absolute; inset: 8px; border: 2px solid var(--g-border-fn); border-radius: 50%; transform: rotateX(64deg) rotateZ(-28deg); }
+.orbit-satellite { position: absolute; top: 22px; right: 20px; width: 24px; height: 24px; border-radius: 50%; background: radial-gradient(circle at 30% 20%, var(--g-ink), var(--g-border-fn) 80%); }
+.section-topline { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.section-topline h2 { margin: 0; font-size: 18px; }
+.section-topline > span { color: var(--g-muted); font-size: 13px; }
+.level-picker { padding: 24px; border: 1px solid var(--g-border-dec); border-radius: 16px; background: var(--g-bg); }
+.level-segments { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.level-segment { display: grid; justify-items: center; gap: 8px; padding: 12px 4px; border: 1px solid var(--g-border-fn); border-radius: 8px; background: transparent; color: var(--g-body); font-size: 14px; font-weight: 600; }
+.level-segment:hover { background: var(--g-surface-lift); }
+.level-segment.is-selected { color: var(--g-on-accent); background: var(--g-accent); border-color: var(--g-accent); }
+.level-bars { display: flex; align-items: end; height: 20px; gap: 3px; }
+.level-bars i { width: 5px; height: 6px; background: currentColor; opacity: .25; border-radius: 1px; }
+.level-bars i:nth-child(2) { height: 10px; }.level-bars i:nth-child(3) { height: 15px; }.level-bars i:nth-child(4) { height: 20px; }
+.level-bars i.filled { opacity: 1; }
+.level-description { margin: 16px 0; color: var(--g-body); font-size: 14px; }
+.challenge-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 16px 0; border-top: 1px solid var(--g-border-dec); }
+.challenge-summary div { display: grid; gap: 4px; }
+.challenge-summary span { color: var(--g-muted); font-size: 12px; }
+.challenge-summary strong { font-size: 20px; font-variant-numeric: tabular-nums; }
+.start-course { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; min-height: 56px; }
+.start-course > span:last-child { font-size: 24px; }
+.start-note { margin: 12px 0 0; color: var(--g-muted); font-size: 12px; }
+.game-list-heading { margin-top: 32px; }
+.game-library { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 0; list-style: none; }
+.game-tile { display: grid; grid-template-columns: 80px 1fr; column-gap: 16px; align-content: start; padding: 16px; border: 1px solid var(--g-border-dec); border-radius: 12px; background: var(--g-bg); }
+.game-art { display: grid; place-items: center; align-self: stretch; min-height: 80px; border-radius: 8px; background: var(--g-surface-lift); perspective: 240px; overflow: hidden; }
+.game-art .icon-3d { transform: rotate(-12deg) rotateY(-16deg) scale(1.1); transition: transform 200ms ease; }
+.game-tile:hover .game-art .icon-3d { transform: rotate(0) rotateY(0) scale(1.15); }
+.art-reaction { background: var(--g-wash-accent); }
+.art-vigilance { background: var(--g-void); }
+.game-number { color: var(--g-muted); font-size: 12px; }
+.game-tile h3 { margin: 4px 0; font-size: 17px; }
+.game-tile-copy p { margin: 0; color: var(--g-muted); font-size: 13px; }
+.tile-detail { grid-column: 1 / -1; }
+.tile-detail summary { font-size: 12px; margin-top: 4px; }
+.tile-detail p { color: var(--g-body); font-size: 14px; margin: 8px 0 0; }
+.game-tile.is-done { border-color: var(--g-accent); }
+.game-tile.is-done .game-number { color: var(--g-accent); }
+.tab-bar { grid-template-columns: repeat(2, 1fr); max-width: 1080px; background: var(--g-void); }
+.tab-button { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.tab-dot { display: none; }
+.tab-button.is-active { background: var(--g-bg); }
+.tab-label { font-size: 14px; }
+.app-shell.is-immersive { max-width: 720px; }
+.transition-card { padding: 24px 0; }
+.transition-icon { margin: 32px auto 24px; }
+.challenge-label { padding: 12px 16px; border-radius: 8px; background: var(--g-bg); color: var(--g-accent); }
+.transition-detail { margin-bottom: 16px; }
+.transition-detail .game-basis { margin-bottom: 12px; }
+.option-button, .pattern-button, .color-button { min-height: 56px; border-color: var(--g-border-fn); }
+.pattern-target { font-size: clamp(24px, 5vw, 38px); letter-spacing: .04em; }
+.pattern-button { padding: 16px 4px; font-size: clamp(17px, 3.6vw, 24px); letter-spacing: .02em; white-space: nowrap; }
+.digit-sequence { min-height: 128px; display: grid; place-items: center; font-size: 80px; letter-spacing: 0; animation: none; }
+.stroop-word { animation: none; margin: 32px 0; }
+.game-topline { display: flex; justify-content: space-between; color: var(--g-muted); font-size: 13px; }
+.signal-game h2 { margin: 12px 0 16px; }
+.launch-stage, .cosmos-stage { min-height: min(52dvh, 440px); border: 1px solid var(--g-border-fn); border-radius: 16px; position: relative; overflow: hidden; isolation: isolate; touch-action: manipulation; }
+.launch-stage { background: var(--g-bg); perspective: 600px; }
+.launch-lanes { position: absolute; inset: 40% -40% -30%; display: flex; justify-content: space-evenly; transform: rotateX(54deg); pointer-events: none; }
+.launch-lanes i { height: 100%; width: 2px; background: var(--g-border-fn); }
+.signal-lamp { position: absolute; top: 18%; left: calc(50% - 40px); width: 80px; height: 24px; border: 2px solid var(--g-border-fn); border-radius: 4px; background: var(--g-void); }
+.signal-lamp.is-on { background: var(--g-accent); border-color: var(--g-accent); }
+.launch-craft { position: absolute; top: 53%; left: calc(50% - 28px); width: 56px; height: 76px; background: linear-gradient(110deg, var(--g-ink), var(--g-border-fn) 52%, var(--g-surface-lift)); clip-path: polygon(50% 0, 100% 90%, 68% 75%, 50% 100%, 32% 75%, 0 90%); }
+.launch-craft i { position: absolute; width: 12px; height: 20px; top: 24px; left: 22px; background: var(--g-void); border-radius: 50% 50% 8px 8px; }
+.stage-instruction { position: absolute; bottom: 24px; left: 16px; right: 16px; color: var(--g-body); font-size: 14px; }
+.signal-result { display: grid; gap: 12px; z-index: 2; padding: 24px; text-align: center; background: var(--g-bg); border: 1px solid var(--g-border-fn); border-radius: 12px; color: var(--g-body); }
+.signal-result strong { font-size: 36px; color: var(--g-accent); font-variant-numeric: tabular-nums; }
+.outcome-miss .signal-result strong, .outcome-early .signal-result strong { font-size: 24px; color: var(--g-warn); }
+.signal-result > span { font-size: 14px; }
+.cosmos-stage { background: var(--g-void); perspective: 700px; }
+.cosmos-stars { position: absolute; inset: 0; pointer-events: none; }
+.cosmos-stars i { position: absolute; width: 2px; height: 2px; background: var(--g-ink); border-radius: 50%; opacity: .45; }
+.cosmos-stars i:nth-child(3n) { width: 3px; height: 3px; opacity: .75; }
+.cosmos-planet { position: absolute; width: 168px; height: 168px; border-radius: 50%; bottom: -80px; right: -32px; background: radial-gradient(circle at 30% 22%, var(--g-border-fn), var(--g-bg) 62%, var(--g-void)); }
+.cosmos-planet i { position: absolute; inset: 32px -40px; border: 12px solid var(--g-border-dec); border-radius: 50%; transform: rotateX(65deg) rotateZ(-24deg); }
+.capture-orbit { position: absolute; width: 184px; height: 184px; border: 1px solid var(--g-border-fn); border-radius: 50%; transform: rotateX(62deg) rotateZ(-28deg); opacity: .5; }
+.comet-3d { position: absolute; top: 35%; left: 40%; width: 56px; height: 56px; pointer-events: none; transform: translate3d(0,0,0); }
+.comet-3d b { display: block; width: 56px; height: 56px; border-radius: 50%; background: radial-gradient(circle at 32% 24%, var(--g-ink), var(--g-warn) 40%, var(--g-wash-accent)); }
+.comet-3d i { position: absolute; top: 8px; right: 34px; width: 112px; height: 24px; transform: rotate(25deg); transform-origin: right center; background: linear-gradient(90deg, transparent, var(--g-warn)); clip-path: polygon(0 50%, 100% 0, 100% 100%); }
+.legacy-records { margin-top: 24px; }.legacy-records p { color: var(--g-muted); font-size: 14px; }
+.guide-head { margin-bottom: 12px; }.guide-head h2 { font-size: 18px; }
+@media (prefers-reduced-motion: no-preference) {
+  .arcade-object { animation: object-enter 600ms ease-out both; }
+  .launch-stage.is-feedback.outcome-hit .launch-craft { animation: launch-away 800ms ease-in forwards; }
+  .cosmos-stage.is-visible .comet-3d { animation: comet-flight var(--flight-ms) linear forwards; }
+  .cosmos-stage.is-feedback.outcome-hit .capture-orbit { animation: capture-ring 700ms ease-out forwards; }
+  .game-tile:active { transform: scale(.99); }
+}
+@keyframes object-enter { from { opacity: 0; transform: rotate(-16deg) translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes launch-away { to { transform: translateY(-320px) scale(.15); opacity: 0; } }
+@keyframes comet-flight { from { transform: translate3d(0,0,0); } to { transform: translate3d(72px,100px,40px); } }
+@keyframes capture-ring { from { transform: rotateX(62deg) scale(.6); opacity: 1; } to { transform: rotateX(62deg) scale(1.8); opacity: 0; } }
+@media (min-width: 900px) {
+  .arcade-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; align-content: start; }
+  .arcade-panel > .app-name-row, .arcade-panel > .game-list-heading, .arcade-panel > .game-library, .arcade-panel > .boundary-line { grid-column: 1 / -1; }
+  .play-intro { align-self: start; flex-direction: column; align-items: start; padding-top: 40px; }
+  .arcade-object { width: 200px; height: 200px; align-self: center; }
+  .arcade-sphere { inset: 40px; }.orbit-satellite { right: 32px; top: 28px; }
+  .game-library { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .app-shell { padding-right: 20px; padding-left: 20px; }
+  .app-shell main { padding-top: 16px; }
+  .app-name-row { margin-bottom: 8px; }
+  .play-intro { padding: 20px 0 24px; gap: 4px; }
+  .play-intro h1 { font-size: 34px; }
+  .play-intro .lead { font-size: 14px; max-width: 22ch; }
+  .play-intro .eyebrow { font-size: 12px; }
+  .arcade-object { width: 104px; height: 128px; }
+  .arcade-sphere { inset: 32px 16px; }.orbit-ring { inset: 16px -4px; }.orbit-satellite { width: 16px; height: 16px; top: 24px; right: 4px; }
+  .level-picker { padding: 16px; }
+  .level-segment { font-size: 12px; }
+  .challenge-summary { gap: 8px; }.challenge-summary strong { font-size: 18px; }
+  .game-library { grid-template-columns: 1fr; }
+  .game-tile { grid-template-columns: 72px 1fr; padding: 12px 16px; }
+  .game-art { min-height: 72px; }
+  .tile-detail { grid-column: 2; }.tile-detail summary { min-height: 44px; margin-top: 0; }
+  .header-progress { font-size: 12px; }.header-actions { gap: 0; }.header-actions .sound-toggle { padding: 8px; font-size: 12px; }
+  .header-actions .quiet-button { padding: 8px; font-size: 12px; }
+  .metric-tr { grid-template-columns: 24px 1fr; gap: 8px; }
+  .metric-td-value { grid-column: 2; justify-items: start; text-align: left; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .arcade-object, .comet-3d, .launch-craft, .capture-orbit, .game-art .icon-3d { animation: none !important; transition: none !important; }
+  .burst { display: none; }
+}

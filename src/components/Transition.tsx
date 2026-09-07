@@ -1,5 +1,5 @@
 import Icon3D from '../ui/Icon3D';
-import { GAME_META, GAME_ORDER, LEVEL_META } from '../domain/session';
+import { GAME_META, GAME_ORDER, LEVEL_META, gameChallenge } from '../domain/session';
 import type { Level } from '../domain/types';
 
 interface TransitionProps {
@@ -26,7 +26,10 @@ export default function Transition({ index, level, onReady }: TransitionProps) {
       <h1 id="transition-title">{meta.title}</h1>
       <p className="lead">{meta.description}</p>
       <p className="game-note">{meta.looksAt}</p>
-      <p className="game-basis">{meta.basis}</p>
+      <p className="challenge-label">{gameChallenge(key, level)}</p>
+      <details className="transition-detail"><summary>과제 원리와 한계</summary>
+        <p className="game-basis">{meta.basis}</p><p className="game-note">{meta.limit}</p>
+      </details>
 
       <button className="primary-button" type="button" onClick={onReady}>준비됐어요</button>
     </section>

@@ -8,7 +8,7 @@ import {
   nextStep,
 } from './session';
 
-describe('인지검사 진행 순서', () => {
+describe('인지 게임 진행 순서', () => {
   it('승인된 7개 활동 순서를 바꾸지 않는다', () => {
     expect(GAME_ORDER).toEqual([
       'story',
@@ -39,21 +39,21 @@ describe('레벨과 탭', () => {
     expect(LEVELS).toEqual([1, 2, 3, 4]);
   });
 
-  it('하단 탭은 게임 전용 3개이며 K-Sleep 앱 탭을 복사하지 않는다', () => {
-    expect(TAB_ORDER).toEqual(['play', 'trend', 'guide']);
+  it('하단 탭은 플레이와 안내 2개이며 K-Sleep 앱 탭을 복사하지 않는다', () => {
+    expect(TAB_ORDER).toEqual(['play', 'guide']);
     expect(TAB_ORDER).not.toContain('home');
     expect(TAB_ORDER).not.toContain('chatbot');
     expect(TAB_ORDER).not.toContain('sleepTips');
   });
 
-  it('레벨은 기억·숫자·색깔·패턴 게임만 바꾸고 반응·별똥별은 고정한다', () => {
+  it('레벨은 반응·별똥별을 포함한 7개 게임 모두에 적용된다', () => {
     expect(GAME_META.story.scalesWithLevel).toBe(true);
     expect(GAME_META.digit.scalesWithLevel).toBe(true);
     expect(GAME_META.stroop.scalesWithLevel).toBe(true);
     expect(GAME_META.pattern.scalesWithLevel).toBe(true);
     expect(GAME_META.storyDelayed.scalesWithLevel).toBe(true);
-    expect(GAME_META.reaction.scalesWithLevel).toBe(false);
-    expect(GAME_META.vigilance.scalesWithLevel).toBe(false);
+    expect(GAME_META.reaction.scalesWithLevel).toBe(true);
+    expect(GAME_META.vigilance.scalesWithLevel).toBe(true);
   });
 
   it('모든 게임이 무엇을 보는 과제인지와 한계를 함께 설명한다', () => {

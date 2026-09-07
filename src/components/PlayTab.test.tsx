@@ -16,7 +16,6 @@ function setup(doneCount: number) {
       onLevelChange={onLevelChange}
       onStartSession={onStartSession}
       onResumeSession={onResumeSession}
-      onStartPvt={onStartPvt}
     />,
   );
 
@@ -30,7 +29,7 @@ describe('플레이 탭 - 처음 여는 사람', () => {
     expect(screen.getAllByRole('listitem')).toHaveLength(7);
     expect(screen.getByText('이야기 기억하기')).toBeInTheDocument();
     expect(screen.getByText('별똥별 잡기')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /게임 7개 시작 · 5분/ })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /게임 7개 시작/ })).toBeInTheDocument();
     expect(screen.queryByText(/사라져요/)).not.toBeInTheDocument();
   });
 
@@ -50,17 +49,17 @@ describe('플레이 탭 - 중간에 그만둔 사람', () => {
     setup(3);
 
     const steps = screen.getAllByRole('listitem');
-    expect(within(steps[0]).getByText('완료')).toBeInTheDocument();
-    expect(within(steps[2]).getByText('완료')).toBeInTheDocument();
+    expect(within(steps[0]).getByText(/완료/)).toBeInTheDocument();
+    expect(within(steps[2]).getByText(/완료/)).toBeInTheDocument();
     expect(within(steps[3]).getByText('지금 차례')).toBeInTheDocument();
-    expect(within(steps[4]).getByText('예정')).toBeInTheDocument();
+    expect(within(steps[4]).getByText(/예정/)).toBeInTheDocument();
   });
 
   it('다음 게임 이름을 버튼에 적고, 난이도를 바꾸면 진행이 사라진다고 미리 알린다', () => {
     setup(3);
 
     expect(screen.getByRole('button', { name: /색깔 단어부터 이어서/ })).toBeInTheDocument();
-    expect(screen.getByText(/지금까지 한 3개는 사라져요/)).toBeInTheDocument();
+    expect(screen.getByText(/끝낸 3개 게임의 기록은 사라져요/)).toBeInTheDocument();
   });
 
   it('이어서 버튼은 새 판이 아니라 이어서 하기를 부른다', async () => {
