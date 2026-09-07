@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>수면치료 전후 변화 확인 · 제품 기획서</title>
     <meta name="document-path" content="public/prd/index.html" />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230059b8'/%3E%3Cpath d='M18 20v24M18 32l12-12M18 32l12 12M37 20h9a7 7 0 0 1 0 14h-9m0 0h10a5 5 0 0 1 0 10H37z' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='30' cy='32' r='19' fill='%23C6F26A'/%3E%3Cellipse cx='30' cy='32' rx='27' ry='10' fill='none' stroke='%23F5F5EF' stroke-width='3'/%3E%3Ccircle cx='52' cy='16' r='5' fill='%23F5F5EF'/%3E%3C/svg%3E" />
     <meta name="document-status" content="draft" />
     <meta name="stage" content="planned" />
     <meta
@@ -14,28 +14,29 @@
     />
     <style>
       :root {
-        color-scheme: light;
-        --page-bg: #faf8f2;
-        --surface: #ffffff;
-        --surface-alt: #faf8f5;
-        --ink: #0f1923;
-        --body: #2d3142;
-        --secondary: #4f556b;
-        --dim: #727270;
-        --brand: #0059b8;
-        --brand-deep: #00478f;
-        --brand-wash: #e8f2fc;
-        --ok: #4e7c59;
-        --ok-wash: #eaf4ec;
-        --warn: #906a2d;
-        --warn-wash: #f8eedb;
-        --urgent: #b83b50;
-        --urgent-wash: #fae9ed;
-        --border: #e8e3db;
-        --boundary: #8b7355;
-        --on-brand: #ffffff;
-        --shadow-card: 0 1px 2px rgba(15, 25, 35, 0.06);
-        --shadow-phone: 0 12px 24px rgba(15, 25, 35, 0.14);
+        color-scheme: dark;
+        --page-bg: #151618;
+        --surface: #202124;
+        --surface-alt: #252629;
+        --surface-lift: #303236;
+        --ink: #f5f5ef;
+        --body: #e0e0d9;
+        --secondary: #b2b3ac;
+        --dim: #93958f;
+        --brand: #c6f26a;
+        --brand-deep: #d9f78f;
+        --brand-wash: #26331e;
+        --ok: #67d39b;
+        --ok-wash: #153b2d;
+        --warn: #f4c464;
+        --warn-wash: #3d321f;
+        --urgent: #ff8994;
+        --urgent-wash: #4a2028;
+        --border: #3c3e40;
+        --boundary: #83857f;
+        --on-brand: #0f141d;
+        --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.18);
+        --shadow-phone: 0 24px 64px rgba(0, 0, 0, 0.28);
         --content-width: 1120px;
       }
 
@@ -61,6 +62,11 @@
         overflow-wrap: break-word;
       }
 
+      ::selection {
+        background: var(--brand);
+        color: var(--on-brand);
+      }
+
       a {
         color: inherit;
       }
@@ -78,8 +84,8 @@
         z-index: 100;
         padding: 8px 12px;
         border-radius: 8px;
-        background: var(--ink);
-        color: var(--surface);
+        background: var(--brand);
+        color: var(--on-brand);
         transform: translateY(-160%);
       }
 
@@ -89,7 +95,7 @@
 
       .topbar {
         border-bottom: 1px solid var(--border);
-        background: var(--surface);
+        background: var(--page-bg);
       }
 
       .topbar-inner,
@@ -116,15 +122,38 @@
       }
 
       .brand-mark {
+        position: relative;
         width: 32px;
         height: 32px;
         display: grid;
         place-items: center;
-        border-radius: 8px;
+        border-radius: 50%;
         background: var(--brand);
         color: var(--on-brand);
         font-size: 13px;
         letter-spacing: -0.02em;
+        box-shadow: inset -5px -6px 9px rgba(15, 20, 29, 0.3);
+      }
+
+      .brand-mark::before {
+        content: "";
+        position: absolute;
+        width: 42px;
+        height: 14px;
+        border: 1px solid var(--boundary);
+        border-radius: 50%;
+        transform: rotate(-10deg);
+      }
+
+      .brand-mark::after {
+        content: "";
+        position: absolute;
+        top: -3px;
+        right: -5px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--ink);
       }
 
       .document-state {
@@ -134,13 +163,13 @@
         padding: 4px 12px;
         border: 1px solid var(--boundary);
         border-radius: 999px;
-        color: var(--secondary);
+        color: var(--body);
         font-size: 13px;
         font-weight: 500;
       }
 
       .state-icon {
-        color: var(--warn);
+        color: var(--brand);
         font-size: 13px;
       }
 
@@ -149,7 +178,7 @@
         top: 0;
         z-index: 20;
         border-bottom: 1px solid var(--border);
-        background: var(--surface);
+        background: rgba(21, 22, 24, 0.96);
       }
 
       .toc {
@@ -176,27 +205,29 @@
       }
 
       .toc a:hover {
-        background: var(--surface-alt);
+        background: var(--brand-wash);
         color: var(--brand);
       }
 
       .page-shell {
-        padding: 64px 0 80px;
+        padding: 72px 0 88px;
       }
 
       .hero {
         display: grid;
         grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
-        gap: 48px;
+        gap: 64px;
         align-items: center;
         padding-bottom: 64px;
       }
 
       .eyebrow {
-        margin: 0 0 8px;
-        color: var(--brand);
+        margin: 0 0 16px;
+        color: var(--secondary);
         font-size: 13px;
         font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
       }
 
       h1,
@@ -208,11 +239,17 @@
 
       h1 {
         max-width: 720px;
-        margin-bottom: 16px;
+        margin-bottom: 24px;
         color: var(--ink);
-        font-size: 24px;
+        font-size: clamp(36px, 4vw, 48px);
         font-weight: 600;
-        line-height: 1.35;
+        line-height: 1.14;
+        letter-spacing: -0.045em;
+      }
+
+      .hero-accent {
+        display: block;
+        color: var(--brand);
       }
 
       h2 {
@@ -234,16 +271,18 @@
       .hero-copy {
         max-width: 680px;
         margin-bottom: 24px;
-        color: var(--secondary);
+        color: var(--body);
       }
 
       .hero-line {
         display: inline-block;
         margin-top: 8px;
-        padding: 8px 12px;
+        padding: 12px 16px;
+        border: 1px solid var(--border);
         border-left: 3px solid var(--brand);
+        border-radius: 0 8px 8px 0;
         background: var(--brand-wash);
-        color: var(--ink);
+        color: var(--body);
         font-weight: 500;
       }
 
@@ -256,7 +295,9 @@
 
       .meta-grid > div {
         padding: 12px;
-        border-top: 1px solid var(--border);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--surface);
       }
 
       .meta-grid dt {
@@ -275,17 +316,17 @@
       .phone {
         width: min(100%, 328px);
         margin: 0 auto;
-        padding: 12px;
-        border: 1px solid var(--boundary);
+        padding: 1px;
+        border: 1px solid var(--border);
         border-radius: 16px;
-        background: var(--ink);
+        background: var(--surface-lift);
         box-shadow: var(--shadow-phone);
       }
 
       .phone-screen {
         min-height: 480px;
         padding: 24px 20px;
-        border-radius: 12px;
+        border-radius: 15px;
         background: var(--surface);
       }
 
@@ -304,19 +345,37 @@
       }
 
       .phone-orbit {
+        position: relative;
         width: 136px;
         height: 136px;
         margin: 16px auto 32px;
         display: grid;
         place-items: center;
-        border: 1px solid var(--border);
         border-radius: 50%;
-        background: var(--surface-alt);
+        background: radial-gradient(circle at 35% 28%, #f2ffd2 0 5%, #d9f78f 15%, #c6f26a 42%, #739036 74%, #35431f 100%);
+        box-shadow: 0 18px 36px rgba(0, 0, 0, 0.34), inset -14px -18px 26px rgba(15, 20, 29, 0.34);
       }
 
-      .phone-orbit svg {
-        width: 88px;
-        height: 88px;
+      .phone-orbit::before {
+        content: "";
+        position: absolute;
+        width: 180px;
+        height: 56px;
+        border: 2px solid var(--boundary);
+        border-radius: 50%;
+        transform: rotate(-12deg);
+      }
+
+      .phone-orbit::after {
+        content: "";
+        position: absolute;
+        top: -14px;
+        right: -18px;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 28%, #ffffff 0, #dadbd4 45%, #777a76 100%);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
       }
 
       .phone-screen h2 {
@@ -329,7 +388,7 @@
       }
 
       .mock-primary {
-        min-height: 48px;
+        min-height: 56px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -391,7 +450,7 @@
         padding: 24px;
         border: 1px solid var(--border);
         border-radius: 12px;
-        background: var(--surface);
+        background: var(--surface-alt);
         box-shadow: var(--shadow-card);
       }
 
@@ -428,12 +487,15 @@
         padding: 24px;
         border: 1px solid var(--brand);
         border-radius: 12px;
-        background: var(--brand-wash);
+        background: var(--brand);
+        color: var(--on-brand);
         text-align: center;
       }
 
+      .outcome-result h3,
       .outcome-result p {
         margin: 0;
+        color: var(--on-brand);
       }
 
       .term-note {
@@ -450,7 +512,7 @@
       }
 
       .term-note a {
-        color: var(--brand-deep);
+        color: var(--brand);
         text-underline-offset: 3px;
       }
 
@@ -470,7 +532,8 @@
       }
 
       .summary-card {
-        padding: 20px;
+        min-height: 164px;
+        padding: 24px;
       }
 
       .summary-card .label {
@@ -479,6 +542,13 @@
         color: var(--brand);
         font-size: 13px;
         font-weight: 600;
+      }
+
+      .summary-card .label::before {
+        content: "●";
+        margin-right: 8px;
+        font-size: 9px;
+        vertical-align: 1px;
       }
 
       .summary-card p {
@@ -500,7 +570,7 @@
 
       .section-number {
         color: var(--brand);
-        font-size: 13px;
+        font-size: 15px;
         font-weight: 600;
         font-variant-numeric: tabular-nums;
       }
@@ -598,7 +668,7 @@
         align-items: center;
         padding: 32px;
         border-left: 3px solid var(--brand);
-        background: var(--surface);
+        background: var(--surface-alt);
         color: var(--ink);
         font-size: 18px;
         font-weight: 500;
@@ -674,7 +744,7 @@
       }
 
       th {
-        background: var(--surface-alt);
+        background: var(--surface-lift);
         color: var(--ink);
         font-size: 13px;
         font-weight: 600;
@@ -856,24 +926,24 @@
       .closing {
         padding: 48px;
         border-radius: 12px;
-        background: var(--ink);
-        color: var(--surface);
+        background: var(--brand);
+        color: var(--on-brand);
         text-align: center;
       }
 
       .closing h2 {
-        color: var(--surface);
+        color: var(--on-brand);
       }
 
       .closing p {
         max-width: 680px;
         margin: 0 auto;
-        color: var(--border);
+        color: var(--on-brand);
       }
 
       footer {
         border-top: 1px solid var(--border);
-        background: var(--surface);
+        background: var(--page-bg);
       }
 
       .footer-inner {
@@ -939,11 +1009,24 @@
         }
 
         .brand-lockup span:last-child {
+          display: block;
+          max-width: 210px;
+          font-size: 13px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .document-state {
           display: none;
         }
 
         .page-shell {
           padding-top: 40px;
+        }
+
+        h1 {
+          font-size: 36px;
         }
 
         .hero {
@@ -988,6 +1071,10 @@
           padding: 32px 24px;
         }
 
+        .phone {
+          width: 100%;
+        }
+
         .footer-inner {
           flex-direction: column;
           gap: 8px;
@@ -1001,13 +1088,32 @@
       }
 
       @media print {
+        :root {
+          color-scheme: light;
+          --page-bg: #ffffff;
+          --surface: #ffffff;
+          --surface-alt: #f5f5f2;
+          --surface-lift: #ecece8;
+          --ink: #111315;
+          --body: #242628;
+          --secondary: #50534f;
+          --dim: #686b66;
+          --brand: #55791a;
+          --brand-deep: #38520d;
+          --brand-wash: #edf6dc;
+          --border: #d4d6d0;
+          --boundary: #777a75;
+          --on-brand: #111315;
+        }
+
         .toc-wrap,
         .skip-link {
           display: none;
         }
 
         body {
-          background: var(--surface);
+          background: #ffffff;
+          color: #222222;
         }
 
         .page-shell {
@@ -1033,9 +1139,9 @@
 
     <header class="topbar">
       <div class="topbar-inner">
-        <div class="brand-lockup" aria-label="K-Sleep Care">
-          <span class="brand-mark" aria-hidden="true">KS</span>
-          <span>K-Sleep Care · Product Requirements Document</span>
+        <div class="brand-lockup" aria-label="SOOMi 인지 컨디션 체크 제품 기획서">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>SOOMi 인지 컨디션 체크 · PRD</span>
         </div>
         <span class="document-state"><span class="state-icon" aria-hidden="true">◆</span> 신규 기획 · 검증 전</span>
       </div>
@@ -1059,12 +1165,13 @@
     <main id="main-content" class="page-shell">
       <div class="hero">
         <div>
-          <p class="eyebrow">환자의 수면치료 참여 화면 · 제품 기획서</p>
-          <h1>치료 전 기준을 남기고, 치료 후 변화를 환자가 이해하게 한다</h1>
+          <p class="eyebrow">외래 밖까지 치료관리를 잇는 환자 실행 채널 · 제품 기획서</p>
+          <h1>치료 전에는 기준을 만들고,<span class="hero-accent">치료 후에는 변화를 이해합니다.</span></h1>
           <p class="hero-copy">
-            <strong>SOOMi(수미)</strong>는 병원이나 수면치료 기기 관리 업체가 환자에게 제공하는 치료 참여 화면입니다.
-            환자는 이 화면에서 안내를 받고, 질문에 답하고, 짧은 게임을 하고, 치료 전후 변화를 확인합니다.
-            새로 만드는 인지 컨디션 체크(집중·기억 상태 확인)는 별도 앱이 아니라 이 SOOMi 안에 들어갑니다.
+            <strong>SOOMi(수미)</strong>는 병원과 양압기 렌탈 사업자의 환자 관리를 진료실 밖까지 이어주는 환자 실행 채널입니다.
+            환자는 치료 단계에 맞춰 상태를 확인하고, 증상 변화를 기록하며, 교육과 근거 있는 안내를 받습니다.
+            사용 불편이나 치료 중단 신호는 의료진·담당자의 업무 화면으로 연결됩니다.
+            새로 만드는 인지 컨디션 체크(집중·기억 상태 확인)는 이 SOOMi 안에서 작동합니다.
             <span class="hero-line">수면검사에서 확인한 숨 멈춤 횟수, 환자가 직접 답한 낮 졸림·피로 변화, 짧은 집중·기억 게임 결과를 나란히 보여 줍니다. 치료 전과 후를 비교해 환자가 치료를 계속할 이유를 이해하도록 돕습니다.</span>
           </p>
 
@@ -1087,17 +1194,10 @@
         <div class="phone" aria-label="제품 첫 화면 예시">
           <div class="phone-screen">
             <div class="phone-caption">
-              <span>환자 치료 참여 화면 · SOOMi</span>
+              <span>환자 실행 채널 · SOOMi</span>
               <strong>치료 4주째</strong>
             </div>
-            <div class="phone-orbit" aria-hidden="true">
-              <svg viewBox="0 0 88 88" role="img">
-                <title>집중 측정을 나타내는 원형 표적</title>
-                <circle cx="44" cy="44" r="34" fill="var(--brand-wash)" stroke="var(--brand)" stroke-width="2" />
-                <circle cx="44" cy="44" r="20" fill="var(--surface)" stroke="var(--brand)" stroke-width="2" />
-                <circle cx="44" cy="44" r="7" fill="var(--brand)" />
-              </svg>
-            </div>
+            <div class="phone-orbit" aria-hidden="true"></div>
             <h2>치료 전과 지금을 비교해요</h2>
             <div class="phone-comparison" aria-label="치료 전과 4주 후 비교 예시">
               <div class="phone-point"><span>치료 전</span><strong>기준 측정</strong></div>
@@ -1118,7 +1218,7 @@
         </article>
         <article class="summary-card">
           <span class="label">어디서</span>
-          <p>별도 앱이 아니라 환자가 이미 치료 안내를 받는 SOOMi 화면 안에 둡니다.</p>
+          <p>별도 앱이 아니라 병원과 렌탈 사업자의 환자 관리를 진료실 밖까지 잇는 SOOMi 안에 둡니다.</p>
         </article>
         <article class="summary-card">
           <span class="label">무엇을 함께 보나</span>
@@ -1158,7 +1258,7 @@
         </div>
         <div class="outcome-result">
           <h3>치료 전 기준값 ↔ 치료 후 정기 체크</h3>
-          <p>환자는 치료 참여 화면(SOOMi)에서 변화를 이해합니다. 의료진·담당자는 환자 상태와 할 일을 확인하는 업무 화면(CareLoop Portal)에서 결과의 종류와 측정 시점을 구분해 봅니다.</p>
+          <p>환자는 환자 실행 채널(SOOMi)에서 변화를 이해합니다. 의료진·담당자는 환자 상태와 할 일을 확인하는 업무 화면(CareLoop Portal)에서 결과의 종류와 측정 시점을 구분해 봅니다.</p>
         </div>
         <p class="term-note">
           <strong>세 결과는 뜻이 다릅니다.</strong> 수면검사 수치, 환자가 질문에 답한 내용, 게임 결과를 하나의 점수로 합치지 않습니다.
@@ -1191,7 +1291,7 @@
           <article class="content-card">
             <h3>우리가 만드는 변화</h3>
             <ul class="check-list">
-              <li>치료 시작 전 환자 치료 참여 화면(SOOMi)에서 개인별 기준값을 남깁니다.</li>
+              <li>치료 시작 전 환자 실행 채널(SOOMi)에서 개인별 기준값을 남깁니다.</li>
               <li>치료 뒤 정해진 시점에 같은 문항과 게임을 반복합니다.</li>
               <li>수면검사 수치·환자의 직접 답변·게임 결과를 구분한 채 치료 전과 후를 함께 보여 줍니다.</li>
             </ul>
@@ -1204,7 +1304,7 @@
           <span class="section-number">03 · 핵심 대상</span>
           <div>
             <h2 id="target-title">도입 고객과 실제 사용자를 분명히 나눈다</h2>
-            <p>이 서비스를 도입하는 곳은 병원과 치료기기 관리 업체입니다. 환자는 SOOMi 화면을 통해 치료 과정에 참여합니다.</p>
+            <p>이 서비스를 도입하는 곳은 병원과 양압기 렌탈 사업자입니다. SOOMi는 이들의 환자 관리를 진료실 밖까지 이어줍니다.</p>
           </div>
         </div>
 
@@ -1233,7 +1333,7 @@
           <article class="journey-step">
             <span class="step-number">1</span>
             <h3>치료 전 초대</h3>
-            <p>환자가 치료 참여 화면에서 기준 측정의 목적과 동의 내용을 확인합니다.</p>
+            <p>환자가 SOOMi에서 기준 측정의 목적과 동의 내용을 확인합니다.</p>
           </article>
           <article class="journey-step">
             <span class="step-number">2</span>
@@ -1253,7 +1353,7 @@
           <article class="journey-step">
             <span class="step-number">5</span>
             <h3>전·후 비교</h3>
-            <p>환자는 치료 참여 화면에서 보고, 담당자는 업무 화면에서 함께 확인합니다.</p>
+            <p>환자는 SOOMi에서 보고, 담당자는 CareLoop Portal에서 함께 확인합니다.</p>
           </article>
         </div>
       </section>
@@ -1335,7 +1435,7 @@
         <div class="section-head">
           <span class="section-number">06 · 화면 구조</span>
           <div>
-            <h2 id="screens-title">환자 치료 참여 화면에서 기준 측정·정기 체크·변화 보기를 잇는다</h2>
+            <h2 id="screens-title">SOOMi에서 기준 측정·정기 체크·변화 보기를 잇는다</h2>
             <p>환자가 지금 왜 측정하는지 먼저 이해하고, 한 화면에는 다음 행동 하나만 강조합니다.</p>
           </div>
         </div>
@@ -1402,8 +1502,8 @@
 
         <div class="decision-grid">
           <article class="decision-card">
-            <h3>환자 치료 참여 화면(SOOMi)</h3>
-            <p class="why">환자는 새 앱이나 새 계정을 만들지 않고, 평소 치료 안내를 받는 화면에서 기준 측정과 정기 체크를 이어갑니다.</p>
+            <h3>환자 실행 채널(SOOMi)</h3>
+            <p class="why">병원과 렌탈 사업자의 환자 관리를 진료실 밖까지 이어줍니다. 환자는 치료 단계별 체크인, 증상 기록, 교육과 안내를 받고 기준 측정과 정기 체크를 수행합니다.</p>
           </article>
           <article class="decision-card">
             <h3>결과를 종류별로 분리</h3>
@@ -1433,7 +1533,7 @@
           <article class="metric-card">
             <span class="metric-label">치료 전 기준 측정</span>
             <strong>초대 환자의 80% 이상</strong>
-            <p>치료 참여 화면의 안내를 이해하고 졸림·피로 질문과 게임 기준 측정을 완료합니다.</p>
+            <p>SOOMi의 안내를 이해하고 졸림·피로 질문과 게임 기준 측정을 완료합니다.</p>
           </article>
           <article class="metric-card">
             <span class="metric-label">정기 체크 참여</span>
@@ -1465,7 +1565,7 @@
         <div class="plan-line">
           <article class="plan-phase">
             <span class="period">1주차 · 환자 경험</span>
-            <h3>환자 화면에서 기준 측정과 정기 체크 연결</h3>
+            <h3>SOOMi에서 기준 측정과 정기 체크 연결</h3>
             <ul class="decision-list">
               <li>치료 전 기준 측정 안내</li>
               <li>낮 졸림·피로 질문과 게임 진행 흐름</li>
@@ -1490,7 +1590,7 @@
         <div class="closing">
           <h2 id="closing-title">한 문장으로 정리하면</h2>
           <p>
-            인지 컨디션 체크는 환자가 평소 사용하는 치료 참여 화면(SOOMi)에서 치료 전 기준값과 치료 후 변화를 확인하고,
+            인지 컨디션 체크는 병원과 렌탈 사업자의 환자 관리를 진료실 밖까지 잇는 SOOMi에서 치료 전 기준값과 치료 후 변화를 확인하고,
             수면검사 수치·환자가 직접 답한 일상 변화·게임 결과를 함께 이해해 치료를 이어갈 동기를 돕는 기능입니다.
           </p>
         </div>
@@ -1500,7 +1600,7 @@
     <footer>
       <div class="footer-inner">
         <span>K-Sleep Care · 수면치료 전후 변화 확인</span>
-        <span>기획안 v1.2 · 일반인용 용어 설명 반영 · 검증 전</span>
+        <span>기획안 v1.3 · 실제 앱 디자인 언어 반영 · 검증 전</span>
       </div>
     </footer>
   </body>
