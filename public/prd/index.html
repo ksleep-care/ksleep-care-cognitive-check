@@ -3,14 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SOOMi 인지 컨디션 체크 · 제품 기획서</title>
+    <title>수면치료 전후 변화 확인 · 제품 기획서</title>
     <meta name="document-path" content="public/prd/index.html" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230059b8'/%3E%3Cpath d='M18 20v24M18 32l12-12M18 32l12 12M37 20h9a7 7 0 0 1 0 14h-9m0 0h10a5 5 0 0 1 0 10H37z' fill='none' stroke='white' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
     <meta name="document-status" content="draft" />
     <meta name="stage" content="planned" />
     <meta
       name="description"
-      content="SOOMi에서 치료 전 기준값과 치료 후 변화를 AHI·PROMs·게임 수행값으로 함께 확인하는 기능의 제품 기획서"
+      content="환자가 수면치료 전과 후의 검사 수치·일상 변화·집중 게임 결과를 쉽게 비교하는 기능의 제품 기획서"
     />
     <style>
       :root {
@@ -1047,7 +1047,7 @@
         <a href="#background">기획 배경</a>
         <a href="#target">핵심 대상</a>
         <a href="#journey">사용자 여정</a>
-        <a href="#mvp">MVP 기능</a>
+        <a href="#mvp">첫 버전 기능</a>
         <a href="#screens">화면 구조</a>
         <a href="#safety">안전 원칙</a>
         <a href="#technology">구현 방향</a>
@@ -1059,23 +1059,23 @@
     <main id="main-content" class="page-shell">
       <div class="hero">
         <div>
-          <p class="eyebrow">SOOMi 치료 여정 · 제품 기획서</p>
+          <p class="eyebrow">환자의 수면치료 참여 화면 · 제품 기획서</p>
           <h1>치료 전 기준을 남기고, 치료 후 변화를 환자가 이해하게 한다</h1>
           <p class="hero-copy">
-            인지 컨디션 체크는 별도 앱으로 판매하는 서비스가 아닙니다. 기존 SOOMi 안에서 환자가
-            수면검사·진단 결과가 나오기 전 또는 치료 시작 전에 기준값을 남기고, 치료 후에는 같은 방식으로
-            주기적으로 확인하는 기능입니다.
-            <span class="hero-line">AHI 변화, 환자 자가보고(PROMs), 게임 수행값을 나란히 보여 주어 치료 전과 후의 변화를 이해하고 치료를 이어갈 동기를 돕습니다.</span>
+            <strong>SOOMi(수미)</strong>는 병원이나 수면치료 기기 관리 업체가 환자에게 제공하는 치료 참여 화면입니다.
+            환자는 이 화면에서 안내를 받고, 질문에 답하고, 짧은 게임을 하고, 치료 전후 변화를 확인합니다.
+            새로 만드는 인지 컨디션 체크(집중·기억 상태 확인)는 별도 앱이 아니라 이 SOOMi 안에 들어갑니다.
+            <span class="hero-line">수면검사에서 확인한 숨 멈춤 횟수, 환자가 직접 답한 낮 졸림·피로 변화, 짧은 집중·기억 게임 결과를 나란히 보여 줍니다. 치료 전과 후를 비교해 환자가 치료를 계속할 이유를 이해하도록 돕습니다.</span>
           </p>
 
           <dl class="meta-grid">
             <div>
               <dt>문서 유형</dt>
-              <dd>외부 발표용 PRD</dd>
+              <dd>외부 발표용 제품 기획서</dd>
             </div>
             <div>
               <dt>제품 단계</dt>
-              <dd>SOOMi 연동 MVP 기획</dd>
+              <dd>SOOMi 안에 넣을 첫 버전</dd>
             </div>
             <div>
               <dt>작성일</dt>
@@ -1087,8 +1087,8 @@
         <div class="phone" aria-label="제품 첫 화면 예시">
           <div class="phone-screen">
             <div class="phone-caption">
-              <span>SOOMi · 나의 치료 변화</span>
-              <strong>4주 체크</strong>
+              <span>환자 치료 참여 화면 · SOOMi</span>
+              <strong>치료 4주째</strong>
             </div>
             <div class="phone-orbit" aria-hidden="true">
               <svg viewBox="0 0 88 88" role="img">
@@ -1104,7 +1104,7 @@
               <span class="phone-arrow" aria-hidden="true">→</span>
               <div class="phone-point"><span>치료 4주</span><strong>정기 체크</strong></div>
             </div>
-            <p>AHI, 내가 느낀 변화, 게임 수행값을 한 화면에서 확인합니다.</p>
+            <p>수면 중 숨 멈춤 횟수, 내가 느낀 변화, 게임 결과를 한 화면에서 확인합니다.</p>
             <div class="mock-primary">이번 체크 시작</div>
             <p class="mock-note">합성 화면 예시 · 실제 환자 수치 아님</p>
           </div>
@@ -1114,15 +1114,15 @@
       <div class="summary-grid" aria-label="기획 핵심 요약">
         <article class="summary-card">
           <span class="label">왜</span>
-          <p>AHI가 달라져도 환자가 일상에서 무엇이 변했는지 체감하고 설명하기 어렵습니다.</p>
+          <p>수면검사 수치가 달라져도 환자가 일상에서 무엇이 변했는지 체감하고 설명하기 어렵습니다.</p>
         </article>
         <article class="summary-card">
           <span class="label">어디서</span>
-          <p>별도 앱이 아니라 병원·양압기 렌탈 사업자가 사용하는 SOOMi 치료 여정 안에 둡니다.</p>
+          <p>별도 앱이 아니라 환자가 이미 치료 안내를 받는 SOOMi 화면 안에 둡니다.</p>
         </article>
         <article class="summary-card">
           <span class="label">무엇을 함께 보나</span>
-          <p>AHI 객관지표, PROMs 환자 자가보고, 게임 수행값을 출처별로 구분해 봅니다.</p>
+          <p>수면검사 수치, 환자가 직접 답한 변화, 짧은 게임 결과를 종류별로 나누어 봅니다.</p>
         </article>
         <article class="summary-card">
           <span class="label">목표</span>
@@ -1141,31 +1141,31 @@
 
         <div class="outcome-sources" aria-label="치료 전후 비교에 사용하는 세 가지 결과">
           <article class="outcome-source">
-            <span class="source-type">객관지표</span>
-            <h3>AHI 변화</h3>
-            <p>검사·치료 데이터에서 확인한 수면 중 무호흡·저호흡 지표의 변화를 보여 줍니다.</p>
+            <span class="source-type">수면검사에서 나온 수치</span>
+            <h3>자는 동안 숨이 멈추거나 얕아진 횟수</h3>
+            <p>수면 1시간을 기준으로 숨이 멈추거나 얕아진 횟수입니다. 의료진은 이 수치를 AHI라고 부릅니다.</p>
           </article>
           <article class="outcome-source">
-            <span class="source-type">환자 자가보고 · PROMs</span>
-            <h3>내가 느낀 일상 변화</h3>
-            <p>졸림, 피로, 일상 기능처럼 환자가 직접 답한 변화를 검증된 문항으로 확인합니다.</p>
+            <span class="source-type">환자가 직접 답한 변화</span>
+            <h3>낮 졸림·피로·일상생활</h3>
+            <p>환자가 같은 질문에 직접 답해 치료 전과 후의 느낌을 비교합니다. 의료 분야에서는 이런 질문지를 PROMs라고 부릅니다.</p>
           </article>
           <article class="outcome-source">
-            <span class="source-type">과제 수행값</span>
-            <h3>인지 게임 변화</h3>
-            <p>같은 조건에서 수행한 집중·기억 게임의 반응시간과 정확도 변화를 참고합니다.</p>
+            <span class="source-type">짧은 게임에서 나온 값</span>
+            <h3>집중·기억 게임 결과</h3>
+            <p>같은 조건에서 게임을 했을 때 얼마나 빠르고 정확하게 반응했는지 변화를 참고합니다.</p>
           </article>
         </div>
         <div class="outcome-result">
           <h3>치료 전 기준값 ↔ 치료 후 정기 체크</h3>
-          <p>환자는 SOOMi에서 변화의 방향을 이해하고, 의료진·담당자는 CareLoop에서 출처와 측정 시점을 구분해 함께 확인합니다.</p>
+          <p>환자는 치료 참여 화면(SOOMi)에서 변화를 이해합니다. 의료진·담당자는 환자 상태와 할 일을 확인하는 업무 화면(CareLoop Portal)에서 결과의 종류와 측정 시점을 구분해 봅니다.</p>
         </div>
         <p class="term-note">
-          <strong>용어를 구분합니다.</strong> PROMs는 환자가 직접 답한 결과이고, 게임에서 나온 반응시간·정확도는 별도의 수행 결과입니다.
-          이 둘을 같은 점수로 합치거나 게임 결과로 진단하지 않습니다.
-          <a href="https://www.fda.gov/drugs/development-approval-process-drugs/patient-focused-drug-development-glossary">FDA 용어 정의</a> ·
-          <a href="https://www.fda.gov/science-research/focus-areas-regulatory-science-report/focus-area-patient-reported-outcomes-and-other-clinical-outcome-assessments">FDA 임상결과평가 구분</a> ·
-          <a href="https://aasm.org/wp-content/uploads/2017/08/PCPI-OSA-Measures.pdf">AASM 수면무호흡 지표 자료</a>
+          <strong>세 결과는 뜻이 다릅니다.</strong> 수면검사 수치, 환자가 질문에 답한 내용, 게임 결과를 하나의 점수로 합치지 않습니다.
+          특히 게임 결과만으로 질환이나 치료 효과를 판단하지 않습니다.
+          <a href="https://www.fda.gov/drugs/development-approval-process-drugs/patient-focused-drug-development-glossary">환자가 직접 답한 결과에 관한 FDA 설명</a> ·
+          <a href="https://www.fda.gov/science-research/focus-areas-regulatory-science-report/focus-area-patient-reported-outcomes-and-other-clinical-outcome-assessments">질문 결과와 과제 수행 결과의 차이에 관한 FDA 설명</a> ·
+          <a href="https://aasm.org/wp-content/uploads/2017/08/PCPI-OSA-Measures.pdf">수면검사 수치에 관한 AASM 자료</a>
         </p>
       </section>
 
@@ -1183,7 +1183,7 @@
             <h3>현재의 불편</h3>
             <ul class="problem-list">
               <li>치료 전 환자의 졸림·피로·수행 상태가 남지 않아 이후 변화와 비교하기 어렵습니다.</li>
-              <li>AHI와 환자가 느끼는 변화가 따로 보이면 치료의 의미를 한눈에 이해하기 어렵습니다.</li>
+              <li>수면검사 수치와 환자가 느끼는 변화가 따로 보이면 치료의 의미를 한눈에 이해하기 어렵습니다.</li>
               <li>한 번의 게임 점수만으로 상태를 단정하면 연습·기기·환경 차이를 놓칠 수 있습니다.</li>
             </ul>
           </article>
@@ -1191,9 +1191,9 @@
           <article class="content-card">
             <h3>우리가 만드는 변화</h3>
             <ul class="check-list">
-              <li>치료 시작 전 SOOMi에서 환자별 기준값을 남깁니다.</li>
+              <li>치료 시작 전 환자 치료 참여 화면(SOOMi)에서 개인별 기준값을 남깁니다.</li>
               <li>치료 뒤 정해진 시점에 같은 문항과 게임을 반복합니다.</li>
-              <li>AHI·자가보고·수행값을 구분한 채 치료 전과 후를 함께 보여 줍니다.</li>
+              <li>수면검사 수치·환자의 직접 답변·게임 결과를 구분한 채 치료 전과 후를 함께 보여 줍니다.</li>
             </ul>
           </article>
         </div>
@@ -1204,7 +1204,7 @@
           <span class="section-number">03 · 핵심 대상</span>
           <div>
             <h2 id="target-title">도입 고객과 실제 사용자를 분명히 나눈다</h2>
-            <p>K-Sleep Care의 고객은 병원·양압기 렌탈 사업자이고, 환자는 SOOMi를 통해 치료 여정에 참여합니다.</p>
+            <p>이 서비스를 도입하는 곳은 병원과 치료기기 관리 업체입니다. 환자는 SOOMi 화면을 통해 치료 과정에 참여합니다.</p>
           </div>
         </div>
 
@@ -1212,7 +1212,7 @@
           <article class="target-card">
             <span class="target-tag">도입 고객</span>
             <h3>수면클리닉·양압기 렌탈 사업자</h3>
-            <p>환자의 치료 전·후 변화를 함께 설명하고, 치료 지속을 지원하려는 의료진·케어 담당자</p>
+            <p>양압기(CPAP)는 잠잘 때 부드러운 공기 압력으로 기도가 닫히지 않게 돕는 치료기기입니다. 의료진·케어 담당자는 이 기기를 쓰는 환자의 치료 전·후 변화를 함께 설명하고 치료 지속을 지원합니다.</p>
           </article>
           <blockquote class="quote-card">
             <div><strong>실제 사용자 · 환자</strong><br />“치료 전과 비교해 내 수면 수치뿐 아니라 낮의 졸림과 집중이 어떻게 달라졌는지 쉽게 보고 싶다.”</div>
@@ -1233,37 +1233,37 @@
           <article class="journey-step">
             <span class="step-number">1</span>
             <h3>치료 전 초대</h3>
-            <p>환자가 SOOMi에서 기준 측정의 목적과 동의 내용을 확인합니다.</p>
+            <p>환자가 치료 참여 화면에서 기준 측정의 목적과 동의 내용을 확인합니다.</p>
           </article>
           <article class="journey-step">
             <span class="step-number">2</span>
             <h3>기준값 남기기</h3>
-            <p>PROMs 문항과 게임을 수행해 치료 전 상태를 기록합니다.</p>
+            <p>낮 졸림·피로에 관한 질문에 답하고 짧은 게임을 해 치료 전 상태를 기록합니다.</p>
           </article>
           <article class="journey-step">
             <span class="step-number">3</span>
             <h3>치료 시작</h3>
-            <p>의료진 판단에 따라 치료하고, AHI 등 실제 치료 지표가 쌓입니다.</p>
+            <p>의료진 판단에 따라 양압기 등으로 치료하고, 수면검사와 치료기기에서 확인한 수치가 쌓입니다.</p>
           </article>
           <article class="journey-step">
             <span class="step-number">4</span>
             <h3>정기 체크</h3>
-            <p>치료 후 정해진 주기에 같은 PROMs와 게임을 반복합니다.</p>
+            <p>치료 후 정해진 주기에 같은 질문과 게임을 반복합니다.</p>
           </article>
           <article class="journey-step">
             <span class="step-number">5</span>
             <h3>전·후 비교</h3>
-            <p>환자는 SOOMi에서 보고, 담당자는 CareLoop에서 함께 확인합니다.</p>
+            <p>환자는 치료 참여 화면에서 보고, 담당자는 업무 화면에서 함께 확인합니다.</p>
           </article>
         </div>
       </section>
 
       <section id="mvp" aria-labelledby="mvp-title">
         <div class="section-head">
-          <span class="section-number">05 · MVP 기능</span>
+          <span class="section-number">05 · 첫 버전 기능</span>
           <div>
-            <h2 id="mvp-title">치료 전·후 비교의 한 축으로 게임 수행값을 사용한다</h2>
-            <p>PROMs와 AHI는 별도 출처로 연결합니다. 게임은 진단 점수가 아니라 같은 환자의 반복 변화만 보는 참고값입니다.</p>
+            <h2 id="mvp-title">치료 전·후 비교에 짧은 게임 결과를 함께 사용한다</h2>
+            <p>환자가 질문에 답한 내용과 수면검사 수치는 각각 따로 연결합니다. 게임 결과는 같은 환자의 반복 변화만 보는 참고값이며 진단 점수가 아닙니다.</p>
           </div>
         </div>
 
@@ -1274,7 +1274,7 @@
                 <th scope="col">순서</th>
                 <th scope="col">게임</th>
                 <th scope="col">사용하는 활동</th>
-                <th scope="col">MVP에서 보여 줄 결과</th>
+                <th scope="col">첫 버전에서 보여 줄 결과</th>
               </tr>
             </thead>
             <tbody>
@@ -1335,7 +1335,7 @@
         <div class="section-head">
           <span class="section-number">06 · 화면 구조</span>
           <div>
-            <h2 id="screens-title">SOOMi 안에서 기준 측정·정기 체크·변화 보기를 잇는다</h2>
+            <h2 id="screens-title">환자 치료 참여 화면에서 기준 측정·정기 체크·변화 보기를 잇는다</h2>
             <p>환자가 지금 왜 측정하는지 먼저 이해하고, 한 화면에는 다음 행동 하나만 강조합니다.</p>
           </div>
         </div>
@@ -1344,8 +1344,8 @@
           <article class="screen-card">
             <div class="screen-top"><span>화면 1</span><span>치료 전</span></div>
             <h3>기준 측정</h3>
-            <div class="screen-visual" aria-label="기준 측정 구성">PROMs + 게임</div>
-            <p>치료 뒤 무엇이 달라졌는지 비교하기 위해 현재의 졸림·피로·게임 수행값을 남깁니다.</p>
+            <div class="screen-visual" aria-label="기준 측정 구성">내가 답한 변화 + 게임</div>
+            <p>치료 뒤 무엇이 달라졌는지 비교하기 위해 현재의 졸림·피로와 게임 결과를 남깁니다.</p>
           </article>
           <article class="screen-card">
             <div class="screen-top"><span>화면 2</span><span>치료 후</span></div>
@@ -1356,8 +1356,8 @@
           <article class="screen-card">
             <div class="screen-top"><span>화면 3</span><span>나의 치료 변화</span></div>
             <h3>전·후 비교</h3>
-            <div class="screen-visual" aria-label="세 결과 출처를 함께 표시">AHI · PROMs · 수행값</div>
-            <p>세 결과를 한 점수로 합치지 않고, 치료 전과 지금의 변화 방향을 쉬운 말로 보여 줍니다.</p>
+            <div class="screen-visual" aria-label="세 결과 출처를 함께 표시">검사 수치 · 내 답변 · 게임</div>
+            <p>서로 다른 세 결과를 한 점수로 합치지 않고, 치료 전과 지금의 변화 방향을 쉬운 말로 보여 줍니다.</p>
           </article>
         </div>
       </section>
@@ -1378,15 +1378,15 @@
           </article>
           <article class="safety-card">
             <strong><span class="safety-symbol" aria-hidden="true">!</span> 서로 다른 결과를 섞지 않음</strong>
-            <p>AHI·PROMs·게임 수행값의 출처를 표시하고, 하나의 진단 점수로 합치지 않습니다.</p>
+            <p>수면검사 수치·환자의 직접 답변·게임 결과의 출처를 표시하고, 하나의 진단 점수로 합치지 않습니다.</p>
           </article>
           <article class="safety-card">
-            <strong><span class="safety-symbol" aria-hidden="true">!</span> SOOMi 안에서 동의·권한 관리</strong>
-            <p>실제 환자 데이터 연동은 SOOMi의 인증·동의·접근권한·감사기록을 적용한 뒤 진행합니다. 이 PRD 화면은 합성 데이터만 사용합니다.</p>
+            <strong><span class="safety-symbol" aria-hidden="true">!</span> 환자 동의와 접근 권한 관리</strong>
+            <p>실제 환자 데이터는 본인 확인, 환자 동의, 담당자별 접근 권한, 열람 기록을 적용한 뒤 연결합니다. 이 기획서 화면은 가짜 예시 데이터만 사용합니다.</p>
           </article>
           <article class="safety-card">
-            <strong><span class="safety-symbol" aria-hidden="true">!</span> 임상 검토 전 확정하지 않음</strong>
-            <p>사용할 PROMs 문항, 측정 주기, 결과 문구는 의료진 검토와 승인을 거쳐 확정합니다.</p>
+            <strong><span class="safety-symbol" aria-hidden="true">!</span> 의료진 검토 전 확정하지 않음</strong>
+            <p>사용할 질문지, 측정 주기, 결과 설명 문구는 의료진 검토와 승인을 거쳐 확정합니다.</p>
           </article>
         </div>
       </section>
@@ -1395,27 +1395,27 @@
         <div class="section-head">
           <span class="section-number">08 · 구현 방향</span>
           <div>
-            <h2 id="technology-title">별도 앱이 아니라 SOOMi와 CareLoop 사이의 치료 결과 흐름으로 만든다</h2>
-            <p>먼저 합성 데이터로 비교 경험을 검증한 뒤, 실제 환자 데이터 연결은 별도 승인 단계에서 진행합니다.</p>
+            <h2 id="technology-title">별도 앱이 아니라 환자 화면과 담당자 업무 화면을 연결한다</h2>
+            <p>먼저 가짜 예시 데이터로 치료 전·후 비교 화면을 검증한 뒤, 실제 환자 데이터는 별도 승인 단계에서 연결합니다.</p>
           </div>
         </div>
 
         <div class="decision-grid">
           <article class="decision-card">
-            <h3>SOOMi 내부 기능</h3>
-            <p class="why">환자는 새 앱이나 새 계정을 만들지 않고 기존 치료 실행 채널 안에서 기준 측정과 정기 체크를 이어갑니다.</p>
+            <h3>환자 치료 참여 화면(SOOMi)</h3>
+            <p class="why">환자는 새 앱이나 새 계정을 만들지 않고, 평소 치료 안내를 받는 화면에서 기준 측정과 정기 체크를 이어갑니다.</p>
           </article>
           <article class="decision-card">
-            <h3>출처가 구분된 데이터</h3>
-            <p class="why">AHI 객관지표, PROMs 자가보고, 게임 수행값을 각각 저장해 누가 언제 어디서 만든 값인지 확인할 수 있게 합니다.</p>
+            <h3>결과를 종류별로 분리</h3>
+            <p class="why">수면검사 수치, 환자가 직접 답한 내용, 게임 결과를 각각 저장해 언제 어디서 나온 값인지 확인할 수 있게 합니다.</p>
           </article>
           <article class="decision-card">
-            <h3>CareLoop 검토 화면</h3>
+            <h3>의료진·담당자 업무 화면(CareLoop Portal)</h3>
             <p class="why">의료진·담당자가 환자의 치료 전·후 변화와 측정 조건을 확인하고 필요한 설명과 다음 행동을 결정합니다.</p>
           </article>
           <article class="decision-card">
-            <h3>합성 데이터 우선 검증</h3>
-            <p class="why">실제 AHI·환자정보를 연결하기 전에 가짜 데이터로 화면 이해도와 안전 문구를 먼저 확인합니다.</p>
+            <h3>가짜 예시 데이터로 먼저 검증</h3>
+            <p class="why">실제 수면검사 수치와 환자정보를 연결하기 전에 가짜 데이터로 화면 이해도와 안전 문구를 먼저 확인합니다.</p>
           </article>
         </div>
       </section>
@@ -1425,7 +1425,7 @@
           <span class="section-number">09 · 성공 기준</span>
           <div>
             <h2 id="success-title">측정 횟수보다 “환자가 치료 변화를 이해하고 계속 참여하는가”를 검증한다</h2>
-            <p>아래 수치는 현재 성과가 아니라 MVP 사용자 테스트에서 확인할 목표입니다.</p>
+            <p>아래 수치는 현재 성과가 아니라 첫 버전 사용자 테스트에서 확인할 목표입니다.</p>
           </div>
         </div>
 
@@ -1433,20 +1433,20 @@
           <article class="metric-card">
             <span class="metric-label">치료 전 기준 측정</span>
             <strong>초대 환자의 80% 이상</strong>
-            <p>SOOMi 안내를 이해하고 PROMs와 게임 기준 측정을 완료합니다.</p>
+            <p>치료 참여 화면의 안내를 이해하고 졸림·피로 질문과 게임 기준 측정을 완료합니다.</p>
           </article>
           <article class="metric-card">
             <span class="metric-label">정기 체크 참여</span>
             <strong>대상 환자의 70% 이상</strong>
-            <p>치료 후 정해진 시점의 PROMs와 게임 체크를 완료합니다.</p>
+            <p>치료 후 정해진 시점의 졸림·피로 질문과 게임 체크를 완료합니다.</p>
           </article>
           <article class="metric-card">
             <span class="metric-label">변화 이해</span>
             <strong>10명 중 8명 이상</strong>
-            <p>AHI, 내가 답한 변화, 게임 수행값이 서로 다른 결과임을 자신의 말로 설명합니다.</p>
+            <p>수면검사 수치, 내가 질문에 답한 내용, 게임 결과가 서로 다른 정보임을 자신의 말로 설명합니다.</p>
           </article>
           <article class="metric-card">
-            <span class="metric-label">임상 안전</span>
+            <span class="metric-label">의료 안전</span>
             <strong>자동 진단·치료 판정 0건</strong>
             <p>결과 출처와 측정 시점이 보이고, 의료진 검토가 필요한 지점을 놓치지 않습니다.</p>
           </article>
@@ -1457,28 +1457,28 @@
         <div class="section-head">
           <span class="section-number">10 · 실행 계획</span>
           <div>
-            <h2 id="plan-title">2주 안에 합성 데이터로 SOOMi 치료 전·후 비교 경험을 검증한다</h2>
-            <p>실제 환자정보·AHI 연동은 이 MVP에 포함하지 않고, 임상·보안 검토 뒤 별도 승인으로 진행합니다.</p>
+            <h2 id="plan-title">2주 안에 가짜 예시 데이터로 치료 전·후 비교 화면을 검증한다</h2>
+            <p>실제 환자정보와 수면검사 수치를 연결하는 일은 첫 버전에 포함하지 않습니다. 의료·보안 검토 뒤 별도 승인으로 진행합니다.</p>
           </div>
         </div>
 
         <div class="plan-line">
           <article class="plan-phase">
             <span class="period">1주차 · 환자 경험</span>
-            <h3>SOOMi에서 기준 측정과 정기 체크 연결</h3>
+            <h3>환자 화면에서 기준 측정과 정기 체크 연결</h3>
             <ul class="decision-list">
               <li>치료 전 기준 측정 안내</li>
-              <li>PROMs 문항과 게임 수행 흐름</li>
+              <li>낮 졸림·피로 질문과 게임 진행 흐름</li>
               <li>치료 후 정기 체크 알림 화면</li>
-              <li>합성 AHI로 전·후 비교 화면</li>
+              <li>가짜 수면검사 수치로 전·후 비교 화면</li>
             </ul>
           </article>
           <article class="plan-phase">
             <span class="period">2주차 · 이해와 안전</span>
-            <h3>환자 설명과 CareLoop 검토 흐름 확인</h3>
+            <h3>환자 설명과 담당자 검토 흐름 확인</h3>
             <ul class="decision-list">
               <li>세 결과의 출처·측정 시점 표시</li>
-              <li>의료진과 PROMs 문항·주기 검토</li>
+              <li>의료진과 질문 내용·측정 주기 검토</li>
               <li>환자·담당자 사용성 테스트</li>
               <li>실제 데이터 연동 전 승인 조건 정리</li>
             </ul>
@@ -1490,8 +1490,8 @@
         <div class="closing">
           <h2 id="closing-title">한 문장으로 정리하면</h2>
           <p>
-            인지 컨디션 체크는 SOOMi에서 치료 전 기준값과 치료 후 변화를 반복 확인하고,
-            AHI·PROMs·게임 수행값을 함께 이해해 환자가 치료를 이어갈 동기를 돕는 기능입니다.
+            인지 컨디션 체크는 환자가 평소 사용하는 치료 참여 화면(SOOMi)에서 치료 전 기준값과 치료 후 변화를 확인하고,
+            수면검사 수치·환자가 직접 답한 일상 변화·게임 결과를 함께 이해해 치료를 이어갈 동기를 돕는 기능입니다.
           </p>
         </div>
       </section>
@@ -1499,8 +1499,8 @@
 
     <footer>
       <div class="footer-inner">
-        <span>K-Sleep Care · SOOMi 인지 컨디션 체크</span>
-        <span>기획안 v1.1 · SOOMi 연동 기획 · 검증 전</span>
+        <span>K-Sleep Care · 수면치료 전후 변화 확인</span>
+        <span>기획안 v1.2 · 일반인용 용어 설명 반영 · 검증 전</span>
       </div>
     </footer>
   </body>
