@@ -2,7 +2,7 @@
 title: 게임 UX와 과제 원리 개선
 path: docs/ux-game-revision.md
 status: canonical
-stage: responsive-verified-before-deploy
+stage: deployed-and-verified
 date: 2026-09-07
 ---
 # 게임 UX와 과제 원리 개선
@@ -82,9 +82,9 @@ date: 2026-09-07
 ## 검증과 다음 실행 주체
 
 실행 결과는 이 문서 하단 Verification Log에만 기록한다. 화면 변경과 실제 운영 배포는 별도다.
-Current Cursor: 후속 반응형·이야기 퀴즈 변경의 로컬 구현과 검증 종료. 운영 반영과 공개 URL 검증 남음.
+Current Cursor: 후속 반응형·이야기 퀴즈 변경의 운영 배포와 공개 URL 검증 종료. 운영 코드 기준은 `b7726a6`.
 Risk Gate: Sylvie의 "검증한 개선안을 운영 앱에 배포해줘" 및 후속 이야기·반응형 수정 요청 범위 안에서 같은 Vercel 앱에 반영한다. GitHub push·PR·main 병합·rollback·Vercel 프로젝트 설정 변경은 포함하지 않는다.
-Next actor: Codex가 검증 소스만 분리해 운영 배포하고 공개 URL을 확인한다. 다른 writer의 PRD·내부 문서·로컬 산출물은 업로드에서 제외한다.
+Next actor: 이번 요청의 필수 후속 작업 없음. 다른 writer의 PRD·내부 문서·로컬 산출물은 업로드에서 제외했다. 다음 배포 시 GitHub main이 아닌 실제 운영 소스 기준을 먼저 확인해야 한다.
 
 ### Verification Log
 
@@ -141,3 +141,13 @@ Next actor: Codex가 검증 소스만 분리해 운영 배포하고 공개 URL�
 - 다른 writer의 `15fad53`은 PRD만 변경한 것으로 확인해 보존. 배포 소스에서 PRD 제외.
 - 별도 코드 리뷰의 연결 문항 재질문/정답 단서 지적을 반영해 추가 3문항을 독립 사실로 교체. 글자 크기의 CSS 우선순위도 수정. 가로 장면 높이가 기존 CSS에 덮이는 문제는 최소 280px 회귀 검사의 실패를 확인 후 수정.
 - 일반 시간·일반 클릭·Space 선택·Enter 다음 문제·844×390→390×844 전환 검증도 통과. 전체 코스의 가속 검증은 강제 클릭을 사용했으므로 모든 기기의 터치 동작까지 입증하는 것은 아니다.
+
+### 반응형 운영 검증 — 2026-09-07 21:39 KST
+
+- 구현 커밋 `b7726a632a9be0ed812b2b0dd20489005db3e8af`. 독립 코드 재검토에서 Critical/Important 문제 없음, 관련 테스트 42개 별도 통과.
+- 정확한 커밋의 앱 소스만 `/private/tmp/cognitive-responsive-release-tktZVyOz`로 추출. dry-run 47개 파일 / 290458바이트. PRD·문서·로그·환경 파일 없음.
+- 배포 `dpl_5ksLLdKS9PwJ3r4SpiggKzYfTwvR`, production READY. 기존 공개 URL HTTP 200 및 새 배포 alias 연결 확인. 프로젝트·Node 24 설정·보안 헤더 변경 없음.
+- 공개 `index-CRoM8EA3.js` SHA256 `0f1c7c7daf48e4ff7459ac87f75454dfb3f5b27f96b0e0d950076c82b37a8c09`, `index-BZjqe8vg.css` SHA256 `82b4d9d0890eebc324ed323f47cd4d337421a7fd636a54045f37a783967aa8ed`: 검증한 로컬 빌드와 바이트 단위 일치.
+- 운영 Chromium에서 마스터 전체 코스·결과 7개와 같은 273건의 화면 검사 재통과. 이야기 앞뒤 질문 중복 없음, 선택 표시 유지, 844×390에서 신호 장면 최소 280px 유지.
+- 운영에서 일반 클릭·Space 선택·Enter 다음 문제·가로→세로 전환도 통과. localStorage 기록 0, 콘솔 오류/경고 0. `/prd/`, `/docs/ux-game-revision.md`, `/src/App.tsx` 모두 404.
+- GitHub push·PR·병합·저장 데이터 변경 없음. 실기기 Safari·가상 키보드·VoiceOver·임상 타당성은 검증 범위 밖이며 모든 기기에서의 완벽한 표시를 보장하지 않는다.
