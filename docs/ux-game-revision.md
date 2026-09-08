@@ -2,7 +2,7 @@
 title: 게임 UX와 과제 원리 개선
 path: docs/ux-game-revision.md
 status: canonical
-stage: local-verified-deployment-pending
+stage: production-verified
 date: 2026-09-07
 ---
 # 게임 UX와 과제 원리 개선
@@ -82,11 +82,27 @@ date: 2026-09-07
 ## 검증과 다음 실행 주체
 
 실행 결과는 이 문서 하단 Verification Log에만 기록한다. 화면 변경과 실제 운영 배포는 별도다.
-Current Cursor: 2026-09-08 UX 평가 개선안을 적용하고 로컬 검증했다. 이번 수정의 운영 배포는 하지 않았다. 아래 `b7726a6` 배포 기록은 이전 버전의 이력이다.
-Risk Gate: 이번 요청 ‘개선안 적용해서 수정해줘’에 대해 수정·로컬 검증 범위로 착수했다. 운영 반영 전 배포 범위를 확인하며 GitHub push·PR·main 병합·rollback·프로젝트 설정 변경은 실행하지 않았다.
-Next actor: Sylvie가 운영 반영 범위를 확인하면 Codex가 대상 앱·배포 소스를 재확인하고 검증된 수정본을 배포한다. 독립 참가자 사용성 테스트는 별도 조율이 필요하다.
+Current Cursor: 2026-09-08 승인된 `f1940948b00b20b0422b88aabed90c79d1fe8c17` 앱 소스를 운영 배포하고 공개 URL 검증을 마쳤다. 현재 운영 배포는 `dpl_BGdCDzWQ7d5BxfPqq2JSMBr4nVXP`이다. 아래 이전 배포 기록은 이력이다.
+Risk Gate: Sylvie의 ‘그래, 일단 이렇게 배포해줘’ 명시 승인으로 기존 Vercel 프로젝트에 직접 배포했다. GitHub push·PR·main 병합·rollback·프로젝트 설정·환경값·저장 데이터 변경은 실행하지 않았다.
+Next actor: 이번 수정본의 배포·운영 확인은 Codex가 완료했다. 독립 참가자 사용성 테스트와 실기기 검증은 이번 배포 범위 밖이며, 별도 진행 시 참가자·기기 조율이 필요하다.
 
 ### Verification Log
+
+#### 사용자 기대 일치 운영 배포 — 2026-09-08 20:18 KST
+
+- 승인 입력: ‘그래, 일단 이렇게 배포해줘’. 코드 변경 없이 `f1940948b00b20b0422b88aabed90c79d1fe8c17`을 배포했다. 착수 시 미커밋 `.gitignore`와 기존 미추적 파일은 보존했다.
+- 배포 직전 타입 검사·전체 165개 테스트(18파일)·빌드 재통과. 승인 커밋의 앱 소스와 빌드 설정만 `/private/tmp/cognitive-ux-release-GHnDddP9`에 추출하고 분리 빌드도 통과했다.
+- Vercel CLI 도움말과 프로젝트를 실제 조회했다. 프로젝트 `prj_XcHe2gl96UchEHVoF6o3KVrTY2NQ`, scope `urmypride-2856s-projects`, Node 24.x·Vite·보안 헤더는 유지했다.
+- 업로드 dry-run 50항목 / 298359바이트: 실제 파일 49개와 size 0 / mode 16877인 빈 `dist` 디렉터리 1개. PRD·내부 문서·테스트 파일·환경 파일·스크린샷·로그·node_modules·빌드 산출물은 업로드에 포함되지 않았다.
+- 이전 배포 `dpl_5ksLLdKS9PwJ3r4SpiggKzYfTwvR`에서 새 배포 `dpl_BGdCDzWQ7d5BxfPqq2JSMBr4nVXP`로 교체. production READY 및 기존 https://ksleep-care-cognitive-check.vercel.app/ alias 연결을 재조회해 확인했다.
+- 공개 URL HTTP 200. HTML과 JS `index-D79iV4NT.js`, CSS `index-DtiR0eAy.css`가 분리 빌드와 바이트 단위 일치. JS SHA256 `265028c5acb81cf7007b862e0ea26688e38c61b1e51cd99d3e53dabb5b295ab0`, CSS SHA256 `30ee81e2f2a21a00f689b0ec5f69ffedd6ed2cd721af6980267239bb10c08a5e`.
+- 내부 `/prd/`, `/docs/ux-game-revision.md`, `/src/App.tsx`는 모두 404.
+- 운영 Chromium 검증 66건 통과: 하단 게임/안내 이동, 실제 시작→방법 안내, 질문 2에서 나가기 취소 시 질문·선택 답·초점 보존, 다음 게임 라벨과 도착지 일치, 방향키 난이도 변경의 취소·확정, 시간 제한 중 중단 안내와 새 코스 시작.
+- 루키·마스터 각 7개 게임을 운영에서 완주해 결과 화면 도달. 이야기 앞뒤 질문 중복 없음, 수동 다음 문제, 숫자 성공 없음 표현, localStorage/sessionStorage 각각 0을 확인했다. 강제 클릭 없이 실행했으나 전체 코스는 합성 입력·가상 시계로 가속한 기능 검사이며 인지능력 실측이 아니다.
+- 320×568, 390×844, 768×1024, 1440×900에서 시작 버튼 전체가 첫 화면에 보인다. 844×390도 가로 넘침 없음. 320/768/1440 화면 캡처를 직접 확인했다. 콘솔 오류·pageerror·실패 요청 0.
+- 별도 가상 시계 없는 Chromium에서 일반 모션·844×390 세로 스크롤 후 시작 버튼 클릭→이야기 준비 화면을 확인했다. 해당 캐시 영향이 가능한 로딩의 load 이벤트는 약 66ms였으며 현장 성능 수치로 일반화하지 않는다. 앞선 가상 시계 세션의 Navigation Timing 조회는 항목 부재로 실패해 성능 근거로 사용하지 않았다.
+- 로컬 진단 근거는 `output/playwright/deploy-verify.js`, `deployed-ux-*.png`이며 커밋·업로드하지 않았다. 아래 로컬 검증 절의 배포 미실행 표시는 당시 상태다.
+- 실기기 Safari·가상 키보드·VoiceOver, 독립 참가자의 사용성 향상과 임상 타당성은 검증하지 않았다. GitHub 원격 병합 없이 직접 배포했으므로 다음 배포도 승인된 앱 소스를 명시해야 한다.
 
 #### 사용자 기대 일치 개선 — 2026-09-08, 로컬 검증
 
