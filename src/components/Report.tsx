@@ -26,10 +26,11 @@ export default function Report({ results, level, onRestart, onClose }: ReportPro
     <section className="report-card" aria-labelledby="report-title">
       <span className="report-burst"><Burst trigger="done" count={18} /></span>
       <p className="eyebrow">{levelName} 코스 · 게임 7개 완료</p>
-      <h1 id="report-title">오늘 한눈에 보기</h1>
+      <h1 id="report-title">이번 코스 결과</h1>
       <p className="lead">
-        <strong>게임 기록</strong>이에요. 검사 점수가 아니라 같은 난이도에서 내 기록이 어떻게 달라지는지 보는 값이에요.
+        <strong>이번에 플레이한 게임 기록</strong>이에요. 검사 점수나 진단 결과가 아니에요.
       </p>
+      <p className="game-note">기록은 저장하지 않아요. 다시 시작하거나 이 화면을 벗어나면 사라져요.</p>
 
       <MetricTable cards={cards} />
       <MetricGlossary cards={cards} />
@@ -45,7 +46,7 @@ export default function Report({ results, level, onRestart, onClose }: ReportPro
         </button>
 
         <button className="quiet-button" type="button" onClick={onClose}>
-          플레이로 돌아가기
+          게임으로 돌아가기
         </button>
       </div>
     </section>

@@ -22,7 +22,7 @@ export default function ReactionGame({ level = 1, onComplete, getDelay }: Reacti
         <span className={`signal-lamp ${game.phase === 'visible' ? 'is-on' : ''}`} aria-hidden="true" />
         <span className="launch-craft" aria-hidden="true"><i /><b /></span>
         {game.phase === 'waiting' && <span className="stage-instruction">손가락을 준비하세요</span>}
-        {game.phase === 'visible' && <span className="stage-instruction">화면 어디든 누르세요</span>}
+        {game.phase === 'visible' && <span className="stage-instruction">이 게임 영역을 누르세요</span>}
         {game.phase === 'feedback' && <span className="signal-result" role="status">
           {game.outcome === 'hit' && <Burst trigger={game.trial} />}
           <strong>{game.lastMs !== null ? `${game.lastMs}ms` : game.outcome === 'early' ? '너무 이른 누름' : '놓침'}</strong>

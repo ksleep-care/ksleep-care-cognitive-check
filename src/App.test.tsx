@@ -7,10 +7,10 @@ describe('바로 플레이', () => {
   it('홈과 측정 진입점 없이 플레이와 안내만 제공한다', () => {
     render(<App />);
     const nav = screen.getByRole('navigation', { name: '주요 화면' });
-    expect(within(nav).getAllByRole('button').map(b => b.textContent)).toEqual(['플레이', '게임 안내']);
-    expect(within(nav).getByRole('button', { name: /플레이/ })).toHaveAttribute('aria-current', 'page');
+    expect(within(nav).getAllByRole('button').map(b => b.textContent)).toEqual(['게임', '게임 안내']);
+    expect(within(nav).getByRole('button', { name: /^게임$/ })).toHaveAttribute('aria-current', 'page');
     expect(screen.getAllByRole('listitem')).toHaveLength(7);
-    expect(screen.getByRole('button', { name: /게임 7개 시작/ })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /게임 시작/ })).toBeInTheDocument();
     expect(screen.queryByText(/3분 집중 측정/)).not.toBeInTheDocument();
     expect(screen.getByText(/의료 진단이 아니에요/)).toBeInTheDocument();
   });
@@ -24,26 +24,26 @@ describe('바로 플레이', () => {
   });
   it('시작하면 첫 게임 안내로 이동하고 탭이 사라진다', async () => {
     const user = userEvent.setup(); render(<App />);
-    await user.click(screen.getByRole('button', { name: /게임 7개 시작/ }));
+    await user.click(screen.getByRole('button', { name: /게임 시작/ }));
     expect(screen.getByRole('heading', { name: '이야기 기억하기' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: '준비됐어요' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '이야기 읽기 시작' })).toBeInTheDocument();
     expect(screen.queryByRole('navigation')).not.toBeInTheDocument();
   });
   it('앱 안에서 나가기와 계속하기를 처리한다', async () => {
     const user = userEvent.setup(); render(<App />);
-    await user.click(screen.getByRole('button', { name: /게임 7개 시작/ }));
+    await user.click(screen.getByRole('button', { name: /게임 시작/ }));
     await user.click(screen.getByRole('button', { name: '그만두기' }));
     expect(screen.getByRole('alertdialog')).toHaveTextContent('지금 하던 게임은 다시 시작');
     await user.click(screen.getByRole('button', { name: '계속하기' }));
-    expect(screen.getByRole('button', { name: '준비됐어요' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '이야기 읽기 시작' })).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: '그만두기' }));
     await user.click(screen.getByRole('button', { name: '네, 그만할게요' }));
     expect(screen.getByRole('navigation')).toBeInTheDocument();
   });
   it('측정 도중 탭을 벗어나면 변질된 기록을 이어서 만들지 않는다', async () => {
     const user = userEvent.setup(); render(<App />);
-    await user.click(screen.getByRole('button', { name: /게임 7개 시작/ }));
-    await user.click(screen.getByRole('button', { name: '준비됐어요' }));
+    await user.click(screen.getByRole('button', { name: /게임 시작/ }));
+    await user.click(screen.getByRole('button', { name: '이야기 읽기 시작' }));
     Object.defineProperty(document, 'hidden', { configurable: true, value: true });
     fireEvent(document, new Event('visibilitychange'));
     expect(screen.getByRole('alertdialog')).toHaveTextContent('화면을 벗어나');

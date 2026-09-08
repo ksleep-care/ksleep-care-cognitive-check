@@ -1,5 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import Feedback from '../ui/Feedback';
+import { useTimedPhase } from './useTimedPhase';
+import { completionLabel } from '../domain/session';
 import { LEVEL_CONFIG, makeRandom, shuffle } from '../domain/levels';
 import type { Level, TimedAccuracyResult } from '../domain/types';
 
@@ -39,9 +41,10 @@ interface PatternGameProps {
   level: Level;
   onComplete: (result: TimedAccuracyResult) => void;
   seed?: number;
+  onTimingChange?: (active: boolean) => void;
 }
 
-export default function PatternGame({ level, onComplete, seed }: PatternGameProps) {
+export default function PatternGame({ level, onComplete, seed, onTimingChange }: PatternGameProps) {
   const trials = useMemo(() => {
     const { patternTrials, patternSymbols } = LEVEL_CONFIG[level];
     const random = makeRandom(seed ?? Date.now());
@@ -54,6 +57,7 @@ export default function PatternGame({ level, onComplete, seed }: PatternGameProp
   const times = useRef<number[]>([]);
   const startedAt = useRef(performance.now());
   const locked = useRef(false);
+  useTimedPhase(picked === null, onTimingChange);
 
   const trial = trials[index];
   const isLast = index === trials.length - 1;
@@ -128,7 +132,7 @@ export default function PatternGame({ level, onComplete, seed }: PatternGameProp
           correct={isCorrect}
           answer={trial.target}
           hint={picked === 'timeout' ? '시간이 끝났어요. 모양과 순서를 함께 비교해 보세요.' : '기준 패턴과 순서까지 똑같은 것을 골라야 해요.'}
-          nextLabel={isLast ? '결과 보기' : '다음 문제'}
+          nextLabel={isLast ? completionLabel('pattern') : '다음 문제'}
           onNext={advance}
         />
       )}

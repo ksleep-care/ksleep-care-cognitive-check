@@ -17,7 +17,7 @@ function tick(ms: number) {
 }
 
 describe('문제 피드백', () => {
-  it('맞았으면 누르지 않아도 다음으로 넘어간다', () => {
+  it('맞았어도 읽고 다음을 누르기 전에는 넘어가지 않는다', () => {
     const onNext = vi.fn();
     render(<Feedback correct nextLabel="다음 문제" onNext={onNext} />);
 
@@ -26,7 +26,7 @@ describe('문제 피드백', () => {
 
     tick(900);
 
-    expect(onNext).toHaveBeenCalledTimes(1);
+    expect(onNext).not.toHaveBeenCalled();
   });
 
   it('틀렸으면 정답을 읽어야 하므로 저절로 넘어가지 않는다', () => {

@@ -23,7 +23,7 @@ export default function VigilanceGame({ level = 1, onComplete, getDelay, missAft
         <span className="cosmos-planet" aria-hidden="true"><i /></span>
         <span className="capture-orbit" aria-hidden="true" />
         {game.phase === 'visible' && <span className="comet-3d" aria-hidden="true"><i /><b /></span>}
-        {game.phase === 'waiting' && <span className="stage-instruction">별이 보이면 화면 어디든 톡</span>}
+        {game.phase === 'waiting' && <span className="stage-instruction">별이 보이면 이 게임 영역을 톡</span>}
         {game.phase === 'feedback' && <span className="signal-result" role="status">
           {game.outcome === 'hit' && <Burst trigger={game.trial} />}
           <strong>{game.lastMs !== null ? `${game.lastMs}ms` : game.outcome === 'early' ? '너무 이른 누름' : '놓침'}</strong>

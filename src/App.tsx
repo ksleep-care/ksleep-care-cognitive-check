@@ -5,7 +5,8 @@ import Report from './components/Report';
 import TabBar from './components/TabBar';
 import Transition from './components/Transition';
 import SoundToggle from './ui/SoundToggle';
-import { DEFAULT_LEVEL, FIRST_STEP, GAME_META, GAME_ORDER, nextStep } from './domain/session';
+import ConfirmDialog from './ui/ConfirmDialog';
+import { DEFAULT_LEVEL, FIRST_STEP, GAME_META, GAME_ORDER, LEVEL_META, nextStep } from './domain/session';
 import { pickStoryIndex, templateOf } from './domain/story';
 import type { GameKey, GameResult, Level, SessionDraft, SessionResults, SessionStep, TabKey } from './domain/types';
 import DigitSpanGame from './games/DigitSpanGame';
@@ -34,27 +35,34 @@ export default function App() {
   };
   const [storySeed, setStorySeed] = useState(nextStory);
   const [leaving, setLeaving] = useState(false);
-  const [interrupted, setInterrupted] = useState(false);
-  const [attempt, setAttempt] = useState(0);
+  const [interrupted, setInterrupted] = useState<'manual' | 'hidden' | null>(null);
+  const [isTimed, setIsTimed] = useState(false);
+  const [pendingLevel, setPendingLevel] = useState<Level | null>(null);
   const startSession = () => {
     setResults({});
     setStorySeed(nextStory());
     setLeaving(false);
-    setInterrupted(false);
+    setInterrupted(null);
+    setIsTimed(false);
     setMode({ kind: 'session', step: FIRST_STEP });
   };
   const exitToPlay = () => {
     setResults({});
+    setInterrupted(null);
+    setLeaving(false);
+    setIsTimed(false);
     setMode({ kind: 'tabs' });
     setTab('play');
   };
-  const changeLevel = (next: Level) => {
+  const applyLevel = (next: Level) => {
     if (next === level) return;
     setLevel(next);
     setResults({});
     setStorySeed(nextStory());
+    setPendingLevel(null);
   };
   const completeGame = (key: GameKey, result: GameResult) => {
+    setIsTimed(false);
     setResults(current => ({ ...current, [key]: result }) as SessionDraft);
     setMode(current => current.kind === 'session' ? { kind: 'session', step: nextStep(current.step) } : current);
   };
@@ -66,63 +74,70 @@ export default function App() {
     }
     return count >= GAME_ORDER.length ? 0 : count;
   }, [results]);
+  const changeLevel = (next: Level) => {
+    if (next === level) return;
+    if (doneCount > 0) setPendingLevel(next);
+    else applyLevel(next);
+  };
   const renderGame = (key: GameKey) => {
     const done = (value: GameResult) => completeGame(key, value);
-    if (key === 'story') return <StoryGame mode="immediate" level={level} seed={storySeed} onComplete={done} />;
+    if (key === 'story') return <StoryGame mode="immediate" level={level} seed={storySeed} onComplete={done} onTimingChange={setIsTimed} />;
     if (key === 'reaction') return <ReactionGame level={level} onComplete={done} />;
-    if (key === 'digit') return <DigitSpanGame level={level} onComplete={done} />;
-    if (key === 'stroop') return <StroopGame level={level} onComplete={done} />;
-    if (key === 'storyDelayed') return <StoryGame mode="delayed" level={level} seed={storySeed} onComplete={done} />;
-    if (key === 'pattern') return <PatternGame level={level} onComplete={done} />;
+    if (key === 'digit') return <DigitSpanGame level={level} onComplete={done} onTimingChange={setIsTimed} />;
+    if (key === 'stroop') return <StroopGame level={level} onComplete={done} onTimingChange={setIsTimed} />;
+    if (key === 'storyDelayed') return <StoryGame mode="delayed" level={level} seed={storySeed} onComplete={done} onTimingChange={setIsTimed} />;
+    if (key === 'pattern') return <PatternGame level={level} onComplete={done} onTimingChange={setIsTimed} />;
     return <VigilanceGame level={level} onComplete={done} />;
   };
   const immersive = mode.kind === 'session';
   const timedGame = immersive && mode.step.type === 'game';
+  const signalGame = mode.kind === 'session' && mode.step.type === 'game' && ['reaction', 'vigilance'].includes(GAME_ORDER[mode.step.index]);
+  const cannotResume = timedGame && (isTimed || signalGame);
   // 탭을 벗어난 시간은 반응시간/기억 간격으로 해석하지 않는다.
   useEffect(() => {
-    const hidden = () => { if (document.hidden && timedGame) setInterrupted(true); };
+    const hidden = () => { if (document.hidden && timedGame) { setLeaving(false); setResults({}); setInterrupted('hidden'); } };
     document.addEventListener('visibilitychange', hidden);
     return () => document.removeEventListener('visibilitychange', hidden);
   }, [timedGame]);
   return (
-    <div className={`app-shell${immersive ? ' is-immersive' : ''}`}>
-      {mode.kind === 'session' && mode.step.type !== 'report' && (
+    <>
+    <div className={`app-shell${immersive ? ' is-immersive' : ''}`} inert={leaving || pendingLevel !== null || interrupted !== null}>
+      {mode.kind === 'session' && mode.step.type !== 'report' && !interrupted && (
         <header className="app-header">
           <span className="header-progress">{mode.step.index + 1} / 7 · {GAME_META[GAME_ORDER[mode.step.index]].title}</span>
           <span className="header-actions"><SoundToggle />
-            <button className="quiet-button" type="button" onClick={() => setLeaving(true)}>그만두기</button>
+            <button className="quiet-button" type="button" onClick={() => {
+              if (cannotResume) { setResults({}); setInterrupted('manual'); }
+              else setLeaving(true);
+            }}>{cannotResume ? '코스 중단' : '그만두기'}</button>
           </span>
         </header>
       )}
       <main>
         {mode.kind === 'tabs' && tab === 'play' && <PlayTab level={level} doneCount={doneCount}
           onLevelChange={changeLevel} onStartSession={startSession}
-          onResumeSession={() => { setLeaving(false); setInterrupted(false); setMode({ kind: 'session', step: { type: 'transition', index: doneCount } }); }} />}
+          onResumeSession={() => { setLeaving(false); setInterrupted(null); setIsTimed(false); setMode({ kind: 'session', step: { type: 'transition', index: doneCount } }); }} />}
         {mode.kind === 'tabs' && tab === 'guide' && <GuideTab />}
-        {immersive && leaving && (
-          <div className="confirm-card" role="alertdialog" aria-modal="true" aria-labelledby="leave-title">
-            <h2 id="leave-title">코스를 나갈까요?</h2>
-            <p>지금 하던 게임은 다시 시작해요. 끝낸 게임은 이 화면을 새로고침하기 전까지 이어갈 수 있어요.</p>
-            <button className="danger-button" type="button" autoFocus onClick={() => { setLeaving(false); setMode({ kind: 'tabs' }); setTab('play'); }}>네, 그만할게요</button>
-            <button className="quiet-button" type="button" onClick={() => { setLeaving(false); setAttempt(a => a + 1); }}>계속하기</button>
-          </div>
-        )}
-        {immersive && !leaving && interrupted && (
-          <div className="confirm-card" role="alertdialog" aria-labelledby="interrupted-title">
-            <h2 id="interrupted-title">화면을 벗어나 코스를 멈췄어요</h2>
-            <p>기억하는 시간과 반응 기록의 조건이 달라져요. 새 이야기로 코스를 다시 시작해요.</p>
-            <button className="primary-button" onClick={startSession}>새 코스 시작</button>
-            <button className="quiet-button" onClick={exitToPlay}>플레이로 돌아가기</button>
-          </div>
-        )}
-        {mode.kind === 'session' && !leaving && !interrupted && mode.step.type === 'transition' &&
+        {mode.kind === 'session' && !interrupted && mode.step.type === 'transition' &&
           <Transition index={mode.step.index} level={level} onReady={() => setMode({ kind: 'session', step: nextStep(mode.step) })} />}
-        {mode.kind === 'session' && !leaving && !interrupted && mode.step.type === 'game' &&
-          <div key={`${mode.step.index}-${attempt}`}>{renderGame(GAME_ORDER[mode.step.index])}</div>}
-        {mode.kind === 'session' && !leaving && !interrupted && mode.step.type === 'report' &&
+        {mode.kind === 'session' && !interrupted && mode.step.type === 'game' &&
+          <div key={mode.step.index}>{renderGame(GAME_ORDER[mode.step.index])}</div>}
+        {mode.kind === 'session' && !interrupted && mode.step.type === 'report' &&
           <Report results={results as SessionResults} level={level} onRestart={startSession} onClose={exitToPlay} />}
       </main>
       {!immersive && <TabBar active={tab} onChange={setTab} />}
     </div>
+    {leaving && <ConfirmDialog title="코스를 나갈까요?"
+      description="나가면 지금 하던 게임은 다시 시작해요. 끝낸 게임 다음부터 이어갈 수 있지만, 새로고침하면 기록이 사라져요. 계속하기를 누르면 지금 문제를 유지해요."
+      cancelLabel="계속하기" confirmLabel="네, 그만할게요" onCancel={() => setLeaving(false)}
+      onConfirm={() => { setLeaving(false); setIsTimed(false); setMode({ kind: 'tabs' }); setTab('play'); }} />}
+    {pendingLevel !== null && <ConfirmDialog title={`${LEVEL_META[pendingLevel].name}로 바꿀까요?`}
+      returnFocusSelector='.level-segment[aria-checked="true"]'
+      description={`난이도를 바꾸면 끝낸 ${doneCount}개 게임의 기록이 사라지고 새 코스를 시작해요.`}
+      cancelLabel="현재 난이도 유지" confirmLabel="난이도 바꾸기" onCancel={() => setPendingLevel(null)} onConfirm={() => applyLevel(pendingLevel)} />}
+    {interrupted && <ConfirmDialog title={interrupted === 'hidden' ? '화면을 벗어나 코스를 멈췄어요' : '이번 코스가 중단됐어요'}
+      description="기억하는 시간과 반응 기록의 조건이 달라져, 중단된 기록은 결과에 넣지 않아요. 새 이야기로 코스를 다시 시작해요."
+      cancelLabel="게임으로 돌아가기" confirmLabel="새 코스 시작" onCancel={exitToPlay} onConfirm={startSession} />}
+    </>
   );
 }

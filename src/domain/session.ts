@@ -51,7 +51,7 @@ export const GAME_META: Record<GameKey, {
     limit: 'CANTAB 검사 복제나 표준 점수가 아니에요. 도형 수와 응답 시간이 레벨별로 달라요.',
     scalesWithLevel: true, source: 'https://cambridgecognition.com/delayed-matching-to-sample-dms/' },
   vigilance: { icon: '🌙', title: '별똥별 잡기',
-    description: '예고 없이 나타나는 별을 기다려요. 별이 보일 때 화면 어디든 누르면 잡혀요.',
+    description: '예고 없이 나타나는 별을 기다려요. 별이 보일 때 게임 영역 안을 누르면 잡혀요.',
     looksAt: '기다리는 동안 신호에 주의를 두는 짧은 게임이에요.',
     basis: '지속 주의 과제의 불규칙한 신호 대기와 놓침 기록 원칙을 참고했습니다. 움직이는 별과 짧은 시행을 쓰는 자체 게임이며 Mackworth나 CPT 검사를 재현하지 않습니다.',
     limit: '표준 지속 주의 측정이 아니에요. 놓침·너무 이른 누름을 구분하며 같은 레벨·기기에서도 참고용이에요.',
@@ -59,14 +59,18 @@ export const GAME_META: Record<GameKey, {
 };
 export function gameChallenge(key: GameKey, level: Level): string {
   const c = LEVEL_CONFIG[level];
-  if (key === 'story' || key === 'storyDelayed') return `${c.storyQuestions}가지 사실 기억`;
+  if (key === 'story' || key === 'storyDelayed') return `이야기 퀴즈 ${c.storyQuestions}문제`;
   if (key === 'digit') return `${c.digitStart}자리 시작 · 최대 ${c.digitMax}자리`;
   if (key === 'stroop') return `${c.stroopTrials}문제 · ${c.stroopDeadlineMs / 1000}초 안에`;
   if (key === 'pattern') return `${c.patternSymbols}개 도형 · ${c.patternDeadlineMs / 1000}초 안에`;
   if (key === 'reaction') return `${c.reactionTrials}회 · ${c.reactionDeadlineMs / 1000}초 안에`;
   return `${c.vigilanceTrials}개의 별 · ${c.vigilanceDeadlineMs / 1000}초 안에`;
 }
-export const TAB_META: Record<TabKey, { label: string }> = { play: { label: '플레이' }, guide: { label: '게임 안내' } };
+export const TAB_META: Record<TabKey, { label: string }> = { play: { label: '게임' }, guide: { label: '게임 안내' } };
+export function completionLabel(key: GameKey): string {
+  const next = GAME_ORDER[GAME_ORDER.indexOf(key) + 1];
+  return next ? `다음 게임 · ${GAME_META[next].title}` : '전체 결과 보기';
+}
 export const TAB_ORDER: TabKey[] = ['play', 'guide'];
 export function nextStep(step: SessionStep): SessionStep {
   if (step.type === 'transition') return { type: 'game', index: step.index };

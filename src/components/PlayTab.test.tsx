@@ -27,9 +27,9 @@ describe('플레이 탭 - 처음 여는 사람', () => {
     setup(0);
 
     expect(screen.getAllByRole('listitem')).toHaveLength(7);
-    expect(screen.getByText('이야기 기억하기')).toBeInTheDocument();
-    expect(screen.getByText('별똥별 잡기')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /게임 7개 시작/ })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: '1. 이야기 기억하기' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: '7. 별똥별 잡기' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /게임 시작/ })).toBeInTheDocument();
     expect(screen.queryByText(/사라져요/)).not.toBeInTheDocument();
   });
 
@@ -37,7 +37,7 @@ describe('플레이 탭 - 처음 여는 사람', () => {
     const user = userEvent.setup();
     const { onStartSession, onResumeSession } = setup(0);
 
-    await user.click(screen.getByRole('button', { name: /게임 7개 시작/ }));
+    await user.click(screen.getByRole('button', { name: /게임 시작/ }));
 
     expect(onStartSession).toHaveBeenCalledTimes(1);
     expect(onResumeSession).not.toHaveBeenCalled();

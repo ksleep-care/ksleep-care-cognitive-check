@@ -66,7 +66,7 @@ describe('이야기 기억하기', () => {
       await user.click(screen.getByRole('button', { name: wrong }));
       // 정답이 드러난 뒤 정답 버튼을 다시 눌러도 점수에 섞이지 않아야 한다.
       await user.click(screen.getByRole('button', { name: STORY_QUESTIONS[i].answer }));
-      await user.click(screen.getByRole('button', { name: i === LEVEL1_ANSWERS.length - 1 ? '결과 보기' : '다음 문제' }));
+      await user.click(screen.getByRole('button', { name: i === LEVEL1_ANSWERS.length - 1 ? '다음 게임 · 반응속도' : '다음 문제' }));
     }
 
     expect(onComplete).toHaveBeenCalledWith({ correct: 0, total: 4 });
@@ -182,7 +182,7 @@ describe('숫자 뒤집기', () => {
       await act(() => vi.advanceTimersByTimeAsync(10));
       fireEvent.change(screen.getByLabelText('거꾸로 입력'), { target: { value: '000000' } });
       fireEvent.click(screen.getByRole('button', { name: '답 제출' }));
-      fireEvent.click(screen.getByRole('button', { name: i === 1 ? '결과 보기' : '다음 문제' }));
+      fireEvent.click(screen.getByRole('button', { name: i === 1 ? '다음 게임 · 색깔 단어' : '다음 문제' }));
     }
     expect(onComplete).toHaveBeenCalledWith({ maxSpan: 0, correct: 0, total: 2 });
   });
@@ -220,7 +220,7 @@ describe('숫자 뒤집기', () => {
       const reversed = [...createDigitSequence(3 + Math.floor(i / 2), random)].reverse().join('');
       fireEvent.change(screen.getByLabelText('거꾸로 입력'), { target: { value: reversed } });
       fireEvent.click(screen.getByRole('button', { name: '답 제출' }));
-      fireEvent.click(screen.getByRole('button', { name: i === 7 ? '결과 보기' : '다음 문제' }));
+      fireEvent.click(screen.getByRole('button', { name: i === 7 ? '다음 게임 · 색깔 단어' : '다음 문제' }));
     }
 
     expect(onComplete).toHaveBeenCalledWith({ maxSpan: 6, correct: 8, total: 8 });
@@ -237,7 +237,7 @@ describe('색깔 단어와 패턴 매칭', () => {
       await user.click(screen.getByRole('button', { name: '빨강' }));
       expect(screen.getByText(/맞았어요|아쉬워요/)).toBeInTheDocument();
       await user.click(screen.getByRole('button', {
-        name: i === LEVEL_CONFIG[1].stroopTrials - 1 ? '결과 보기' : '다음 문제',
+        name: i === LEVEL_CONFIG[1].stroopTrials - 1 ? '다음 게임 · 이야기 다시 퀴즈' : '다음 문제',
       }));
     }
 
@@ -254,7 +254,7 @@ describe('색깔 단어와 패턴 매칭', () => {
     for (let i = 0; i < total; i += 1) {
       const target = screen.getByTestId('pattern-target').textContent ?? '';
       await user.click(screen.getByRole('button', { name: `패턴 ${target}` }));
-      await user.click(screen.getByRole('button', { name: i === total - 1 ? '결과 보기' : '다음 문제' }));
+      await user.click(screen.getByRole('button', { name: i === total - 1 ? '다음 게임 · 별똥별 잡기' : '다음 문제' }));
     }
 
     expect(onComplete).toHaveBeenCalledWith(expect.objectContaining({ correct: total, total }));

@@ -40,10 +40,10 @@ export function calculateReport(results: SessionDraft): CognitiveReport {
 
 /**
  * 게임 결과는 전부 `게임 기록`이다. 임상 규준을 상속하지 않는다.
- * 같은 레벨의 자기 기록끼리만 비교할 수 있다고 분명히 적는다.
+ * 같은 레벨에서도 문항·기기·진행 간격이 달라 참고 범위임을 알린다.
  */
 export function buildGameCards(report: CognitiveReport, levelName: string): MetricCard[] {
-  const sameLevelOnly = `같은 레벨(${levelName})에서 한 내 기록끼리만 비교할 수 있어요.`;
+  const sameLevelOnly = `같은 레벨(${levelName})도 문항·기기·진행 간격이 달라질 수 있어요. 변화는 참고만 해요.`;
 
   return [
     {
@@ -71,8 +71,8 @@ export function buildGameCards(report: CognitiveReport, levelName: string): Metr
       icon: GAME_META.digit.icon,
       title: GAME_META.digit.title,
       looksAt: GAME_META.digit.looksAt,
-      value: `최대 ${report.workingMemorySpan}자리`,
-      direction: '길수록 한 번에 담아두고 뒤집을 수 있는 양이 많았다는 뜻이에요.',
+      value: report.workingMemorySpan > 0 ? `최대 ${report.workingMemorySpan}자리` : '성공한 길이 없음',
+      direction: report.workingMemorySpan > 0 ? '이번 게임에서 거꾸로 입력하는 데 성공한 가장 긴 숫자 길이예요.' : '이번 시도에서 성공한 숫자 길이가 없어요. 기억 능력이 0이라는 뜻은 아니에요.',
       comparable: sameLevelOnly,
       limit: GAME_META.digit.limit,
     },

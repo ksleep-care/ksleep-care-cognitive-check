@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Feedback from '../ui/Feedback';
+import { useTimedPhase } from './useTimedPhase';
+import { completionLabel } from '../domain/session';
 import { LEVEL_CONFIG, DIGIT_ON_MS, DIGIT_GAP_MS, createDigitSequence, nextDigitSpan } from '../domain/levels';
 import type { DigitResult, Level } from '../domain/types';
 
@@ -9,9 +11,10 @@ interface DigitSpanGameProps {
   /** 테스트에서 노출 시간을 짧게 만들기 위한 주입점. */
   revealMsOverride?: number;
   random?: () => number;
+  onTimingChange?: (active: boolean) => void;
 }
 
-export default function DigitSpanGame({ level, onComplete, revealMsOverride, random = Math.random }: DigitSpanGameProps) {
+export default function DigitSpanGame({ level, onComplete, revealMsOverride, random = Math.random, onTimingChange }: DigitSpanGameProps) {
   const config = LEVEL_CONFIG[level];
   const [spanState, setSpanState] = useState({ span: config.digitStart, successes: 0, failures: 0 });
   const [sequence, setSequence] = useState(() => createDigitSequence(config.digitStart, random));
@@ -25,6 +28,7 @@ export default function DigitSpanGame({ level, onComplete, revealMsOverride, ran
   const [correct, setCorrect] = useState(0);
   const [maxSpan, setMaxSpan] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  useTimedPhase(revealing, onTimingChange);
 
   const expected = [...sequence].reverse().join('');
   const nextState = nextDigitSpan(spanState, submitted === expected, config.digitMax);
@@ -87,6 +91,7 @@ export default function DigitSpanGame({ level, onComplete, revealMsOverride, ran
           <label className="sr-only" htmlFor="digit-answer">거꾸로 입력</label>
           <input
             id="digit-answer"
+            aria-describedby={submitted === null ? 'digit-input-hint' : undefined}
             ref={inputRef}
             className="digit-input"
             type="text"
@@ -108,6 +113,9 @@ export default function DigitSpanGame({ level, onComplete, revealMsOverride, ran
               }
             }}
           />
+          {submitted === null && <p id="digit-input-hint" className="game-note" role="status">
+            {answer.length} / {sequence.length}자리 입력 · {answer.length < sequence.length ? `${sequence.length - answer.length}자리를 더 입력하세요` : '답 제출을 눌러 확인하세요'}
+          </p>}
           {submitted === null ? (
             <button className="primary-button" type="button" disabled={answer.length !== sequence.length} onClick={submit}>
               답 제출
@@ -117,7 +125,7 @@ export default function DigitSpanGame({ level, onComplete, revealMsOverride, ran
               correct={isCorrect}
               answer={expected}
               hint={`${sequence}를 뒤집으면 ${expected}예요.`}
-              nextLabel={isLast ? '결과 보기' : '다음 문제'}
+              nextLabel={isLast ? completionLabel('digit') : '다음 문제'}
               onNext={advance}
             />
           )}

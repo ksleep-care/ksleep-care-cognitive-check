@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Feedback from '../ui/Feedback';
+import { useTimedPhase } from './useTimedPhase';
+import { completionLabel } from '../domain/session';
 import { LEVEL_CONFIG } from '../domain/levels';
 import { generateStory } from '../domain/story';
 import type { Level, StoryResult } from '../domain/types';
@@ -10,9 +12,10 @@ interface StoryGameProps {
   /** 한 판 동안 같은 값이어야 바로 맞추기와 다시 퀴즈가 같은 이야기를 묻는다. */
   seed: number;
   onComplete: (result: StoryResult) => void;
+  onTimingChange?: (active: boolean) => void;
 }
 
-export default function StoryGame({ mode, level, seed, onComplete }: StoryGameProps) {
+export default function StoryGame({ mode, level, seed, onComplete, onTimingChange }: StoryGameProps) {
   const story = useMemo(() => {
     const config = LEVEL_CONFIG[level];
     return generateStory(seed, {
@@ -32,6 +35,7 @@ export default function StoryGame({ mode, level, seed, onComplete }: StoryGamePr
   const [correct, setCorrect] = useState(0);
   const [picked, setPicked] = useState<string | null>(null);
   const deadline = useRef(0);
+  useTimedPhase(reading, onTimingChange);
 
   /**
    * 읽는 시간을 제한한다. 사람마다 읽은 시간이 다르면
@@ -146,7 +150,7 @@ export default function StoryGame({ mode, level, seed, onComplete }: StoryGamePr
         <div className="feedback" role="status">
           <p>선택했어요. 뒤 퀴즈에 힌트가 되지 않도록 지금은 정답을 보여주지 않아요.</p>
           <button className="primary-button" type="button" autoFocus onClick={advance}>
-            {isLast ? '결과 보기' : '다음 문제'}
+            {isLast ? completionLabel('story') : '다음 문제'}
           </button>
         </div>
       )}
@@ -155,7 +159,7 @@ export default function StoryGame({ mode, level, seed, onComplete }: StoryGamePr
           correct={isCorrect}
           answer={question.answer}
           hint={question.hint}
-          nextLabel={isLast ? '결과 보기' : '다음 문제'}
+          nextLabel={isLast ? completionLabel('storyDelayed') : '다음 문제'}
           onNext={advance}
         />
       )}

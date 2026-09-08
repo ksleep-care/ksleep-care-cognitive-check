@@ -36,7 +36,6 @@
 .game-tile { display: grid; grid-template-columns: 80px 1fr; column-gap: 16px; align-content: start; padding: 16px; border: 1px solid var(--g-border-dec); border-radius: 12px; background: var(--g-bg); }
 .game-art { display: grid; place-items: center; align-self: stretch; min-height: 80px; border-radius: 8px; background: var(--g-surface-lift); perspective: 240px; overflow: hidden; }
 .game-art .icon-3d { transform: rotate(-12deg) rotateY(-16deg) scale(1.1); transition: transform 200ms ease; }
-.game-tile:hover .game-art .icon-3d { transform: rotate(0) rotateY(0) scale(1.15); }
 .art-reaction { background: var(--g-wash-accent); }
 .art-vigilance { background: var(--g-void); }
 .game-number { color: var(--g-muted); font-size: 12px; }
@@ -123,7 +122,6 @@
   .launch-stage.is-feedback.outcome-hit .launch-craft { animation: launch-away 800ms ease-in forwards; }
   .cosmos-stage.is-visible .comet-3d { animation: comet-flight var(--flight-ms) linear forwards; }
   .cosmos-stage.is-feedback.outcome-hit .capture-orbit { animation: capture-ring 700ms ease-out forwards; }
-  .game-tile:active { transform: scale(.99); }
 }
 @keyframes object-enter { from { opacity: 0; transform: rotate(-16deg) translateY(12px); } to { opacity: 1; transform: none; } }
 @keyframes launch-away { to { transform: translateY(-320px) scale(.15); opacity: 0; } }
@@ -162,6 +160,29 @@
 @media (prefers-reduced-motion: reduce) {
   .arcade-object, .comet-3d, .launch-craft, .capture-orbit, .game-art .icon-3d { animation: none !important; transition: none !important; }
   .burst { display: none; }
+}
+
+/* 실행 버튼을 장식보다 먼저 찾게 하고, 목록은 실행 가능한 카드처럼 반응하지 않는다. */
+.play-intro { padding: 8px 0 24px; }
+.play-intro h1 { font-size: clamp(28px, 3.5vw, 44px); }
+.play-intro .lead { margin-top: 8px; }
+.dialog-backdrop { position: fixed; inset: 0; z-index: 100; display: grid; align-items: center; overflow-y: auto; padding: 24px; background: var(--g-shadow); }
+.dialog-backdrop .confirm-card { max-width: 480px; max-height: calc(100dvh - 48px); overflow-y: auto; margin: auto; background: var(--g-bg); border: 1px solid var(--g-border-fn); }
+.preparation-note { padding: 16px; margin: 16px 0; background: var(--g-surface-lift); border-radius: 8px; text-align: left; }
+.preparation-note p { margin: 0 0 8px; }
+.preparation-note p:last-child { margin-bottom: 0; }
+@media (max-width: 600px) {
+  .play-intro { gap: 8px; padding: 8px 0 16px; }
+  .play-intro .arcade-object { width: 80px; height: 88px; }
+  .play-intro .arcade-sphere { inset: 20px 8px; }
+  .level-description { margin: 12px 0; }
+  .challenge-summary { padding: 12px 0; }
+  .dialog-backdrop { padding: 16px; }
+  .dialog-backdrop .confirm-card { max-height: calc(100dvh - 32px); }
+}
+@media (max-width: 360px), (max-height: 640px) and (max-width: 899px) {
+  .play-intro .arcade-object { display: none; }
+  .play-intro h1 { font-size: 28px; }
 }
 @media (max-height: 500px) and (min-width: 640px) {
   .app-header { position: relative; padding-block: 8px; }

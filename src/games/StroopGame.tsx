@@ -1,5 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import Feedback from '../ui/Feedback';
+import { useTimedPhase } from './useTimedPhase';
+import { completionLabel } from '../domain/session';
 import { LEVEL_CONFIG, makeRandom, makeStroopTrials } from '../domain/levels';
 import type { Level, TimedAccuracyResult } from '../domain/types';
 
@@ -11,9 +13,10 @@ interface StroopGameProps {
   level: Level;
   onComplete: (result: TimedAccuracyResult) => void;
   seed?: number;
+  onTimingChange?: (active: boolean) => void;
 }
 
-export default function StroopGame({ level, onComplete, seed }: StroopGameProps) {
+export default function StroopGame({ level, onComplete, seed, onTimingChange }: StroopGameProps) {
   const trials = useMemo(() => {
     return makeStroopTrials(level, makeRandom(seed ?? Date.now()));
   }, [level, seed]);
@@ -24,6 +27,7 @@ export default function StroopGame({ level, onComplete, seed }: StroopGameProps)
   const locked = useRef(false);
   const times = useRef<number[]>([]);
   const startedAt = useRef(performance.now());
+  useTimedPhase(picked === null, onTimingChange);
 
   const trial = trials[index];
   const isLast = index === trials.length - 1;
@@ -95,7 +99,7 @@ export default function StroopGame({ level, onComplete, seed }: StroopGameProps)
           correct={isCorrect}
           answer={trial.ink}
           hint={picked === 'timeout' ? '시간이 끝났어요. 단어의 뜻보다 글자색을 먼저 보세요.' : `글자색은 ${trial.ink}이었어요. 뜻과 색이 같을 때도 있어요.`}
-          nextLabel={isLast ? '결과 보기' : '다음 문제'}
+          nextLabel={isLast ? completionLabel('stroop') : '다음 문제'}
           onNext={advance}
         />
       )}

@@ -15,11 +15,11 @@ describe('개인정보와 이전 기록 경계', () => {
   it('열고 탐색하고 코스를 시작해도 네트워크 전송과 영구 저장이 없다', async () => {
     const fetchSpy = vi.spyOn(globalThis, 'fetch');
     const user = userEvent.setup(); render(<App />);
-    for (const name of [/게임 안내/, /플레이/]) {
+    for (const name of [/게임 안내/, /^게임$/]) {
       await user.click(within(screen.getByRole('navigation')).getByRole('button', { name }));
     }
-    await user.click(screen.getByRole('button', { name: /게임 7개 시작/ }));
-    await user.click(screen.getByRole('button', { name: '준비됐어요' }));
+    await user.click(screen.getByRole('button', { name: /게임 시작/ }));
+    await user.click(screen.getByRole('button', { name: '이야기 읽기 시작' }));
     expect(fetchSpy).not.toHaveBeenCalled();
     expect(localStorage.length).toBe(0); expect(sessionStorage.length).toBe(0); expect(document.cookie).toBe('');
     fetchSpy.mockRestore();
