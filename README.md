@@ -9,7 +9,7 @@ date: 2026-09-07
 로그인 없이 기억·숫자·색깔·패턴·반응 게임 7개를 하는 독립 웹앱.
 연구 과제의 핵심 원리를 참고했지만 정식 검사, ADHD 선별, 진단, 치료 도구가 아니다.
 
-첫 화면은 플레이이고 루키~마스터를 선택한 뒤 코스를 시작한다.
+첫 화면은 `게임` 탭이고 루키~마스터를 선택한 뒤 코스를 시작한다.
 별도 3분 측정과 기준선 생성은 앱에서 제외했다. 과거 도메인 코드는 회귀 테스트용으로 보존되며 실행 경로는 없다.
 운영 URL: https://ksleep-care-cognitive-check.vercel.app
 이 문서는 변경된 소스 설명이며 운영 배포 완료를 뜻하지 않는다.
@@ -40,6 +40,9 @@ npm run dev
 npm run check && npm test && npm run build
 ```
 
+화면 크기 7개에서 게임 7개를 끝까지 도는 브라우저 점검은 `tests/responsive.browser.js`다.
+앱을 연 Playwright 페이지에서 실행하며 기록을 저장하지 않는다.
+
 - [디자인 방향](DESIGN.md)
 - [게임 UX 개선과 검증](docs/ux-game-revision.md)
-- [토큰 대비 리포트](docs/design/token-report.md)
+- 토큰 대비 리포트 `docs/design/token-report.md`는 로컬에서 생성하며 저장소에 올리지 않는다.

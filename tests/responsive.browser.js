@@ -45,17 +45,25 @@ async (page) => {
     await click('게임 안내');
     await page.locator('.guide-detail summary').first().click({ force: true });
     await audit('guide');
-    await click('플레이');
+    await click('게임');
     await page.getByRole('radio', { name: /마스터/ }).click({ force: true });
-    await click('게임 7개 시작');
+    await page.getByRole('button', { name: /^게임 시작/ }).click({ force: true });
+    await page.clock.runFor(20);
+    // The last question of each game shows "다음 게임 · {title}" or "전체 결과 보기" instead of "다음 문제".
+    const finishButton = () => page.getByRole('button', { name: /^(다음 게임 · |전체 결과 보기)/ });
+    const next = async () => {
+      if (await finishButton().count()) { await finishButton().first().click({ force: true }); await page.clock.runFor(20); return true; }
+      await click('다음 문제');
+      return false;
+    };
     const firstPrompts = [];
     for (let game = 0; game < 7; game++) {
       await audit('transition-' + game);
-      await click('준비됐어요');
+      await click(game === 0 ? '이야기 읽기 시작' : '준비됐어요');
       if (game === 0) { await audit('reading', true); await click('다 읽었어요'); }
       await audit('game-' + game, true);
       if (game === 0 || game === 4) {
-        for (let q = 0; q < 7; q++) {
+        for (let q = 0; q < 12; q++) {
           const prompt = await page.locator('#story-question-title').innerText();
           if (game === 0) firstPrompts.push(prompt);
           else if (firstPrompts.includes(prompt)) throw new Error('Repeated immediate question');
@@ -63,32 +71,31 @@ async (page) => {
           await page.clock.runFor(20);
           if (await page.getByRole('button', { pressed: true }).count() !== 1) throw new Error('Missing selected answer');
           await audit(`story-${game}-${q}`, q === 0);
-          await click(q === 6 ? '결과 보기' : '다음 문제');
+          if (await next()) break;
         }
       } else if (game === 1 || game === 6) {
         // React effects can schedule the next phase only after runFor yields.
         for (let i = 0; i < 60 && await page.locator('.signal-game').count(); i++) await page.clock.runFor(10000);
         if (await page.locator('.signal-game').count()) throw new Error('Signal game failed to finish');
       } else if (game === 2) {
-        for (let i = 0; i < 2; i++) {
+        for (let i = 0; i < 12; i++) {
           await page.clock.runFor(6100);
           await page.getByRole('textbox').fill('000000');
           await audit('digit-input');
           await click('답 제출');
           await audit('digit-feedback');
-          await click(i === 1 ? '결과 보기' : '다음 문제');
+          if (await next()) break;
         }
       } else {
-        const count = game === 3 ? 20 : 12;
-        for (let i = 0; i < count; i++) {
+        for (let i = 0; i < 40; i++) {
           await page.locator(game === 3 ? '.color-button' : '.pattern-button').first().click({ force: true });
           await page.clock.runFor(20);
           if (i === 0) await audit('feedback-' + game);
-          await click(i === count - 1 ? '결과 보기' : '다음 문제');
+          if (await next()) break;
         }
       }
     }
-    await page.getByRole('heading', { name: '오늘 한눈에 보기' }).waitFor();
+    await page.getByRole('heading', { name: '이번 코스 결과' }).waitFor();
     await audit('report', true);
     await page.locator('.metric-glossary summary').click({ force: true });
     await audit('report-expanded');
