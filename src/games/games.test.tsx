@@ -210,20 +210,47 @@ describe('숫자 뒤집기', () => {
     expect(input).toHaveValue('729');
   });
 
-  it('두 번 성공하면 자릿수가 늘어나고 최대 도전 후 실제 최고 길이를 전달한다', async () => {
+  it('한 번 맞히면 자릿수가 늘어나고 최대 길이에서 끝나며 실제 최고 길이를 전달한다', async () => {
     vi.useFakeTimers();
     const onComplete = vi.fn();
     render(<DigitSpanGame level={1} onComplete={onComplete} revealMsOverride={10} random={makeRandom(33)} />);
     const random = makeRandom(33);
-    for (let i = 0; i < 8; i += 1) {
+    for (let i = 0; i < 4; i += 1) {
       await act(() => vi.advanceTimersByTimeAsync(10));
-      const reversed = [...createDigitSequence(3 + Math.floor(i / 2), random)].reverse().join('');
+      const reversed = [...createDigitSequence(3 + i, random)].reverse().join('');
       fireEvent.change(screen.getByLabelText('거꾸로 입력'), { target: { value: reversed } });
       fireEvent.click(screen.getByRole('button', { name: '답 제출' }));
-      fireEvent.click(screen.getByRole('button', { name: i === 7 ? '다음 게임 · 색깔 단어' : '다음 문제' }));
+      fireEvent.click(screen.getByRole('button', { name: i === 3 ? '다음 게임 · 색깔 단어' : '다음 문제' }));
     }
 
-    expect(onComplete).toHaveBeenCalledWith({ maxSpan: 6, correct: 8, total: 8 });
+    expect(onComplete).toHaveBeenCalledWith({ maxSpan: 6, correct: 4, total: 4 });
+  });
+
+  it('기억이 안 나면 모르겠어요로 넘기고, 틀린 것으로 세며 정답을 보여 준다', async () => {
+    vi.useFakeTimers();
+    const onComplete = vi.fn();
+    render(<DigitSpanGame level={1} onComplete={onComplete} revealMsOverride={10} random={makeRandom(5)} />);
+    const first = createDigitSequence(3, makeRandom(5));
+    await act(() => vi.advanceTimersByTimeAsync(10));
+    fireEvent.click(screen.getByRole('button', { name: '모르겠어요' }));
+    expect(screen.getByText('아쉬워요')).toBeInTheDocument();
+    expect(screen.getByText([...first].reverse().join(''))).toBeInTheDocument();
+    await act(() => vi.advanceTimersByTimeAsync(2500));
+    await act(() => vi.advanceTimersByTimeAsync(10));
+    fireEvent.click(screen.getByRole('button', { name: '모르겠어요' }));
+    await act(() => vi.advanceTimersByTimeAsync(2500));
+    expect(onComplete).toHaveBeenCalledWith({ maxSpan: 0, correct: 0, total: 2 });
+  });
+
+  it('답을 고르면 버튼을 누르지 않아도 다음 문제로 넘어간다', async () => {
+    vi.useFakeTimers();
+    render(<DigitSpanGame level={1} onComplete={vi.fn()} revealMsOverride={10} random={makeRandom(33)} />);
+    await act(() => vi.advanceTimersByTimeAsync(10));
+    fireEvent.change(screen.getByLabelText('거꾸로 입력'), { target: { value: [...createDigitSequence(3, makeRandom(33))].reverse().join('') } });
+    fireEvent.click(screen.getByRole('button', { name: '답 제출' }));
+    expect(screen.getByText(/도전 1 \/ 최대 6회/)).toBeInTheDocument();
+    await act(() => vi.advanceTimersByTimeAsync(900));
+    expect(screen.getByText(/도전 2 \/ 최대 6회 · 4자리/)).toBeInTheDocument();
   });
 });
 

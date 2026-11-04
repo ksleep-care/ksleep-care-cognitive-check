@@ -17,19 +17,19 @@ function tick(ms: number) {
 }
 
 describe('문제 피드백', () => {
-  it('맞았어도 읽고 다음을 누르기 전에는 넘어가지 않는다', () => {
+  it('맞으면 잠깐 보여 준 뒤 저절로 넘어간다', () => {
     const onNext = vi.fn();
     render(<Feedback correct nextLabel="다음 문제" onNext={onNext} />);
 
     expect(screen.getByText('맞았어요')).toBeInTheDocument();
+    tick(899);
     expect(onNext).not.toHaveBeenCalled();
 
-    tick(900);
-
-    expect(onNext).not.toHaveBeenCalled();
+    tick(1);
+    expect(onNext).toHaveBeenCalledTimes(1);
   });
 
-  it('틀렸으면 정답을 읽어야 하므로 저절로 넘어가지 않는다', () => {
+  it('틀리면 정답을 읽을 시간을 더 준 뒤 저절로 넘어간다', () => {
     const onNext = vi.fn();
     render(
       <Feedback
@@ -44,9 +44,11 @@ describe('문제 피드백', () => {
     expect(screen.getByText('아쉬워요')).toBeInTheDocument();
     expect(screen.getByText('한강공원 2번 출구')).toBeInTheDocument();
 
-    tick(5_000);
-
+    tick(2_499);
     expect(onNext).not.toHaveBeenCalled();
+
+    tick(1);
+    expect(onNext).toHaveBeenCalledTimes(1);
   });
 
   it('버튼을 눌렀는데 시간까지 지나도 두 번 넘어가지 않는다', () => {

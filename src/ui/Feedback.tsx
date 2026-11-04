@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { play } from './sound';
+import AutoNextButton, { AUTO_NEXT_MS } from './AutoNextButton';
 
 /**
  * 문제마다 즉시 보여주는 정오답 피드백.
@@ -7,7 +8,7 @@ import { play } from './sound';
  * 규칙: 점수는 항상 **최초 제출**로 확정된다. 이 화면은 학습용 안내일 뿐,
  * 여기서 무엇을 눌러도 점수에 섞이지 않는다.
  *
- * 정오답 모두 읽은 뒤 직접 넘긴다. 자동 진행은 신호 게임에서만 사용한다.
+ * 답을 고르면 저절로 다음으로 넘어간다. 틀렸을 때는 정답을 읽을 시간을 더 준다.
  */
 interface FeedbackProps {
   correct: boolean;
@@ -20,9 +21,6 @@ interface FeedbackProps {
 }
 
 export default function Feedback({ correct, answer, hint, nextLabel, onNext }: FeedbackProps) {
-  const advanced = useRef(false);
-  const advance = () => { if (!advanced.current) { advanced.current = true; onNext(); } };
-
   useEffect(() => {
     play(correct ? 'correct' : 'wrong');
   }, [correct]);
@@ -38,9 +36,7 @@ export default function Feedback({ correct, answer, hint, nextLabel, onNext }: F
       )}
       {!correct && hint !== undefined && <p className="feedback-hint">{hint}</p>}
 
-      <button className="primary-button" type="button" autoFocus onClick={advance}>
-        {nextLabel}
-      </button>
+      <AutoNextButton label={nextLabel} delayMs={correct ? AUTO_NEXT_MS.correct : AUTO_NEXT_MS.wrong} onNext={onNext} />
     </div>
   );
 }

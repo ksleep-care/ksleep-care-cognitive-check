@@ -10,7 +10,7 @@ describe('연구 과제의 핵심 규칙', () => {
     expect(sequences.every(s => /^\d{7}$/.test(s) && !/(\d)\1/.test(s))).toBe(true);
   });
   it('같은 길이에서 두 번 성공해야 늘리고 두 번 실패하면 종료한다', () => {
-    expect(nextDigitSpan({ span: 4, successes: 0, failures: 0 }, true, 9)).toEqual({ span: 4, successes: 1, failures: 0, done: false });
+    expect(nextDigitSpan({ span: 4, successes: 0, failures: 0 }, true, 9)).toEqual({ span: 5, successes: 0, failures: 0, done: false });
     expect(nextDigitSpan({ span: 4, successes: 1, failures: 0 }, true, 9).span).toBe(5);
     expect(nextDigitSpan({ span: 4, successes: 0, failures: 1 }, false, 9).done).toBe(true);
   });

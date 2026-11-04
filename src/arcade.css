@@ -245,3 +245,6 @@
   .level-picker { padding: 0; }
   .game-tile { padding: 14px 0; }
 }
+
+/* 숫자 뒤집기: 제출과 ‘모르겠어요’를 한 줄씩 둔다 (2026-11-04) */
+.digit-actions { display: grid; gap: 8px; }
