@@ -22,14 +22,14 @@ export default function ReactionGame({ level = 1, onComplete, getDelay }: Reacti
         <span className={`signal-lamp ${game.phase === 'visible' ? 'is-on' : ''}`} aria-hidden="true" />
         <span className="launch-craft" aria-hidden="true"><i /><b /></span>
         {game.phase === 'waiting' && <span className="stage-instruction">손가락을 준비하세요</span>}
-        {game.phase === 'visible' && <span className="stage-instruction">이 게임 영역을 누르세요</span>}
+        {game.phase === 'visible' && <span className="stage-instruction">지금 누르세요</span>}
         {game.phase === 'feedback' && <span className="signal-result" role="status">
           {game.outcome === 'hit' && <Burst trigger={game.trial} />}
           <strong>{game.lastMs !== null ? `${game.lastMs}ms` : game.outcome === 'early' ? '너무 이른 누름' : '놓침'}</strong>
           <span>{game.outcome === 'hit' ? '신호를 보고 반응했어요' : '다음 신호를 기다려요'}</span>
         </span>}
       </button>
-      <p className="game-note">신호 전 누름은 기록에서 제외해요. 터치 또는 스페이스 키.</p>
+      <p className="game-note">신호 전에 누르면 기록하지 않아요.</p>
     </section>
   );
 }

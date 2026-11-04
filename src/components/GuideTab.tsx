@@ -10,7 +10,7 @@ export default function GuideTab() {
   return (
     <div className="tab-panel">
       <h1 className="panel-title">게임 안내</h1>
-      <p className="lead">연구에서 쓰이는 과제의 원리를 참고한 짧은 게임이에요. 정식 검사와 같거나 ADHD를 측정하는 앱은 아니에요.</p>
+      <p className="lead">연구 과제의 원리를 빌린 짧은 게임이에요. 정식 검사나 ADHD 측정이 아니에요.</p>
       <ul className="guide-list">{GAME_ORDER.map(key => {
         const meta = GAME_META[key];
         return <li className="guide-row" key={key}>
@@ -25,12 +25,12 @@ export default function GuideTab() {
         </li>;
       })}</ul>
       <div className="notice-box">
-        <p>이 앱은 어떤 게임도 진단·선별·치료 판단에 쓰지 않아요.</p>
-        <p>레벨·기기·브라우저가 다르면 기록을 직접 비교하지 마세요. 새로 만든 이야기들의 난이도 동등성은 검증하지 않았어요.</p>
-        <p>게임 결과와 답안은 저장하지 않아요. 이 창을 새로고침하면 사라져요.</p>
+        <p>진단·선별·치료 판단에 쓰지 않아요.</p>
+        <p>레벨·기기가 다르면 기록을 비교하지 마세요. 이야기마다 난이도가 같은지는 검증하지 않았어요.</p>
+        <p>결과와 답안은 저장하지 않아요.</p>
       </div>
       <details className="legacy-records"><summary>이전 버전의 저장 기록 관리</summary>
-        <p>이전 버전에서 이 브라우저에 저장한 기록은 자동으로 지우지 않아요. 원하면 아래에서 삭제할 수 있어요.</p>
+        <p>이전 버전이 이 브라우저에 남긴 기록은 여기서 지울 수 있어요.</p>
         {deleted ? <p role="status">내 기록을 모두 삭제했어요.</p> : confirming ?
           <div className="confirm-card" role="alertdialog" aria-labelledby="delete-title">
             <h2 id="delete-title">내 기록을 모두 지울까요?</h2><p>되돌릴 수 없어요.</p>

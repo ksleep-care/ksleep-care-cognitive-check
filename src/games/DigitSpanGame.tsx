@@ -83,7 +83,7 @@ export default function DigitSpanGame({ level, onComplete, revealMsOverride, ran
         <>
           <h2 id="digit-title">하나씩, 순서대로 기억하세요</h2>
           <div className="digit-sequence" data-testid="digit-stimulus" aria-live="off">{digitOn ? sequence[position] : '·'}</div>
-          <p className="game-note">{position + 1}번째 / {sequence.length}개 · 끝나면 거꾸로 입력해요</p>
+          <p className="game-note">{position + 1} / {sequence.length} · 끝나면 거꾸로 입력</p>
         </>
       ) : (
         <>
@@ -114,7 +114,7 @@ export default function DigitSpanGame({ level, onComplete, revealMsOverride, ran
             }}
           />
           {submitted === null && <p id="digit-input-hint" className="game-note" role="status">
-            {answer.length} / {sequence.length}자리 입력 · {answer.length < sequence.length ? `${sequence.length - answer.length}자리를 더 입력하세요` : '답 제출을 눌러 확인하세요'}
+            {answer.length < sequence.length ? `${sequence.length - answer.length}자리를 더 입력하세요` : '답 제출을 누르세요'}
           </p>}
           {submitted === null ? (
             <button className="primary-button" type="button" disabled={answer.length !== sequence.length} onClick={submit}>

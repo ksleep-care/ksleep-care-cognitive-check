@@ -98,7 +98,7 @@ export default function StroopGame({ level, onComplete, seed, onTimingChange }: 
         <Feedback
           correct={isCorrect}
           answer={trial.ink}
-          hint={picked === 'timeout' ? '시간이 끝났어요. 단어의 뜻보다 글자색을 먼저 보세요.' : `글자색은 ${trial.ink}이었어요. 뜻과 색이 같을 때도 있어요.`}
+          hint={picked === 'timeout' ? '시간이 끝났어요. 글자색을 먼저 보세요.' : `글자색은 ${trial.ink}이었어요.`}
           nextLabel={isLast ? completionLabel('stroop') : '다음 문제'}
           onNext={advance}
         />

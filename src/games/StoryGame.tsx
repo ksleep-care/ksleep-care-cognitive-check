@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import Icon3D from '../ui/Icon3D';
 import Feedback from '../ui/Feedback';
 import { useTimedPhase } from './useTimedPhase';
 import { completionLabel } from '../domain/session';
@@ -79,13 +80,15 @@ export default function StoryGame({ mode, level, seed, onComplete, onTimingChang
           </p>
         </div>
 
-        <p className="eyebrow">시간 안에 한 번 읽어보세요</p>
-        <h2 id="story-reading-title">{story.title}</h2>
-        <p className="game-note">사람·시간·물건뿐 아니라 어디서 무슨 일이 있었고 어떻게 해결했는지도 기억해 주세요. 뒤에서는 다른 질문이 나와요.</p>
+        <div className="story-title-row">
+          <Icon3D name="story" size={44} />
+          <h2 id="story-reading-title">{story.title}</h2>
+        </div>
+        <p className="game-note">장소·사건·해결 방법까지 기억해요.</p>
         <div className="story-copy">
           {story.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
         </div>
-        <p className="game-note">시간이 끝나면 질문으로 자동으로 넘어가요.</p>
+        <p className="game-note">시간이 끝나면 질문으로 넘어가요.</p>
         <button className="primary-button" type="button" onClick={() => setReading(false)}>
           다 읽었어요
         </button>
@@ -148,7 +151,7 @@ export default function StoryGame({ mode, level, seed, onComplete, onTimingChang
 
       {picked !== null && mode === 'immediate' && (
         <div className="feedback" role="status">
-          <p>선택했어요. 뒤 퀴즈에 힌트가 되지 않도록 지금은 정답을 보여주지 않아요.</p>
+          <p>선택했어요. 지금은 정답을 보여주지 않아요.</p>
           <button className="primary-button" type="button" autoFocus onClick={advance}>
             {isLast ? completionLabel('story') : '다음 문제'}
           </button>

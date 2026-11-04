@@ -26,9 +26,9 @@ export const ICON_SHADE: Record<IconName, [string, string]> = {
   story: ['#FFB27A', '#D9622A'],
   reaction: ['#D9F78F', '#7FAF2A'],
   digit: ['#8FC1FF', '#2B5FD0'],
-  stroop: ['#FF9DB0', '#C43A5A'],
+  stroop: ['#E0E0D9', '#83857F'],
   storyDelayed: ['#F4C464', '#A5782F'],
-  pattern: ['#E0E0D9', '#83857F'],
+  pattern: ['#FF9DB0', '#C43A5A'],
   vigilance: ['#FFE08A', '#D9A21B'],
   pvt: ['#7DE8E2', '#1E9C97'],
 };

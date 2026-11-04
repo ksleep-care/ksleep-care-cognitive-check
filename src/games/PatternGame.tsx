@@ -131,7 +131,7 @@ export default function PatternGame({ level, onComplete, seed, onTimingChange }:
         <Feedback
           correct={isCorrect}
           answer={trial.target}
-          hint={picked === 'timeout' ? '시간이 끝났어요. 모양과 순서를 함께 비교해 보세요.' : '기준 패턴과 순서까지 똑같은 것을 골라야 해요.'}
+          hint={picked === 'timeout' ? '시간이 끝났어요. 모양과 순서를 같이 보세요.' : '순서까지 같은 것을 골라요.'}
           nextLabel={isLast ? completionLabel('pattern') : '다음 문제'}
           onNext={advance}
         />

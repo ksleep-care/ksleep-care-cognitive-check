@@ -101,7 +101,9 @@ export default function App() {
   }, [timedGame]);
   return (
     <>
-    <div className={`app-shell${immersive ? ' is-immersive' : ''}`} inert={leaving || pendingLevel !== null || interrupted !== null}>
+    <div className={`app-shell${immersive ? ' is-immersive' : ''}`}
+      data-game={mode.kind === 'session' && mode.step.type !== 'report' ? GAME_ORDER[mode.step.index] : undefined}
+      inert={leaving || pendingLevel !== null || interrupted !== null}>
       {mode.kind === 'session' && mode.step.type !== 'report' && !interrupted && (
         <header className="app-header">
           <span className="header-progress">{mode.step.index + 1} / 7 · {GAME_META[GAME_ORDER[mode.step.index]].title}</span>
@@ -128,7 +130,7 @@ export default function App() {
       {!immersive && <TabBar active={tab} onChange={setTab} />}
     </div>
     {leaving && <ConfirmDialog title="코스를 나갈까요?"
-      description="나가면 지금 하던 게임은 다시 시작해요. 끝낸 게임 다음부터 이어갈 수 있지만, 새로고침하면 기록이 사라져요. 계속하기를 누르면 지금 문제를 유지해요."
+      description="나가면 지금 하던 게임은 다시 시작해요. 끝낸 게임은 남지만, 새로고침하면 사라져요."
       cancelLabel="계속하기" confirmLabel="네, 그만할게요" onCancel={() => setLeaving(false)}
       onConfirm={() => { setLeaving(false); setIsTimed(false); setMode({ kind: 'tabs' }); setTab('play'); }} />}
     {pendingLevel !== null && <ConfirmDialog title={`${LEVEL_META[pendingLevel].name}로 바꿀까요?`}
@@ -136,7 +138,7 @@ export default function App() {
       description={`난이도를 바꾸면 끝낸 ${doneCount}개 게임의 기록이 사라지고 새 코스를 시작해요.`}
       cancelLabel="현재 난이도 유지" confirmLabel="난이도 바꾸기" onCancel={() => setPendingLevel(null)} onConfirm={() => applyLevel(pendingLevel)} />}
     {interrupted && <ConfirmDialog title={interrupted === 'hidden' ? '화면을 벗어나 코스를 멈췄어요' : '이번 코스가 중단됐어요'}
-      description="기억하는 시간과 반응 기록의 조건이 달라져, 중단된 기록은 결과에 넣지 않아요. 새 이야기로 코스를 다시 시작해요."
+      description="조건이 달라져 중단된 기록은 빼요. 새 이야기로 다시 시작해요."
       cancelLabel="게임으로 돌아가기" confirmLabel="새 코스 시작" onCancel={exitToPlay} onConfirm={startSession} />}
     </>
   );

@@ -193,3 +193,55 @@
   .stroop-word { margin-block: 8px; }
   .launch-stage, .cosmos-stage { min-height: 280px; }
 }
+
+/* ── 2026-11-04 AI 티 정리 ─────────────────────────────────
+   어두운 바탕·게임별 입체 아이콘은 그대로 두고, 같은 일을 두 번 하거나 뜻 없는 장식만 덜어 낸다. */
+
+/* 1. 게임마다 자기 색. 라임은 첫 화면·결과의 브랜드 색으로 남기고,
+      게임 안(준비 화면 포함)에서는 그 게임 아이콘의 색이 진행 막대·버튼·판 테두리·도전 표시를 맡는다. */
+.app-shell[data-game="story"]        { --g-accent: var(--g-game-story); --g-wash-accent: var(--g-game-story-wash); }
+.app-shell[data-game="reaction"]     { --g-accent: var(--g-game-reaction); --g-wash-accent: var(--g-game-reaction-wash); }
+.app-shell[data-game="digit"]        { --g-accent: var(--g-game-digit); --g-wash-accent: var(--g-game-digit-wash); }
+.app-shell[data-game="stroop"]       { --g-accent: var(--g-game-stroop); --g-wash-accent: var(--g-game-stroop-wash); } /* 색깔 단어 자극(빨강·파랑·초록·노랑)과 겹치지 않는 중립색 */
+.app-shell[data-game="storyDelayed"] { --g-accent: var(--g-game-story-delayed); --g-wash-accent: var(--g-game-story-delayed-wash); }
+.app-shell[data-game="pattern"]      { --g-accent: var(--g-game-pattern); --g-wash-accent: var(--g-game-pattern-wash); }
+.app-shell[data-game="vigilance"]    { --g-accent: var(--g-game-vigilance); --g-wash-accent: var(--g-game-vigilance-wash); }
+.app-shell[data-game] { --g-accent-hover: color-mix(in srgb, var(--g-accent) 78%, #FFFFFF); --g-focus: var(--g-accent); }
+.app-shell[data-game] .header-progress { color: var(--g-accent); }
+.app-shell[data-game] .vigilance-stage.is-live { border-color: var(--g-accent); }
+
+/* 2. 이야기 읽기: 시험지 대신 이야기 한 장. 제목을 키우고, 본문은 그 게임 색이 옅게 깔린 큰 글자 판 */
+.story-title-row { display: flex; align-items: center; gap: 12px; margin: 8px 0 8px; }
+.story-title-row h2 { margin: 0; font-size: clamp(24px, 6.4vw, 30px); line-height: 1.25; }
+.story-reading > .game-note:first-of-type { margin-bottom: 16px; }
+.story-reading .story-copy { padding: 24px 22px; border: none; border-radius: 16px; background: var(--g-wash-accent); color: var(--g-ink); font-size: 19px; line-height: 1.8; }
+.story-reading .story-copy p { margin-bottom: 16px; }
+.story-reading .story-copy p:last-child { margin-bottom: 0; }
+
+/* 4. 상자 안의 상자 없애기: 난이도와 코스 목록의 바깥 카드, 아이콘 뒤 네모를 걷어 내고 구분선으로 나눈다 */
+.level-picker { padding: 0; border: none; border-radius: 0; background: none; }
+.game-library { gap: 0 32px; border-top: 1px solid var(--g-border-dec); }
+.game-tile { padding: 16px 0; border: none; border-bottom: 1px solid var(--g-border-dec); border-radius: 0; background: none; }
+.game-art, .art-reaction, .art-vigilance { min-height: 0; background: none; border-radius: 0; }
+.game-tile.is-done { border-color: var(--g-border-dec); }
+.game-tile h3 { margin: 0 0 4px; }
+.game-state { color: var(--g-muted); font-weight: 600; }
+.game-tile.is-done .game-state { color: var(--g-ok); }
+.game-tile.is-now .game-state { color: var(--g-accent); font-weight: 800; }
+
+/* 5. 테두리 두 겹 없애기: 게임판은 초점을 받으면 바깥 선 대신 자기 테두리가 2px 게임 색이 된다.
+      채운 버튼은 같은 색 고리 대신 밝은 글자색 고리 */
+.launch-stage:focus-visible, .cosmos-stage:focus-visible { outline: none; border-color: var(--g-accent); box-shadow: inset 0 0 0 1px var(--g-accent); }
+.primary-button:focus-visible, .lime-button:focus-visible { outline-color: var(--g-ink); }
+
+/* 6. 제목 위 이름표 대신 화면 맨 위 상태 줄: 문항 수는 제목과 떨어진 위쪽 줄에 가는 선으로 둔다 */
+.game-card > .eyebrow { display: block; margin: 0 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--g-border-dec); color: var(--g-accent); font-variant-numeric: tabular-nums; text-align: left; }
+.report-sub { margin: -4px 0 16px; color: var(--g-accent); font-size: 14px; font-weight: 700; }
+
+/* 7. 두세 줄짜리 설명은 휴대폰에서 읽기 쉽게 왼쪽 정렬. 아이콘·제목·도전 표시만 가운데 */
+.transition-card .game-note, .transition-card .transition-detail { text-align: left; }
+.transition-card .game-basis { margin-left: 0; }
+@media (max-width: 600px) {
+  .level-picker { padding: 0; }
+  .game-tile { padding: 14px 0; }
+}
