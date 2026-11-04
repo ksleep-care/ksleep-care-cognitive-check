@@ -53,6 +53,12 @@ export default function DigitSpanGame({ level, onComplete, revealMsOverride, ran
     if (!revealing && submitted === null) inputRef.current?.focus();
   }, [revealing, submitted]);
 
+  /** 기억이 안 날 때 넘긴다. 다시 보여 주면 기억 길이를 잴 수 없으므로 틀린 것으로 센다. */
+  const pass = () => {
+    if (submitted !== null) return;
+    setSubmitted('');
+  };
+
   const submit = () => {
     if (answer.length !== sequence.length || submitted !== null) return;
     setSubmitted(answer);
@@ -117,14 +123,17 @@ export default function DigitSpanGame({ level, onComplete, revealMsOverride, ran
             {answer.length < sequence.length ? `${sequence.length - answer.length}자리를 더 입력하세요` : '답 제출을 누르세요'}
           </p>}
           {submitted === null ? (
-            <button className="primary-button" type="button" disabled={answer.length !== sequence.length} onClick={submit}>
-              답 제출
-            </button>
+            <div className="digit-actions">
+              <button className="primary-button" type="button" disabled={answer.length !== sequence.length} onClick={submit}>
+                답 제출
+              </button>
+              <button className="quiet-button" type="button" onClick={pass}>모르겠어요</button>
+            </div>
           ) : (
             <Feedback
               correct={isCorrect}
               answer={expected}
-              hint={`${sequence}를 뒤집으면 ${expected}예요.`}
+              hint={submitted === '' ? `넘겼어요. ${sequence}를 뒤집으면 ${expected}예요.` : `${sequence}를 뒤집으면 ${expected}예요.`}
               nextLabel={isLast ? completionLabel('digit') : '다음 문제'}
               onNext={advance}
             />

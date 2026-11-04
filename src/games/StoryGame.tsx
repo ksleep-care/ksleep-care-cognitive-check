@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Icon3D from '../ui/Icon3D';
 import Feedback from '../ui/Feedback';
+import AutoNextButton, { AUTO_NEXT_MS } from '../ui/AutoNextButton';
 import { useTimedPhase } from './useTimedPhase';
 import { completionLabel } from '../domain/session';
 import { LEVEL_CONFIG } from '../domain/levels';
@@ -152,9 +153,7 @@ export default function StoryGame({ mode, level, seed, onComplete, onTimingChang
       {picked !== null && mode === 'immediate' && (
         <div className="feedback" role="status">
           <p>선택했어요. 지금은 정답을 보여주지 않아요.</p>
-          <button className="primary-button" type="button" autoFocus onClick={advance}>
-            {isLast ? completionLabel('story') : '다음 문제'}
-          </button>
+          <AutoNextButton label={isLast ? completionLabel('story') : '다음 문제'} delayMs={AUTO_NEXT_MS.chosen} onNext={advance} />
         </div>
       )}
       {picked !== null && mode === 'delayed' && (

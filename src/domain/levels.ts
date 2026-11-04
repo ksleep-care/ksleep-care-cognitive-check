@@ -11,25 +11,25 @@ export interface LevelConfig {
 }
 export const LEVEL_CONFIG: Record<Level, LevelConfig> = {
   1: { storyQuestions: 4, storyReadMs: 25000, storyParagraphs: 2, storyDistractor: false,
-    digitStart: 3, digitMax: 6, digitMaxTrials: 8,
+    digitStart: 3, digitMax: 6, digitMaxTrials: 6,
     stroopTrials: 8, stroopDeadlineMs: 5000, stroopIncongruent: 0.5,
     patternTrials: 6, patternSymbols: 3, patternDeadlineMs: 6500,
     reactionTrials: 6, reactionWaitMaxMs: 2500, reactionDeadlineMs: 2500,
     vigilanceTrials: 8, vigilanceWaitMaxMs: 3500, vigilanceDeadlineMs: 2200 },
   2: { storyQuestions: 5, storyReadMs: 25000, storyParagraphs: 3, storyDistractor: false,
-    digitStart: 4, digitMax: 7, digitMaxTrials: 8,
+    digitStart: 4, digitMax: 7, digitMaxTrials: 6,
     stroopTrials: 12, stroopDeadlineMs: 3500, stroopIncongruent: 0.5,
     patternTrials: 8, patternSymbols: 4, patternDeadlineMs: 5000,
     reactionTrials: 8, reactionWaitMaxMs: 3500, reactionDeadlineMs: 1800,
     vigilanceTrials: 10, vigilanceWaitMaxMs: 4500, vigilanceDeadlineMs: 1600 },
   3: { storyQuestions: 6, storyReadMs: 25000, storyParagraphs: 3, storyDistractor: false,
-    digitStart: 5, digitMax: 8, digitMaxTrials: 8,
+    digitStart: 5, digitMax: 8, digitMaxTrials: 6,
     stroopTrials: 16, stroopDeadlineMs: 2400, stroopIncongruent: 0.5,
     patternTrials: 10, patternSymbols: 5, patternDeadlineMs: 3500,
     reactionTrials: 10, reactionWaitMaxMs: 4500, reactionDeadlineMs: 1200,
     vigilanceTrials: 12, vigilanceWaitMaxMs: 5500, vigilanceDeadlineMs: 1100 },
   4: { storyQuestions: 7, storyReadMs: 25000, storyParagraphs: 3, storyDistractor: false,
-    digitStart: 6, digitMax: 9, digitMaxTrials: 8,
+    digitStart: 6, digitMax: 9, digitMaxTrials: 6,
     stroopTrials: 20, stroopDeadlineMs: 1600, stroopIncongruent: 0.5,
     patternTrials: 12, patternSymbols: 6, patternDeadlineMs: 2400,
     reactionTrials: 12, reactionWaitMaxMs: 5500, reactionDeadlineMs: 850,
@@ -54,7 +54,8 @@ export function nextDigitSpan(state: DigitSpanState, correct: boolean, maximum: 
   const successes = state.successes + Number(correct);
   const failures = state.failures + Number(!correct);
   if (failures >= 2) return { ...state, successes, failures, done: true };
-  if (successes >= 2) {
+  // 한 번 맞히면 바로 한 자리 늘린다. 판 수를 줄이려고 2회 성공 규칙을 1회로 바꿨다.
+  if (successes >= 1) {
     if (state.span >= maximum) return { ...state, successes, failures, done: true };
     return { span: state.span + 1, successes: 0, failures: 0, done: false };
   }
