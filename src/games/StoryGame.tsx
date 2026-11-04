@@ -1,20 +1,31 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Feedback from '../ui/Feedback';
+import { useTimedPhase } from './useTimedPhase';
+import { completionLabel } from '../domain/session';
 import { LEVEL_CONFIG } from '../domain/levels';
-import { STORY_QUESTIONS, STORY_TEXT, STORY_TITLE } from '../domain/story';
+import { generateStory } from '../domain/story';
 import type { Level, StoryResult } from '../domain/types';
 
 interface StoryGameProps {
   mode: 'immediate' | 'delayed';
   level: Level;
+  /** 한 판 동안 같은 값이어야 바로 맞추기와 다시 퀴즈가 같은 이야기를 묻는다. */
+  seed: number;
   onComplete: (result: StoryResult) => void;
+  onTimingChange?: (active: boolean) => void;
 }
 
-export default function StoryGame({ mode, level, onComplete }: StoryGameProps) {
-  const questions = useMemo(
-    () => STORY_QUESTIONS.slice(0, LEVEL_CONFIG[level].storyQuestions),
-    [level],
-  );
+export default function StoryGame({ mode, level, seed, onComplete, onTimingChange }: StoryGameProps) {
+  const story = useMemo(() => {
+    const config = LEVEL_CONFIG[level];
+    return generateStory(seed, {
+      questions: config.storyQuestions,
+      paragraphs: config.storyParagraphs,
+      distractor: config.storyDistractor,
+      phase: mode,
+    });
+  }, [level, seed, mode]);
+  const questions = story.questions;
 
   const readMs = LEVEL_CONFIG[level].storyReadMs;
 
@@ -24,6 +35,7 @@ export default function StoryGame({ mode, level, onComplete }: StoryGameProps) {
   const [correct, setCorrect] = useState(0);
   const [picked, setPicked] = useState<string | null>(null);
   const deadline = useRef(0);
+  useTimedPhase(reading, onTimingChange);
 
   /**
    * 읽는 시간을 제한한다. 사람마다 읽은 시간이 다르면
@@ -68,8 +80,11 @@ export default function StoryGame({ mode, level, onComplete }: StoryGameProps) {
         </div>
 
         <p className="eyebrow">시간 안에 한 번 읽어보세요</p>
-        <h2 id="story-reading-title">{STORY_TITLE}</h2>
-        <p className="story-copy">{STORY_TEXT}</p>
+        <h2 id="story-reading-title">{story.title}</h2>
+        <p className="game-note">사람·시간·물건뿐 아니라 어디서 무슨 일이 있었고 어떻게 해결했는지도 기억해 주세요. 뒤에서는 다른 질문이 나와요.</p>
+        <div className="story-copy">
+          {story.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+        </div>
         <p className="game-note">시간이 끝나면 질문으로 자동으로 넘어가요.</p>
         <button className="primary-button" type="button" onClick={() => setReading(false)}>
           다 읽었어요
@@ -98,7 +113,7 @@ export default function StoryGame({ mode, level, onComplete }: StoryGameProps) {
   };
 
   return (
-    <section className="game-card" aria-labelledby="story-question-title">
+    <section className="game-card story-quiz" aria-labelledby="story-question-title">
       <p className="eyebrow">
         {mode === 'immediate' ? '바로 맞추기' : '다시 떠올리기'} · 질문 {index + 1} / {questions.length}
       </p>
@@ -108,31 +123,43 @@ export default function StoryGame({ mode, level, onComplete }: StoryGameProps) {
         {question.options.map((option) => {
           const state = picked === null
             ? ''
-            : option === question.answer
+            : mode === 'immediate'
+              ? option === picked ? ' is-selected' : ' is-dim'
+              : option === question.answer
               ? ' is-answer'
               : option === picked
                 ? ' is-wrong'
                 : ' is-dim';
           return (
             <button
-              className={`option-button tilt${state}`}
+              className={`option-button${state}`}
               type="button"
               key={option}
               disabled={picked !== null}
+              aria-pressed={picked === option}
               onClick={() => choose(option)}
             >
               {option}
+              {picked === option && <span className="choice-label">✓ 선택한 답</span>}
             </button>
           );
         })}
       </div>
 
-      {picked !== null && (
+      {picked !== null && mode === 'immediate' && (
+        <div className="feedback" role="status">
+          <p>선택했어요. 뒤 퀴즈에 힌트가 되지 않도록 지금은 정답을 보여주지 않아요.</p>
+          <button className="primary-button" type="button" autoFocus onClick={advance}>
+            {isLast ? completionLabel('story') : '다음 문제'}
+          </button>
+        </div>
+      )}
+      {picked !== null && mode === 'delayed' && (
         <Feedback
           correct={isCorrect}
           answer={question.answer}
           hint={question.hint}
-          nextLabel={isLast ? '결과 보기' : '다음 문제'}
+          nextLabel={isLast ? completionLabel('storyDelayed') : '다음 문제'}
           onNext={advance}
         />
       )}

@@ -1,5 +1,7 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import Feedback from '../ui/Feedback';
+import { useTimedPhase } from './useTimedPhase';
+import { completionLabel } from '../domain/session';
 import { LEVEL_CONFIG, makeRandom, shuffle } from '../domain/levels';
 import type { Level, TimedAccuracyResult } from '../domain/types';
 
@@ -26,7 +28,11 @@ function makeTrial(symbols: number, random: () => number): PatternTrial {
     const candidate = chars.join('');
     if (candidate !== target) distractors.add(candidate);
   }
-  while (distractors.size < 3) distractors.add(`${target}${SHAPES[distractors.size]}`);
+  for (const shape of SHAPES) {
+    if (distractors.size >= 3) break;
+    const candidate = shape + target.slice(1);
+    if (candidate !== target) distractors.add(candidate);
+  }
 
   return { target, options: shuffle([target, ...distractors], random) };
 }
@@ -35,9 +41,10 @@ interface PatternGameProps {
   level: Level;
   onComplete: (result: TimedAccuracyResult) => void;
   seed?: number;
+  onTimingChange?: (active: boolean) => void;
 }
 
-export default function PatternGame({ level, onComplete, seed }: PatternGameProps) {
+export default function PatternGame({ level, onComplete, seed, onTimingChange }: PatternGameProps) {
   const trials = useMemo(() => {
     const { patternTrials, patternSymbols } = LEVEL_CONFIG[level];
     const random = makeRandom(seed ?? Date.now());
@@ -49,14 +56,24 @@ export default function PatternGame({ level, onComplete, seed }: PatternGameProp
   const [picked, setPicked] = useState<string | null>(null);
   const times = useRef<number[]>([]);
   const startedAt = useRef(performance.now());
+  const locked = useRef(false);
+  useTimedPhase(picked === null, onTimingChange);
 
   const trial = trials[index];
   const isLast = index === trials.length - 1;
   const isCorrect = picked === trial.target;
+  useLayoutEffect(() => { startedAt.current = performance.now(); locked.current = false; }, [index]);
+  useEffect(() => {
+    if (picked !== null) return;
+    const timer = window.setTimeout(() => { locked.current = true; setPicked('timeout'); }, LEVEL_CONFIG[level].patternDeadlineMs);
+    return () => window.clearTimeout(timer);
+  }, [index, picked, level]);
 
   const choose = (pattern: string) => {
-    if (picked !== null) return;
-    times.current.push(Math.max(0, Math.round(performance.now() - startedAt.current)));
+    if (picked !== null || locked.current) return;
+    locked.current = true;
+    if (performance.now() - startedAt.current >= LEVEL_CONFIG[level].patternDeadlineMs) { setPicked('timeout'); return; }
+    if (pattern === trial.target) times.current.push(Math.max(0, Math.round(performance.now() - startedAt.current)));
     setPicked(pattern);
     if (pattern === trial.target) setCorrect((current) => current + 1);
   };
@@ -80,7 +97,7 @@ export default function PatternGame({ level, onComplete, seed }: PatternGameProp
 
   return (
     <section className="game-card center-card" aria-labelledby="pattern-title">
-      <p className="eyebrow">문제 {index + 1} / {trials.length}</p>
+      <p className="eyebrow">문제 {index + 1} / {trials.length} · {LEVEL_CONFIG[level].patternDeadlineMs / 1000}초 안에</p>
       <h2 id="pattern-title">같은 패턴을 찾으세요</h2>
       <div className="pattern-target" data-testid="pattern-target" aria-label={`기준 패턴 ${trial.target}`}>
         {trial.target}
@@ -97,7 +114,7 @@ export default function PatternGame({ level, onComplete, seed }: PatternGameProp
                 : ' is-dim';
           return (
             <button
-              className={`pattern-button tilt${state}`}
+              className={`pattern-button${state}`}
               type="button"
               aria-label={`패턴 ${pattern}`}
               key={pattern}
@@ -114,8 +131,8 @@ export default function PatternGame({ level, onComplete, seed }: PatternGameProp
         <Feedback
           correct={isCorrect}
           answer={trial.target}
-          hint="기준 패턴과 순서까지 똑같은 것을 골라야 해요."
-          nextLabel={isLast ? '결과 보기' : '다음 문제'}
+          hint={picked === 'timeout' ? '시간이 끝났어요. 모양과 순서를 함께 비교해 보세요.' : '기준 패턴과 순서까지 똑같은 것을 골라야 해요.'}
+          nextLabel={isLast ? completionLabel('pattern') : '다음 문제'}
           onNext={advance}
         />
       )}

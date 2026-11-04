@@ -3,7 +3,7 @@
 로그인 없이 오늘의 인지 컨디션을 확인하는 K-Sleep Care **독립 웹앱**.
 
 - Production: https://ksleep-care-cognitive-check.vercel.app
-- 저장소: `sylvie-kim/ksleep-care-cognitive-check` (private)
+- 저장소: `ksleep-care/ksleep-care-cognitive-check` (public)
 - 스택: React 19 + TypeScript + Vite + Vitest, Vercel 정적 배포
 
 ## 이 저장소의 경계

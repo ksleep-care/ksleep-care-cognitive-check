@@ -1,3 +1,11 @@
+---
+title: 인지 컨디션 체크 이전 구현 계획
+path: docs/superpowers/plans/_archive/20260831_product_plan_korean-cognitive-check.md
+status: superseded
+superseded_by: docs/ux-game-revision.md
+---
+> 폐기 문서. 2026-09-07 사용자 요청에 따른 현재 계약은 docs/ux-game-revision.md이다. 아래는 이전 구현 이력이다.
+
 # 한글 인지 컨디션 체크 구현 계획
 
 **Goal:** 게임형 UX와 표준화된 3분 PVT 측정, 개인 기준선을 갖춘 독립 웹앱을 Vercel Production에 배포함.

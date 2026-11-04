@@ -1,75 +1,66 @@
-import { GAME_META, GAME_ORDER, LEVELS, LEVEL_META } from '../domain/session';
+import Icon3D from '../ui/Icon3D';
+import SoundToggle from '../ui/SoundToggle';
+import { GAME_META, GAME_ORDER, LEVELS, LEVEL_META, gameChallenge } from '../domain/session';
+import { LEVEL_CONFIG } from '../domain/levels';
 import type { Level } from '../domain/types';
 
 interface PlayTabProps {
-  level: Level;
-  onLevelChange: (level: Level) => void;
-  onStartSession: () => void;
-  onStartPvt: () => void;
+  level: Level; doneCount: number; onLevelChange: (level: Level) => void;
+  onStartSession: () => void; onResumeSession: () => void;
 }
-
-export default function PlayTab({ level, onLevelChange, onStartSession, onStartPvt }: PlayTabProps) {
+export default function PlayTab({ level, doneCount, onLevelChange, onStartSession, onResumeSession }: PlayTabProps) {
+  const paused = doneCount > 0;
+  const config = LEVEL_CONFIG[level];
   return (
-    <div className="tab-panel">
-      <h1 className="panel-title">플레이</h1>
-
-      <section aria-labelledby="level-title">
-        <h2 id="level-title" className="section-title">난이도 선택</h2>
-        <div className="level-grid" role="radiogroup" aria-labelledby="level-title">
-          {LEVELS.map((value) => {
-            const meta = LEVEL_META[value];
-            const selected = value === level;
-            return (
-              <button
-                key={value}
-                className={`level-tile tilt${selected ? ' is-selected' : ''}`}
-                type="button"
-                role="radio"
-                aria-checked={selected}
-                onClick={() => onLevelChange(value)}
-              >
-                <span className="level-icon" aria-hidden="true">{meta.icon}</span>
-                <span className="level-rank">Lv.{value}</span>
-                <span className="level-name">{meta.name}</span>
-                <span className="level-blurb">{meta.blurb}</span>
-                {selected && <span className="level-check" aria-hidden="true">선택됨</span>}
-              </button>
-            );
-          })}
+    <div className="tab-panel play-panel arcade-panel">
+      <div className="app-name-row"><p className="app-name">인지 컨디션 체크</p><SoundToggle /></div>
+      <div className="play-intro">
+        <div><h1>기억부터 <span className="accent">반응까지.</span></h1>
+          <p className="lead">7개의 게임, 한 단계씩 어렵게.</p></div>
+        <div className="arcade-object" aria-hidden="true"><span className="orbit-ring" /><span className="arcade-sphere" /><span className="orbit-satellite" /></div>
+      </div>
+      <section className="level-picker" aria-label="코스 난이도 선택">
+        <div className="section-topline"><h2>오늘의 난이도</h2><span>처음이면 루키</span></div>
+        <div className="level-segments" role="radiogroup" aria-label="난이도">
+          {LEVELS.map(value => <button type="button" key={value} role="radio"
+            aria-checked={value === level} onClick={() => onLevelChange(value)}
+            onKeyDown={event => {
+              if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return;
+              event.preventDefault();
+              const offset = event.key === 'ArrowRight' || event.key === 'ArrowDown' ? 1 : -1;
+              const next = LEVELS[(LEVELS.indexOf(value) + offset + LEVELS.length) % LEVELS.length];
+              onLevelChange(next);
+              const buttons = event.currentTarget.parentElement?.querySelectorAll('button');
+              buttons?.[next - 1]?.focus();
+            }}
+            tabIndex={value === level ? 0 : -1}
+            className={`level-segment${value === level ? ' is-selected' : ''}`}>
+            <span className="level-bars" aria-hidden="true">{LEVELS.map(bar => <i key={bar} className={bar <= value ? 'filled' : ''} />)}</span>
+            {LEVEL_META[value].name}<span className="sr-only">{value === level ? '선택됨' : '선택 안 됨'}</span>
+          </button>)}
         </div>
-        <p className="section-note">
-          난이도는 기억·숫자·색깔·패턴 게임의 문제 수와 길이, 이야기 읽는 시간만 바꿔요.
-          아래 3분 집중 측정은 난이도와 무관하게 항상 똑같이 진행돼요.
-        </p>
-      </section>
-
-      <section className="play-card" aria-labelledby="session-title">
-        <p className="eyebrow">약 5분 · {LEVEL_META[level].icon} {LEVEL_META[level].name}</p>
-        <h2 id="session-title">게임 {GAME_ORDER.length}개 한 판</h2>
-        <ol className="game-line">
-          {GAME_ORDER.map((key) => (
-            <li key={key}>
-              <span aria-hidden="true">{GAME_META[key].icon}</span>
-              <span>{GAME_META[key].title}</span>
-            </li>
-          ))}
-        </ol>
-        <button className="primary-button" type="button" onClick={onStartSession}>
-          시작하기
+        <p className="level-description" aria-live="polite">{LEVEL_META[level].blurb}</p>
+        <div className="challenge-summary">
+          <div><span>앞뒤 퀴즈</span><strong>각 {config.storyQuestions}문제</strong></div>
+          <div><span>숫자 도전</span><strong>{config.digitStart}~{config.digitMax}자리</strong></div>
+          <div><span>별 잡을 시간</span><strong>{config.vigilanceDeadlineMs / 1000}초</strong></div>
+        </div>
+        {paused && <p className="level-warn">난이도를 바꾸면 끝낸 {doneCount}개 게임의 기록은 사라져요.</p>}
+        <button className="lime-button start-course" type="button" onClick={paused ? onResumeSession : onStartSession}>
+          <span>{paused ? `${GAME_META[GAME_ORDER[doneCount]].title}부터 이어서` : '게임 시작'}</span><span aria-hidden="true">→</span>
         </button>
+        <p className="start-note">{paused ? '완료한 게임 다음부터 이어가요. 새로고침하면 처음부터 시작해요.' : '7개 게임을 순서대로 진행해요. 먼저 방법을 안내해요.'}</p>
       </section>
-
-      <section className="play-card play-card-measure" aria-labelledby="pvt-title">
-        <p className="eyebrow">3분 · 난이도 없음</p>
-        <h2 id="pvt-title">3분 집중 측정</h2>
-        <p>
-          연구에서 쓰는 방식을 그대로 옮긴 단순한 과제예요. 매번 똑같은 조건이라
-          내 기준선을 만들 수 있는 건 이것뿐이에요.
-        </p>
-        <button className="primary-button" type="button" onClick={onStartPvt}>
-          측정 시작
-        </button>
-      </section>
+      <div className="section-topline game-list-heading"><h2>코스 순서</h2><span>{paused ? `${doneCount} / 7 완료` : `${LEVEL_META[level].name} · 순서대로 진행`}</span></div>
+      <ol className="game-library" aria-label={`${LEVEL_META[level].name} 코스 진행`}>
+        {GAME_ORDER.map((key, index) => <li key={key} className={`game-tile game-tile-${key}${index < doneCount ? ' is-done' : ''}`}>
+          <div className={`game-art art-${key}`} aria-hidden="true"><Icon3D name={key} size={56} /></div>
+          <div className="game-tile-copy"><span className="game-number">{index < doneCount ? '✓ 완료' : index === doneCount ? '지금 차례' : `게임 ${index + 1} · 예정`}</span>
+            <h3>{index + 1}. {GAME_META[key].title}</h3><p>{gameChallenge(key, level)}</p></div>
+          <details className="tile-detail"><summary><span className="sr-only">{GAME_META[key].title} </span>방법 보기</summary><p>{GAME_META[key].description}</p></details>
+        </li>)}
+      </ol>
+      <p className="boundary-line">의료 진단이 아니에요. 로그인과 서버 전송 없이 플레이하며, 게임 답안과 결과를 저장하지 않아요.</p>
     </div>
   );
 }

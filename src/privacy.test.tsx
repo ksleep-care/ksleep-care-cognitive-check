@@ -4,159 +4,57 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from './App';
 import DigitSpanGame from './games/DigitSpanGame';
 import { BASELINE_STORAGE_KEY, enableBaseline } from './domain/baseline';
-import { PVT_PROTOCOL_VERSION } from './domain/pvt';
-
-beforeEach(() => {
-  window.localStorage.clear();
-  window.sessionStorage.clear();
-});
-
-function tab(name: RegExp) {
-  return within(screen.getByRole('navigation', { name: '주요 화면' })).getByRole('button', { name });
+beforeEach(() => { localStorage.clear(); sessionStorage.clear(); });
+async function openRecords() {
+  const user = userEvent.setup();
+  await user.click(within(screen.getByRole('navigation')).getByRole('button', { name: /게임 안내/ }));
+  await user.click(screen.getByText('이전 버전의 저장 기록 관리'));
+  return user;
 }
-
-describe('동의 전에는 아무것도 저장하지 않는다', () => {
-  it('앱을 열기만 해서는 네트워크·브라우저 저장소·쿠키를 쓰지 않는다', () => {
+describe('개인정보와 이전 기록 경계', () => {
+  it('열고 탐색하고 코스를 시작해도 네트워크 전송과 영구 저장이 없다', async () => {
     const fetchSpy = vi.spyOn(globalThis, 'fetch');
-    render(<App />);
-
+    const user = userEvent.setup(); render(<App />);
+    for (const name of [/게임 안내/, /^게임$/]) {
+      await user.click(within(screen.getByRole('navigation')).getByRole('button', { name }));
+    }
+    await user.click(screen.getByRole('button', { name: /게임 시작/ }));
+    await user.click(screen.getByRole('button', { name: '이야기 읽기 시작' }));
     expect(fetchSpy).not.toHaveBeenCalled();
-    expect(window.localStorage.length).toBe(0);
-    expect(window.sessionStorage.length).toBe(0);
-    expect(document.cookie).toBe('');
+    expect(localStorage.length).toBe(0); expect(sessionStorage.length).toBe(0); expect(document.cookie).toBe('');
     fetchSpy.mockRestore();
   });
-
-  it('탭을 모두 둘러봐도 저장소가 비어 있다', async () => {
-    const user = userEvent.setup();
+  it('이전 데이터는 자동 삭제하거나 새 형식으로 전환하지 않는다', () => {
+    enableBaseline(localStorage);
+    const before = localStorage.getItem(BASELINE_STORAGE_KEY);
     render(<App />);
-
-    for (const name of [/플레이/, /나의 변화/, /게임 안내/, /홈/]) {
-      await user.click(tab(name));
-    }
-
-    expect(window.localStorage.length).toBe(0);
-    expect(window.sessionStorage.length).toBe(0);
+    expect(localStorage.getItem(BASELINE_STORAGE_KEY)).toBe(before);
+    expect(screen.queryByLabelText(/이름|연락처|생년월일|환자번호/)).not.toBeInTheDocument();
   });
-
-  it('게임 세션을 시작해도 저장소를 건드리지 않는다', async () => {
-    const user = userEvent.setup();
-    render(<App />);
-
-    await user.click(tab(/플레이/));
-    await user.click(screen.getByRole('button', { name: '시작하기' }));
-    await user.click(screen.getByRole('button', { name: '준비됐어요' }));
-
-    expect(window.localStorage.length).toBe(0);
-  });
-});
-
-describe('저장에 동의한 뒤에도 경계를 지킨다', () => {
-  it('나의 변화 탭에서 무엇을 저장하는지 먼저 알려주고 동의를 받는다', async () => {
-    const user = userEvent.setup();
-    render(<App />);
-    await user.click(tab(/나의 변화/));
-
-    expect(screen.getByText(/3분 측정의 요약값만/)).toBeInTheDocument();
-    expect(screen.getByText(/이름·연락처·생년월일·환자번호·게임 답안·매 회 반응 기록은 저장하지 않아요/))
-      .toBeInTheDocument();
-    expect(screen.getByText(/같은 기기를 쓰는 다른 사람도 이 기록을 볼 수 있어요/)).toBeInTheDocument();
-    expect(window.localStorage.length).toBe(0);
-
-    await user.click(screen.getByRole('button', { name: '이 기기에 나의 변화 저장' }));
-    expect(window.localStorage.getItem(BASELINE_STORAGE_KEY)).not.toBeNull();
-  });
-
-  it('동의 뒤 저장된 값에는 허용 필드만 들어 있다', () => {
-    enableBaseline(window.localStorage);
-    const raw = window.localStorage.getItem(BASELINE_STORAGE_KEY) ?? '';
-    const parsed = JSON.parse(raw) as { version: number; entries: unknown[] };
-
-    expect(parsed.version).toBe(1);
-    expect(parsed.entries).toEqual([]);
-    expect(raw).not.toMatch(/name|patient|birth|phone|답안/i);
-  });
-
-  it('내 기록 모두 삭제를 누르면 저장소와 화면에서 함께 사라진다', async () => {
-    const user = userEvent.setup();
-    window.localStorage.setItem(BASELINE_STORAGE_KEY, JSON.stringify({
-      version: 1,
-      entries: [{
-        protocol: PVT_PROTOCOL_VERSION,
-        completedAt: 1_756_000_000_000,
-        medianRtMs: 260,
-        lapses: 2,
-        falseStarts: 0,
-        performanceScore: 95,
-      }],
-    }));
-
-    render(<App />);
-    await user.click(tab(/나의 변화/));
-    expect(screen.getByText('260ms')).toBeInTheDocument();
-
-    // 브라우저 confirm 창이 아니라 앱 안에서 한 번 더 묻는다.
+  it('기록 삭제는 확인을 거치고 앱 소유 키만 지운다', async () => {
+    enableBaseline(localStorage); localStorage.setItem('unrelated', 'keep');
+    render(<App />); const user = await openRecords();
     await user.click(screen.getByRole('button', { name: '내 기록 모두 삭제' }));
     expect(screen.getByRole('alertdialog')).toHaveTextContent('되돌릴 수 없어요');
-    expect(window.localStorage.getItem(BASELINE_STORAGE_KEY)).not.toBeNull();
-
+    expect(localStorage.getItem(BASELINE_STORAGE_KEY)).not.toBeNull();
     await user.click(screen.getByRole('button', { name: '네, 모두 지울게요' }));
-
-    expect(window.localStorage.getItem(BASELINE_STORAGE_KEY)).toBeNull();
-    expect(screen.queryByText('260ms')).not.toBeInTheDocument();
-    expect(screen.getByText(/아직 아무것도 저장하지 않았어요/)).toBeInTheDocument();
+    expect(localStorage.getItem(BASELINE_STORAGE_KEY)).toBeNull();
+    expect(localStorage.getItem('unrelated')).toBe('keep');
+    expect(screen.getByRole('status')).toHaveTextContent('삭제했어요');
   });
-
-  it('삭제를 취소하면 기록이 그대로 남는다', async () => {
-    const user = userEvent.setup();
-    window.localStorage.setItem(BASELINE_STORAGE_KEY, JSON.stringify({
-      version: 1,
-      entries: [{
-        protocol: PVT_PROTOCOL_VERSION,
-        completedAt: 1_756_000_000_000,
-        medianRtMs: 260,
-        lapses: 2,
-        falseStarts: 0,
-        performanceScore: 95,
-      }],
-    }));
-
-    render(<App />);
-    await user.click(tab(/나의 변화/));
+  it('삭제를 취소하면 기록을 보존한다', async () => {
+    enableBaseline(localStorage); render(<App />); const user = await openRecords();
     await user.click(screen.getByRole('button', { name: '내 기록 모두 삭제' }));
     await user.click(screen.getByRole('button', { name: '취소' }));
-
-    expect(window.localStorage.getItem(BASELINE_STORAGE_KEY)).not.toBeNull();
-    expect(screen.getByText('260ms')).toBeInTheDocument();
+    expect(localStorage.getItem(BASELINE_STORAGE_KEY)).not.toBeNull();
   });
-
-  it('모르는 schema 버전은 읽지 않고 지운다', async () => {
-    const user = userEvent.setup();
-    window.localStorage.setItem(BASELINE_STORAGE_KEY, JSON.stringify({ version: 99, entries: [] }));
-
-    render(<App />);
-    await user.click(tab(/나의 변화/));
-
-    expect(screen.getByText(/아직 아무것도 저장하지 않았어요/)).toBeInTheDocument();
-    expect(window.localStorage.getItem(BASELINE_STORAGE_KEY)).toBeNull();
-  });
-});
-
-describe('입력 필드 경계', () => {
-  it('유일한 입력 필드는 자동완성을 끈 숫자 전용 입력이다', async () => {
+  it('숫자 답안에 자동완성과 개인정보 입력을 쓰지 않는다', async () => {
     vi.useFakeTimers();
     render(<DigitSpanGame level={1} onComplete={vi.fn()} revealMsOverride={10} />);
     await act(() => vi.advanceTimersByTimeAsync(10));
-
-    const input = screen.getByLabelText('거꾸로 입력');
-    expect(input).toHaveAttribute('inputmode', 'numeric');
-    expect(input).toHaveAttribute('autocomplete', 'off');
-    expect(input).toHaveAttribute('spellcheck', 'false');
+    expect(screen.getByLabelText('거꾸로 입력')).toHaveAttribute('inputmode', 'numeric');
+    expect(screen.getByLabelText('거꾸로 입력')).toHaveAttribute('autocomplete', 'off');
+    expect(screen.getByLabelText('거꾸로 입력')).toHaveAttribute('spellcheck', 'false');
     vi.useRealTimers();
-  });
-
-  it('개인정보를 물어보는 입력이 어디에도 없다', () => {
-    render(<App />);
-    expect(screen.queryByLabelText(/이름|연락처|생년월일|환자번호/)).not.toBeInTheDocument();
   });
 });

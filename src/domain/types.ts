@@ -7,10 +7,10 @@ export type GameKey =
   | 'pattern'
   | 'vigilance';
 
-/** 레벨은 기억·숫자·색깔·패턴 게임의 난이도만 바꾼다. 3분 PVT에는 영향을 주지 않는다. */
+/** 모든 게임에 적용하는 앱 고유 난이도. 임상 규준이 아니다. */
 export type Level = 1 | 2 | 3 | 4;
 
-export type TabKey = 'home' | 'play' | 'trend' | 'guide';
+export type TabKey = 'play' | 'guide';
 
 export type SessionStep =
   | { type: 'transition'; index: number }
@@ -33,6 +33,7 @@ export interface ReactionResult {
   hits: number;
   total: number;
   earlyPresses: number;
+  misses?: number;
 }
 
 export interface DigitResult {
@@ -46,6 +47,7 @@ export interface VigilanceResult {
   hits: number;
   total: number;
   misses: number;
+  earlyPresses?: number;
 }
 
 export interface SessionResults {
@@ -63,8 +65,10 @@ export type GameResult = SessionResults[GameKey];
 
 export interface CognitiveReport {
   immediateMemoryPercent: number;
-  memoryRetentionPercent: number;
-  reactionAverageMs: number;
+  delayedMemoryPercent: number;
+  reactionAverageMs: number | null;
+  reactionMisses: number;
+  vigilanceEarlyPresses: number;
   reactionEarlyPresses: number;
   workingMemorySpan: number;
   stroopAccuracyPercent: number;

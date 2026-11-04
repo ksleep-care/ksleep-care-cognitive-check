@@ -1,116 +1,35 @@
-import { useEffect, useRef, useState } from 'react';
-import type { ReactionResult } from '../domain/types';
+import Burst from '../ui/Burst';
+import { LEVEL_CONFIG } from '../domain/levels';
+import type { Level, ReactionResult } from '../domain/types';
+import { useSignalGame } from './useSignalGame';
 
-interface ReactionGameProps {
-  onComplete: (result: ReactionResult) => void;
-  getDelay?: () => number;
-}
-
-const TOTAL_TRIALS = 6;
-/** 이 시간 안에 눌리면 보고 누른 것이 아니라고 본다. */
-const MIN_VALID_MS = 100;
-
-type Phase = 'ready' | 'waiting' | 'visible' | 'feedback';
-
-export default function ReactionGame({
-  onComplete,
-  getDelay = () => 700 + Math.round(Math.random() * 1500),
-}: ReactionGameProps) {
-  const [phase, setPhase] = useState<Phase>('ready');
-  const [trial, setTrial] = useState(0);
-  const [lastMs, setLastMs] = useState<number | null>(null);
-  const [early, setEarly] = useState(false);
-  const times = useRef<number[]>([]);
-  const earlyPresses = useRef(0);
-  const shownAt = useRef(0);
-
-  useEffect(() => {
-    if (phase !== 'waiting') return;
-    const timer = window.setTimeout(() => {
-      shownAt.current = performance.now();
-      setPhase('visible');
-    }, getDelay());
-    return () => window.clearTimeout(timer);
-  }, [getDelay, phase]);
-
-  const pressEarly = () => {
-    if (phase !== 'waiting') return;
-    earlyPresses.current += 1;
-    setEarly(true);
-    setLastMs(null);
-    setPhase('feedback');
-  };
-
-  const hit = () => {
-    const elapsed = Math.round(performance.now() - shownAt.current);
-    if (elapsed < MIN_VALID_MS) {
-      earlyPresses.current += 1;
-      setEarly(true);
-      setLastMs(null);
-    } else {
-      times.current.push(elapsed);
-      setEarly(false);
-      setLastMs(elapsed);
-    }
-    setPhase('feedback');
-  };
-
-  const advance = () => {
-    const done = trial + 1;
-    if (done >= TOTAL_TRIALS) {
-      const values = times.current;
-      onComplete({
-        averageMs: values.length > 0
-          ? Math.round(values.reduce((sum, value) => sum + value, 0) / values.length)
-          : 0,
-        hits: values.length,
-        total: TOTAL_TRIALS,
-        earlyPresses: earlyPresses.current,
-      });
-      return;
-    }
-    setTrial(done);
-    setPhase('waiting');
-  };
-
-  if (phase === 'ready') {
-    return (
-      <section className="game-card center-card">
-        <h2>원이 나타나면 바로 누르세요</h2>
-        <p className="game-note">너무 일찍 누르면 그 판은 기록되지 않아요.</p>
-        <button className="primary-button" type="button" onClick={() => setPhase('waiting')}>
-          반응 시작
-        </button>
-      </section>
-    );
-  }
-
+interface ReactionGameProps { level?: Level; onComplete: (result: ReactionResult) => void; getDelay?: () => number }
+export default function ReactionGame({ level = 1, onComplete, getDelay }: ReactionGameProps) {
+  const config = LEVEL_CONFIG[level];
+  const game = useSignalGame({ total: config.reactionTrials, waitMaxMs: config.reactionWaitMaxMs,
+    deadlineMs: config.reactionDeadlineMs, onComplete, getDelay });
+  const label = game.phase === 'waiting' ? '아직 기다리세요' : game.phase === 'visible' ? '지금 누르기' : '반응 결과';
   return (
-    <section className="game-card center-card" aria-live="polite">
-      <p className="eyebrow">{trial + 1} / {TOTAL_TRIALS}</p>
-
-      {phase === 'waiting' && (
-        <button className="reaction-stage is-waiting" type="button" aria-label="아직 기다리세요" onClick={pressEarly}>
-          <span>기다려 주세요…</span>
-        </button>
-      )}
-
-      {phase === 'visible' && (
-        <div className="reaction-stage is-live">
-          <button className="reaction-target" type="button" aria-label="지금 누르기" onClick={hit} />
-        </div>
-      )}
-
-      {phase === 'feedback' && (
-        <div className={`reaction-stage is-feedback ${early ? 'is-early' : 'is-hit'}`}>
-          <p className="reaction-readout">
-            {early ? '너무 일찍 눌렀어요' : `${lastMs}ms`}
-          </p>
-          <button className="primary-button" type="button" autoFocus onClick={advance}>
-            {trial + 1 >= TOTAL_TRIALS ? '결과 보기' : '다음'}
-          </button>
-        </div>
-      )}
+    <section className="game-card center-card signal-game" aria-labelledby="reaction-title">
+      <div className="game-topline"><p className="eyebrow">{game.trial + 1} / {config.reactionTrials}</p><span>출발 신호</span></div>
+      <h2 id="reaction-title">{game.phase === 'waiting' ? '불이 켜지면 출발!' : game.phase === 'visible' ? '지금!' : game.outcome === 'hit' ? '출발 성공' : game.outcome === 'early' ? '신호보다 빨랐어요' : '신호를 놓쳤어요'}</h2>
+      <button className={`reaction-stage launch-stage is-${game.phase} outcome-${game.outcome}`}
+        aria-label={label} type="button" autoFocus
+        onPointerDown={event => { if (event.button === 0) { event.preventDefault(); game.press(); } }}
+        onClick={event => { if (event.detail === 0) game.press(); }}
+        onKeyDown={event => { if (!event.repeat && (event.key === ' ' || event.key === 'Enter')) { event.preventDefault(); game.press(); } }}>
+        <span className="launch-lanes" aria-hidden="true"><i /><i /><i /></span>
+        <span className={`signal-lamp ${game.phase === 'visible' ? 'is-on' : ''}`} aria-hidden="true" />
+        <span className="launch-craft" aria-hidden="true"><i /><b /></span>
+        {game.phase === 'waiting' && <span className="stage-instruction">손가락을 준비하세요</span>}
+        {game.phase === 'visible' && <span className="stage-instruction">이 게임 영역을 누르세요</span>}
+        {game.phase === 'feedback' && <span className="signal-result" role="status">
+          {game.outcome === 'hit' && <Burst trigger={game.trial} />}
+          <strong>{game.lastMs !== null ? `${game.lastMs}ms` : game.outcome === 'early' ? '너무 이른 누름' : '놓침'}</strong>
+          <span>{game.outcome === 'hit' ? '신호를 보고 반응했어요' : '다음 신호를 기다려요'}</span>
+        </span>}
+      </button>
+      <p className="game-note">신호 전 누름은 기록에서 제외해요. 터치 또는 스페이스 키.</p>
     </section>
   );
 }

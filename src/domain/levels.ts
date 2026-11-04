@@ -1,61 +1,76 @@
 import type { Level } from './types';
 
-/** 레벨이 바꾸는 것은 여기 있는 값뿐이다. 3분 PVT는 이 파일을 쓰지 않는다. */
+/** 게임용 난이도. 임상 검사 프로토콜이나 규준이 아니다. */
 export interface LevelConfig {
-  storyQuestions: number;
-  /**
-   * 이야기를 읽을 수 있는 최대 시간(ms).
-   * 읽은 시간이 사람마다 다르면 기억 점수를 자기 기록끼리도 비교할 수 없다.
-   * 레벨이 오를수록 질문은 늘고 시간은 줄어든다.
-   */
-  storyReadMs: number;
-  digitSequences: string[];
-  stroopTrials: number;
-  patternTrials: number;
-  patternSymbols: number;
+  storyQuestions: number; storyReadMs: number; storyParagraphs: number; storyDistractor: boolean;
+  digitStart: number; digitMax: number; digitMaxTrials: number;
+  stroopTrials: number; stroopDeadlineMs: number; stroopIncongruent: number;
+  patternTrials: number; patternSymbols: number; patternDeadlineMs: number;
+  reactionTrials: number; reactionWaitMaxMs: number; reactionDeadlineMs: number;
+  vigilanceTrials: number; vigilanceWaitMaxMs: number; vigilanceDeadlineMs: number;
 }
-
 export const LEVEL_CONFIG: Record<Level, LevelConfig> = {
-  1: {
-    storyQuestions: 4,
-    storyReadMs: 25_000,
-    digitSequences: ['927', '6481', '3057'],
-    stroopTrials: 6,
-    patternTrials: 6,
-    patternSymbols: 2,
-  },
-  2: {
-    storyQuestions: 5,
-    storyReadMs: 22_000,
-    digitSequences: ['4172', '90563', '38215'],
-    stroopTrials: 8,
-    patternTrials: 6,
-    patternSymbols: 3,
-  },
-  3: {
-    storyQuestions: 6,
-    storyReadMs: 20_000,
-    digitSequences: ['61840', '275093', '480716'],
-    stroopTrials: 10,
-    patternTrials: 8,
-    patternSymbols: 3,
-  },
-  4: {
-    storyQuestions: 7,
-    storyReadMs: 18_000,
-    digitSequences: ['582074', '3197462', '6408351'],
-    stroopTrials: 12,
-    patternTrials: 8,
-    patternSymbols: 4,
-  },
+  1: { storyQuestions: 4, storyReadMs: 25000, storyParagraphs: 2, storyDistractor: false,
+    digitStart: 3, digitMax: 6, digitMaxTrials: 8,
+    stroopTrials: 8, stroopDeadlineMs: 5000, stroopIncongruent: 0.5,
+    patternTrials: 6, patternSymbols: 3, patternDeadlineMs: 6500,
+    reactionTrials: 6, reactionWaitMaxMs: 2500, reactionDeadlineMs: 2500,
+    vigilanceTrials: 8, vigilanceWaitMaxMs: 3500, vigilanceDeadlineMs: 2200 },
+  2: { storyQuestions: 5, storyReadMs: 25000, storyParagraphs: 3, storyDistractor: false,
+    digitStart: 4, digitMax: 7, digitMaxTrials: 8,
+    stroopTrials: 12, stroopDeadlineMs: 3500, stroopIncongruent: 0.5,
+    patternTrials: 8, patternSymbols: 4, patternDeadlineMs: 5000,
+    reactionTrials: 8, reactionWaitMaxMs: 3500, reactionDeadlineMs: 1800,
+    vigilanceTrials: 10, vigilanceWaitMaxMs: 4500, vigilanceDeadlineMs: 1600 },
+  3: { storyQuestions: 6, storyReadMs: 25000, storyParagraphs: 3, storyDistractor: false,
+    digitStart: 5, digitMax: 8, digitMaxTrials: 8,
+    stroopTrials: 16, stroopDeadlineMs: 2400, stroopIncongruent: 0.5,
+    patternTrials: 10, patternSymbols: 5, patternDeadlineMs: 3500,
+    reactionTrials: 10, reactionWaitMaxMs: 4500, reactionDeadlineMs: 1200,
+    vigilanceTrials: 12, vigilanceWaitMaxMs: 5500, vigilanceDeadlineMs: 1100 },
+  4: { storyQuestions: 7, storyReadMs: 25000, storyParagraphs: 3, storyDistractor: false,
+    digitStart: 6, digitMax: 9, digitMaxTrials: 8,
+    stroopTrials: 20, stroopDeadlineMs: 1600, stroopIncongruent: 0.5,
+    patternTrials: 12, patternSymbols: 6, patternDeadlineMs: 2400,
+    reactionTrials: 12, reactionWaitMaxMs: 5500, reactionDeadlineMs: 850,
+    vigilanceTrials: 14, vigilanceWaitMaxMs: 6500, vigilanceDeadlineMs: 750 },
 };
-
-/** 숫자를 보여주는 시간. 자릿수가 늘면 함께 늘린다. */
+/** 제시 속도는 고정하고 숫자열 길이를 바꾼다. */
+export const DIGIT_ON_MS = 700;
+export const DIGIT_GAP_MS = 300;
 export function digitRevealMs(sequence: string): number {
-  return 600 + sequence.length * 320;
+  return sequence.length * (DIGIT_ON_MS + DIGIT_GAP_MS);
 }
-
-/** 재현 가능한 난수. 테스트에서 seed를 고정한다. */
+export function createDigitSequence(length: number, random: () => number = Math.random): string {
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    const candidates = '0123456789'.split('').filter(digit => digit !== result.at(-1));
+    result += candidates[Math.floor(random() * candidates.length)];
+  }
+  return result;
+}
+export interface DigitSpanState { span: number; successes: number; failures: number }
+export function nextDigitSpan(state: DigitSpanState, correct: boolean, maximum: number) {
+  const successes = state.successes + Number(correct);
+  const failures = state.failures + Number(!correct);
+  if (failures >= 2) return { ...state, successes, failures, done: true };
+  if (successes >= 2) {
+    if (state.span >= maximum) return { ...state, successes, failures, done: true };
+    return { span: state.span + 1, successes: 0, failures: 0, done: false };
+  }
+  return { ...state, successes, failures, done: false };
+}
+export const STROOP_COLORS = ['빨강', '파랑', '초록', '노랑'] as const;
+export type ColorName = typeof STROOP_COLORS[number];
+export function makeStroopTrials(level: Level, random: () => number) {
+  const config = LEVEL_CONFIG[level];
+  return shuffle(Array.from({ length: config.stroopTrials }, (_, i) => {
+    const ink = STROOP_COLORS[i % STROOP_COLORS.length];
+    const congruent = i < config.stroopTrials * (1 - config.stroopIncongruent);
+    const other = STROOP_COLORS.filter(color => color !== ink);
+    return { ink, word: congruent ? ink : other[Math.floor(random() * other.length)], congruent };
+  }), random);
+}
 export function makeRandom(seed: number): () => number {
   let state = seed >>> 0;
   return () => {
@@ -66,7 +81,6 @@ export function makeRandom(seed: number): () => number {
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
 }
-
 export function shuffle<T>(items: T[], random: () => number): T[] {
   const copy = [...items];
   for (let i = copy.length - 1; i > 0; i -= 1) {

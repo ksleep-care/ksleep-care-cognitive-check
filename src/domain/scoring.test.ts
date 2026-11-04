@@ -16,8 +16,10 @@ describe('결과 계산', () => {
   it('화면에 보여줄 수행값을 손실 없이 계산한다', () => {
     expect(calculateReport(completeResults)).toEqual({
       immediateMemoryPercent: 100,
-      memoryRetentionPercent: 75,
+      delayedMemoryPercent: 75,
       reactionAverageMs: 320,
+      reactionMisses: 0,
+      vigilanceEarlyPresses: 0,
       reactionEarlyPresses: 1,
       workingMemorySpan: 5,
       stroopAccuracyPercent: 88,
@@ -27,12 +29,12 @@ describe('결과 계산', () => {
     });
   });
 
-  it('즉시 기억 정답이 0이어도 기억 유지율을 안전하게 0으로 둔다', () => {
+  it('즉시 정답이 없어도 지연 정답률은 별개로 보고한다', () => {
     expect(calculateReport({
       ...completeResults,
       story: { correct: 0, total: 4 },
       storyDelayed: { correct: 2, total: 4 },
-    }).memoryRetentionPercent).toBe(0);
+    }).delayedMemoryPercent).toBe(50);
   });
 
   it('필수 활동 결과가 빠지면 잘못된 보고서를 만들지 않는다', () => {
@@ -47,5 +49,11 @@ describe('결과 계산', () => {
       ...completeResults,
       vigilance: { averageMs: 0, hits: 0, total: 6, misses: 6 },
     }).vigilanceAverageMs).toBeNull();
+  });
+  it('반응속도도 유효 응답이 없으면 0ms 대신 미측정으로 구분한다', () => {
+    expect(calculateReport({
+      ...completeResults,
+      reaction: { averageMs: 0, hits: 0, total: 6, misses: 6, earlyPresses: 0 },
+    }).reactionAverageMs).toBeNull();
   });
 });

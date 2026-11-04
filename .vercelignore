@@ -1,0 +1,20 @@
+# Ship the app, not unrelated documents, local evidence, or private configuration.
+public/prd/
+docs/
+tests/
+src/**/*.test.ts
+src/**/*.test.tsx
+DESIGN.md
+README.md
+design-tokens.roles.json
+output/
+dist/
+*.tsbuildinfo
+.env*
+.omc/
+.playwright-mcp/
+.playwright-cli/
+.gstack/
+.superpowers/
+orca-paste-*.png
+untitled.md

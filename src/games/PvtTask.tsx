@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { PVT_PRACTICE_TRIALS, PVT_SCORED_DURATION_MS, type PvtTrial } from '../domain/pvt';
 import { PvtEngine, type PvtEngineView } from '../domain/pvtEngine';
+import SoundToggle from '../ui/SoundToggle';
+import { play } from '../ui/sound';
 
 /**
  * 3분 PVT-B 측정 화면.
@@ -77,10 +79,17 @@ export default function PvtTask({
     return (
       <section className="pvt-screen pvt-brief" aria-labelledby="pvt-brief-title">
         <p className="eyebrow">3분 집중 측정</p>
-        <h1 id="pvt-brief-title">숫자가 나타나면 바로 누르세요</h1>
+        <h1 id="pvt-brief-title">빈 화면에 숫자가 튀어나오면 바로 누르세요</h1>
+        <p className="pvt-why">
+          <strong>왜 하나요</strong> · 이 측정은 정신운동 각성 검사(PVT)의 3분 판 형식이에요.
+          잠이 부족하거나 피로하면 반응이 느려지고 놓치는 순간이 늘어나는데, 그 변화를 가장 민감하게
+          잡아내는 과제라 수면 연구와 우주비행사 피로 연구에서 표준처럼 써 왔어요.
+          몇 번 해도 익숙해져서 잘해지는 효과가 거의 없어서, 반복하며 내 변화를 보기에 알맞아요.
+        </p>
         <ol className="pvt-rules">
-          <li>화면 가운데 네모 안에 숫자가 올라가기 시작하면 한 번 누릅니다.</li>
-          <li>나오기 전에 누르면 <strong>너무 이른 누름</strong>으로 남아요.</li>
+          <li>가운데 네모는 평소에 <strong>비어 있어요</strong>. 갑자기 숫자가 나타나 올라가기 시작하면 한 번 누릅니다.</li>
+          <li>누르면 방금 반응시간이 1초 동안 회색으로 보였다가 사라져요. 그 숫자는 누르는 대상이 아니에요.</li>
+          <li>숫자가 나오기 전에 누르면 <strong>너무 이른 누름</strong>으로 남아요.</li>
           <li>연습 {practiceTrials}번 뒤에 3분을 잽니다. 연습은 점수에 안 들어가요.</li>
           <li>측정 중에 다른 창으로 넘어가면 그 측정은 못 써요.</li>
         </ol>
@@ -123,7 +132,10 @@ export default function PvtTask({
     <section className="pvt-screen pvt-measure" aria-label="3분 집중 측정 진행 중">
       <div className="pvt-topline">
         <span className="pvt-phase">{view.phase === 'practice' ? '연습' : '측정 중'}</span>
-        <button className="quiet-button" type="button" onClick={stop}>그만두기</button>
+        <span className="header-actions">
+          <SoundToggle />
+          <button className="quiet-button" type="button" onClick={stop}>그만두기</button>
+        </span>
       </div>
 
       <div className="pvt-progress" aria-hidden="true">
@@ -134,7 +146,12 @@ export default function PvtTask({
         className={`pvt-field${view.live ? ' is-live' : ''}`}
         type="button"
         aria-label="자극이 보이면 누르기"
-        onClick={() => engine.press()}
+        onClick={() => {
+          // 기록을 먼저 남기고 나서 소리를 낸다. 소리는 누른 뒤의 확인일 뿐 자극이 아니다.
+          const wasLive = view.live;
+          engine.press();
+          play(wasLive ? 'hit' : 'early');
+        }}
       >
         <span className="pvt-counter">
           {view.live
@@ -144,7 +161,7 @@ export default function PvtTask({
       </button>
 
       <p className="pvt-hint" aria-live="polite">
-        {view.live ? '지금 누르세요' : '숫자가 보이면 바로 누르세요'}
+        {view.live ? '지금 누르세요' : '빈 화면을 보며 기다리세요'}
       </p>
     </section>
   );

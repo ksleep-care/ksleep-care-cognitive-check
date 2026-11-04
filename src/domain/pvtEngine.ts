@@ -49,6 +49,8 @@ export class PvtEngine {
   private live = false;
   private message = '';
   private timerId = 0;
+  /** 피드백 문구를 지우는 타이머. 자극 타이머와 따로 둔다. */
+  private feedbackTimerId = 0;
   private shownAt = 0;
   private scheduledAt = 0;
   private scoredStartedAt = 0;
@@ -139,12 +141,18 @@ export class PvtEngine {
     }
 
     this.collected.push({ kind: 'response', rtMs, driftMs });
-    this.endTrial(String(rtMs), Math.max(PVT_FEEDBACK_MS, drawIsiMs(this.random) - rtMs));
+    this.endTrial(`${rtMs} ms`, Math.max(PVT_FEEDBACK_MS, drawIsiMs(this.random) - rtMs));
   }
 
   private clear(): void {
     if (this.timerId) this.clearTimer(this.timerId);
     this.timerId = 0;
+    this.clearFeedbackTimer();
+  }
+
+  private clearFeedbackTimer(): void {
+    if (this.feedbackTimerId) this.clearTimer(this.feedbackTimerId);
+    this.feedbackTimerId = 0;
   }
 
   private emit(): void {
@@ -182,6 +190,14 @@ export class PvtEngine {
     this.live = false;
     this.message = message;
     this.emit();
+
+    // 방금 기록은 1초만 보여주고 지운다(논문의 피드백 시간). 그 뒤 빈 화면에서 다음 자극을 기다린다.
+    this.feedbackTimerId = this.setTimer(() => {
+      this.feedbackTimerId = 0;
+      if (this.live) return;
+      this.message = '';
+      this.emit();
+    }, PVT_FEEDBACK_MS);
 
     if (this.phase === 'practice') {
       this.practiceCount += 1;

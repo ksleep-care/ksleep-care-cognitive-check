@@ -1,3 +1,11 @@
+---
+title: 인지 컨디션 체크 이전 설계
+path: docs/superpowers/specs/_archive/20260831_product_design_korean-cognitive-check.md
+status: superseded
+superseded_by: docs/ux-game-revision.md
+---
+> 폐기 문서. 2026-09-07 사용자 요청에 따른 현재 계약은 docs/ux-game-revision.md이다. 아래는 이전 구현 이력이다.
+
 # 한글 인지 컨디션 체크 독립 앱 설계
 
 > 2026-09-01 개정. 이전 판과 달라진 점은 §0에 모아 뒀다.

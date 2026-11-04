@@ -22,19 +22,13 @@ export function calculateReport(results: SessionDraft): CognitiveReport {
   }
 
   const complete = results as SessionResults;
-  const immediateRatio = complete.story.total > 0
-    ? complete.story.correct / complete.story.total
-    : 0;
-  const delayedRatio = complete.storyDelayed.total > 0
-    ? complete.storyDelayed.correct / complete.storyDelayed.total
-    : 0;
 
   return {
     immediateMemoryPercent: percent(complete.story.correct, complete.story.total),
-    memoryRetentionPercent: immediateRatio > 0
-      ? Math.min(100, Math.round((delayedRatio / immediateRatio) * 100))
-      : 0,
-    reactionAverageMs: complete.reaction.averageMs,
+    delayedMemoryPercent: percent(complete.storyDelayed.correct, complete.storyDelayed.total),
+    reactionAverageMs: complete.reaction.hits > 0 ? complete.reaction.averageMs : null,
+    reactionMisses: complete.reaction.misses ?? 0,
+    vigilanceEarlyPresses: complete.vigilance.earlyPresses ?? 0,
     reactionEarlyPresses: complete.reaction.earlyPresses,
     workingMemorySpan: complete.digit.maxSpan,
     stroopAccuracyPercent: percent(complete.stroop.correct, complete.stroop.total),
@@ -46,10 +40,10 @@ export function calculateReport(results: SessionDraft): CognitiveReport {
 
 /**
  * 게임 결과는 전부 `게임 기록`이다. 임상 규준을 상속하지 않는다.
- * 같은 레벨의 자기 기록끼리만 비교할 수 있다고 분명히 적는다.
+ * 같은 레벨에서도 문항·기기·진행 간격이 달라 참고 범위임을 알린다.
  */
 export function buildGameCards(report: CognitiveReport, levelName: string): MetricCard[] {
-  const sameLevelOnly = `같은 레벨(${levelName})에서 한 내 기록끼리만 비교할 수 있어요.`;
+  const sameLevelOnly = `같은 레벨(${levelName})도 문항·기기·진행 간격이 달라질 수 있어요. 변화는 참고만 해요.`;
 
   return [
     {
@@ -67,8 +61,8 @@ export function buildGameCards(report: CognitiveReport, levelName: string): Metr
       icon: GAME_META.storyDelayed.icon,
       title: GAME_META.storyDelayed.title,
       looksAt: GAME_META.storyDelayed.looksAt,
-      value: `처음의 ${report.memoryRetentionPercent}% 유지`,
-      direction: '100%에 가까울수록 중간 게임들 뒤에도 그대로 남았다는 뜻이에요.',
+      value: `${report.delayedMemoryPercent}% 맞음`,
+      direction: '다른 게임 뒤에 맞춘 비율이에요. 처음과 다른 문항을 맞힐 수 있어 두 정답률을 기억 유지율로 나누지 않아요.',
       comparable: sameLevelOnly,
       limit: GAME_META.storyDelayed.limit,
     },
@@ -77,8 +71,8 @@ export function buildGameCards(report: CognitiveReport, levelName: string): Metr
       icon: GAME_META.digit.icon,
       title: GAME_META.digit.title,
       looksAt: GAME_META.digit.looksAt,
-      value: `최대 ${report.workingMemorySpan}자리`,
-      direction: '길수록 한 번에 담아두고 뒤집을 수 있는 양이 많았다는 뜻이에요.',
+      value: report.workingMemorySpan > 0 ? `최대 ${report.workingMemorySpan}자리` : '성공한 길이 없음',
+      direction: report.workingMemorySpan > 0 ? '이번 게임에서 거꾸로 입력하는 데 성공한 가장 긴 숫자 길이예요.' : '이번 시도에서 성공한 숫자 길이가 없어요. 기억 능력이 0이라는 뜻은 아니에요.',
       comparable: sameLevelOnly,
       limit: GAME_META.digit.limit,
     },
@@ -107,11 +101,9 @@ export function buildGameCards(report: CognitiveReport, levelName: string): Metr
       icon: GAME_META.reaction.icon,
       title: GAME_META.reaction.title,
       looksAt: GAME_META.reaction.looksAt,
-      value: report.reactionEarlyPresses > 0
-        ? `평균 ${report.reactionAverageMs}ms · 너무 이른 누름 ${report.reactionEarlyPresses}회`
-        : `평균 ${report.reactionAverageMs}ms`,
-      direction: '작을수록 빨랐다는 뜻이에요. 6번뿐이라 그날 운도 섞여요.',
-      comparable: '레벨과 무관하게 고정된 게임이지만, 같은 기기·같은 브라우저에서만 비교하세요.',
+      value: `${report.reactionAverageMs === null ? '측정 없음' : `평균 ${report.reactionAverageMs}ms`} · 놓침 ${report.reactionMisses}회 · 너무 이른 누름 ${report.reactionEarlyPresses}회`,
+      direction: '유효하게 누른 응답만의 평균이에요. 너무 이른 누름과 놓침도 함께 보세요.',
+      comparable: sameLevelOnly,
       limit: GAME_META.reaction.limit,
     },
     {
@@ -120,10 +112,10 @@ export function buildGameCards(report: CognitiveReport, levelName: string): Metr
       title: GAME_META.vigilance.title,
       looksAt: GAME_META.vigilance.looksAt,
       value: report.vigilanceAverageMs === null
-        ? `측정 없음 · 놓침 ${report.vigilanceMisses}회`
-        : `평균 ${report.vigilanceAverageMs}ms · 놓침 ${report.vigilanceMisses}회`,
+        ? `측정 없음 · 놓침 ${report.vigilanceMisses}회 · 너무 이른 누름 ${report.vigilanceEarlyPresses}회`
+        : `평균 ${report.vigilanceAverageMs}ms · 놓침 ${report.vigilanceMisses}회 · 너무 이른 누름 ${report.vigilanceEarlyPresses}회`,
       direction: '작고 놓침이 적을수록 기다리는 동안 주의가 유지됐다는 뜻이에요.',
-      comparable: '3분 집중 측정과는 다른 과제예요. 두 값을 섞지 마세요.',
+      comparable: sameLevelOnly,
       limit: GAME_META.vigilance.limit,
     },
   ];
