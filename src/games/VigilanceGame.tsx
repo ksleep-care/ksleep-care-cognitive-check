@@ -23,14 +23,14 @@ export default function VigilanceGame({ level = 1, onComplete, getDelay, missAft
         <span className="cosmos-planet" aria-hidden="true"><i /></span>
         <span className="capture-orbit" aria-hidden="true" />
         {game.phase === 'visible' && <span className="comet-3d" aria-hidden="true"><i /><b /></span>}
-        {game.phase === 'waiting' && <span className="stage-instruction">별이 보이면 이 게임 영역을 톡</span>}
+        {game.phase === 'waiting' && <span className="stage-instruction">별이 보이면 톡</span>}
         {game.phase === 'feedback' && <span className="signal-result" role="status">
           {game.outcome === 'hit' && <Burst trigger={game.trial} />}
           <strong>{game.lastMs !== null ? `${game.lastMs}ms` : game.outcome === 'early' ? '너무 이른 누름' : '놓침'}</strong>
           <span>{game.outcome === 'hit' ? '별 하나를 잡았어요' : '다음 별을 기다려요'}</span>
         </span>}
       </button>
-      <p className="game-note">별을 따라 누를 필요는 없어요. 별이 없는 동안은 기다려요.</p>
+      <p className="game-note">별이 없을 땐 기다려요.</p>
     </section>
   );
 }

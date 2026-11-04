@@ -48,9 +48,9 @@ export default function PlayTab({ level, doneCount, onLevelChange, onStartSessio
         <button className="lime-button start-course" type="button" onClick={paused ? onResumeSession : onStartSession}>
           <span>{paused ? `${GAME_META[GAME_ORDER[doneCount]].title}부터 이어서` : '게임 시작'}</span><span aria-hidden="true">→</span>
         </button>
-        <p className="start-note">{paused ? '완료한 게임 다음부터 이어가요. 새로고침하면 처음부터 시작해요.' : '7개 게임을 순서대로 진행해요. 먼저 방법을 안내해요.'}</p>
+        <p className="start-note">{paused ? '새로고침하면 처음부터 시작해요.' : '시작하면 방법부터 안내해요.'}</p>
       </section>
-      <div className="section-topline game-list-heading"><h2>코스 순서</h2><span>{paused ? `${doneCount} / 7 완료` : `${LEVEL_META[level].name} · 순서대로 진행`}</span></div>
+      <div className="section-topline game-list-heading"><h2>코스 순서</h2><span>{paused ? `${doneCount} / 7 완료` : `${LEVEL_META[level].name} · 7개`}</span></div>
       <ol className="game-library" aria-label={`${LEVEL_META[level].name} 코스 진행`}>
         {GAME_ORDER.map((key, index) => <li key={key} className={`game-tile game-tile-${key}${index < doneCount ? ' is-done' : index === doneCount ? ' is-now' : ''}`}>
           <div className={`game-art art-${key}`} aria-hidden="true"><Icon3D name={key} size={56} /></div>
@@ -59,7 +59,7 @@ export default function PlayTab({ level, doneCount, onLevelChange, onStartSessio
           <details className="tile-detail"><summary><span className="sr-only">{GAME_META[key].title} </span>방법 보기</summary><p>{GAME_META[key].description}</p></details>
         </li>)}
       </ol>
-      <p className="boundary-line">의료 진단이 아니에요. 로그인과 서버 전송 없이 플레이하며, 게임 답안과 결과를 저장하지 않아요.</p>
+      <p className="boundary-line">의료 진단이 아니에요. 로그인 없이 하고, 기록은 저장하지 않아요.</p>
     </div>
   );
 }

@@ -27,7 +27,7 @@ export default function Transition({ index, level, onReady }: TransitionProps) {
       {key === 'story' && <p className="preparation-note">
         {LEVEL_CONFIG[level].storyReadMs / 1000}초 동안 한 번 읽어요. 앞뒤 각 {LEVEL_CONFIG[level].storyQuestions}문제이고, 첫 퀴즈에서는 정답을 보여주지 않아요.
       </p>}
-      {(key === 'reaction' || key === 'vigilance') && <p className="game-note">판을 누르거나 스페이스 키를 눌러요. 화면은 자동으로 넘어가요.</p>}
+      {(key === 'reaction' || key === 'vigilance') && <p className="game-note">화면이나 스페이스 키를 눌러요. 자동으로 넘어가요.</p>}
       {/* 자세한 설명은 접어 둔다. 내용은 줄이지 않고 위치만 옮겼다. */}
       <details className="transition-detail"><summary>자세히 보기</summary>
         <p className="game-note">{meta.looksAt}</p>
