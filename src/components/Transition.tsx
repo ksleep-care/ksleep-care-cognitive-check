@@ -19,15 +19,12 @@ export default function Transition({ index, level, onReady }: TransitionProps) {
       <div className="progress-track" role="img" aria-label={`${GAME_ORDER.length}개 중 ${index + 1}번째`}>
         <div className="progress-fill" style={{ width: `${percent}%` }} />
       </div>
-      <p className="progress-text">
-        {meta.scalesWithLevel ? `${LEVEL_META[level].name} 난이도` : '난이도와 무관'}
-      </p>
 
       <Icon3D name={key} size={72} className="transition-icon" />
       <h1 id="transition-title">{meta.title}</h1>
       <p className="lead">{meta.description}</p>
       <p className="game-note">{meta.looksAt}</p>
-      <p className="challenge-label">{gameChallenge(key, level)}</p>
+      <p className="challenge-label">{gameChallenge(key, level)} · {meta.scalesWithLevel ? `${LEVEL_META[level].name} 난이도` : '난이도와 무관'}</p>
       {key === 'story' && <div className="preparation-note">
         <p>{LEVEL_CONFIG[level].storyReadMs / 1000}초 동안 한 번 읽어요. 앞뒤 퀴즈에서 서로 다른 내용을 각 {LEVEL_CONFIG[level].storyQuestions}문제씩 물어요.</p>
         <p>첫 퀴즈에서는 정답을 보여주지 않아요. 뒤 퀴즈에 힌트가 되지 않도록 선택한 답만 표시해요.</p>

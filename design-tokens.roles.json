@@ -124,6 +124,76 @@
       "role": "text",
       "on": "--g-void",
       "value": "#7AA2FF"
+    },
+    "--g-game-story": {
+      "role": "text",
+      "on": "--g-void",
+      "value": "#FFB27A"
+    },
+    "--g-game-story-wash": {
+      "role": "surface",
+      "on": null,
+      "value": "#3A2F28"
+    },
+    "--g-game-reaction": {
+      "role": "text",
+      "on": "--g-void",
+      "value": "#C6F26A"
+    },
+    "--g-game-reaction-wash": {
+      "role": "surface",
+      "on": null,
+      "value": "#313925"
+    },
+    "--g-game-digit": {
+      "role": "text",
+      "on": "--g-void",
+      "value": "#8FC1FF"
+    },
+    "--g-game-digit-wash": {
+      "role": "surface",
+      "on": null,
+      "value": "#29313D"
+    },
+    "--g-game-stroop": {
+      "role": "text",
+      "on": "--g-void",
+      "value": "#E0E0D9"
+    },
+    "--g-game-stroop-wash": {
+      "role": "surface",
+      "on": null,
+      "value": "#353637"
+    },
+    "--g-game-story-delayed": {
+      "role": "text",
+      "on": "--g-void",
+      "value": "#F4C464"
+    },
+    "--g-game-story-delayed-wash": {
+      "role": "surface",
+      "on": null,
+      "value": "#393224"
+    },
+    "--g-game-pattern": {
+      "role": "text",
+      "on": "--g-void",
+      "value": "#FF9DB0"
+    },
+    "--g-game-pattern-wash": {
+      "role": "surface",
+      "on": null,
+      "value": "#3A2C30"
+    },
+    "--g-game-vigilance": {
+      "role": "text",
+      "on": "--g-void",
+      "value": "#FFE08A"
+    },
+    "--g-game-vigilance-wash": {
+      "role": "surface",
+      "on": null,
+      "value": "#3A362A"
     }
   }
 }

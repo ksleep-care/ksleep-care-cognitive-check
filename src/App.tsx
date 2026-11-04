@@ -101,7 +101,9 @@ export default function App() {
   }, [timedGame]);
   return (
     <>
-    <div className={`app-shell${immersive ? ' is-immersive' : ''}`} inert={leaving || pendingLevel !== null || interrupted !== null}>
+    <div className={`app-shell${immersive ? ' is-immersive' : ''}`}
+      data-game={mode.kind === 'session' && mode.step.type !== 'report' ? GAME_ORDER[mode.step.index] : undefined}
+      inert={leaving || pendingLevel !== null || interrupted !== null}>
       {mode.kind === 'session' && mode.step.type !== 'report' && !interrupted && (
         <header className="app-header">
           <span className="header-progress">{mode.step.index + 1} / 7 · {GAME_META[GAME_ORDER[mode.step.index]].title}</span>

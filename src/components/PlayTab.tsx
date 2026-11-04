@@ -17,7 +17,6 @@ export default function PlayTab({ level, doneCount, onLevelChange, onStartSessio
       <div className="play-intro">
         <div><h1>기억부터 <span className="accent">반응까지.</span></h1>
           <p className="lead">7개의 게임, 한 단계씩 어렵게.</p></div>
-        <div className="arcade-object" aria-hidden="true"><span className="orbit-ring" /><span className="arcade-sphere" /><span className="orbit-satellite" /></div>
       </div>
       <section className="level-picker" aria-label="코스 난이도 선택">
         <div className="section-topline"><h2>오늘의 난이도</h2><span>처음이면 루키</span></div>
@@ -53,10 +52,10 @@ export default function PlayTab({ level, doneCount, onLevelChange, onStartSessio
       </section>
       <div className="section-topline game-list-heading"><h2>코스 순서</h2><span>{paused ? `${doneCount} / 7 완료` : `${LEVEL_META[level].name} · 순서대로 진행`}</span></div>
       <ol className="game-library" aria-label={`${LEVEL_META[level].name} 코스 진행`}>
-        {GAME_ORDER.map((key, index) => <li key={key} className={`game-tile game-tile-${key}${index < doneCount ? ' is-done' : ''}`}>
+        {GAME_ORDER.map((key, index) => <li key={key} className={`game-tile game-tile-${key}${index < doneCount ? ' is-done' : index === doneCount ? ' is-now' : ''}`}>
           <div className={`game-art art-${key}`} aria-hidden="true"><Icon3D name={key} size={56} /></div>
-          <div className="game-tile-copy"><span className="game-number">{index < doneCount ? '✓ 완료' : index === doneCount ? '지금 차례' : `게임 ${index + 1} · 예정`}</span>
-            <h3>{index + 1}. {GAME_META[key].title}</h3><p>{gameChallenge(key, level)}</p></div>
+          <div className="game-tile-copy"><h3>{index + 1}. {GAME_META[key].title}</h3>
+            <p><span className="game-state">{index < doneCount ? '완료' : index === doneCount ? '지금 차례' : '예정'}</span> · {gameChallenge(key, level)}</p></div>
           <details className="tile-detail"><summary><span className="sr-only">{GAME_META[key].title} </span>방법 보기</summary><p>{GAME_META[key].description}</p></details>
         </li>)}
       </ol>

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import Icon3D from '../ui/Icon3D';
 import Feedback from '../ui/Feedback';
 import { useTimedPhase } from './useTimedPhase';
 import { completionLabel } from '../domain/session';
@@ -79,8 +80,10 @@ export default function StoryGame({ mode, level, seed, onComplete, onTimingChang
           </p>
         </div>
 
-        <p className="eyebrow">시간 안에 한 번 읽어보세요</p>
-        <h2 id="story-reading-title">{story.title}</h2>
+        <div className="story-title-row">
+          <Icon3D name="story" size={44} />
+          <h2 id="story-reading-title">{story.title}</h2>
+        </div>
         <p className="game-note">사람·시간·물건뿐 아니라 어디서 무슨 일이 있었고 어떻게 해결했는지도 기억해 주세요. 뒤에서는 다른 질문이 나와요.</p>
         <div className="story-copy">
           {story.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}

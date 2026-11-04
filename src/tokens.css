@@ -14,7 +14,7 @@
   --g-body: #E0E0D9;
   --g-muted: #B2B3AC;
 
-  /* 강조 — 진행과 다음 행동에만. Sylvie 지정: 라임 형광색을 그대로 쓴다 (가이드의 파랑 대신) */
+  /* 강조 — 진행과 다음 행동에만. Sylvie 지정 라임. 첫 화면·결과에서 쓰고, 게임 안에서는 아래 게임별 색이 대신한다 */
   --g-accent: #C6F26A;
   --g-accent-hover: #D9F78F;
   --g-wash-accent: #26331E;
@@ -27,6 +27,22 @@
   --g-wash-bad: #4A2028;
   --g-warn: #F4C464;
   --g-blue: #7AA2FF;          /* 색깔 단어 게임의 '파랑'에만. 가이드의 파랑 값 */
+
+  /* 게임별 색 — 게임 안(준비 화면 포함)에서만 --g-accent를 대신한다. 아이콘(Icon3D) 색과 같다 */
+  --g-game-story: #FFB27A;         /* 이야기 기억하기 */
+  --g-game-story-wash: #3A2F28;
+  --g-game-reaction: #C6F26A;      /* 반응속도 */
+  --g-game-reaction-wash: #313925;
+  --g-game-digit: #8FC1FF;         /* 숫자 뒤집기 */
+  --g-game-digit-wash: #29313D;
+  --g-game-stroop: #E0E0D9;        /* 색깔 단어. 자극 4색과 겹치지 않게 중립 */
+  --g-game-stroop-wash: #353637;
+  --g-game-story-delayed: #F4C464; /* 이야기 다시 퀴즈 */
+  --g-game-story-delayed-wash: #393224;
+  --g-game-pattern: #FF9DB0;       /* 패턴 매칭 */
+  --g-game-pattern-wash: #3A2C30;
+  --g-game-vigilance: #FFE08A;     /* 별똥별 잡기 */
+  --g-game-vigilance-wash: #3A362A;
 
   /* 경계 */
   --g-border-dec: #3C3E40;
