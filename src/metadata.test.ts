@@ -8,7 +8,7 @@ describe('공개 링크 소개', () => {
     it(`${selector}에 승인된 소개 문구를 제공한다`, () => {
       const doc = new DOMParser().parseFromString(html, 'text/html');
       expect(doc.querySelector(selector)?.getAttribute('content')).toBe(description);
-      expect(doc.title).toBe('인지 컨디션 체크 | K-Sleep Care');
+      expect(doc.title).toBe('인지 컨디션 체크 | 수미헬스');
       expect(html).not.toContain('로그인 없이 이용하는 한글 인지 컨디션 체크');
     });
   }
